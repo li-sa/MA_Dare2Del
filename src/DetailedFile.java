@@ -17,6 +17,8 @@ public class DetailedFile {
     private long size;
     private Path path;
 
+    private String name_lowerCase_withoutExtension;
+
     public DetailedFile(File file) {
         this.file = file;
         setMetadata();
@@ -49,6 +51,7 @@ public class DetailedFile {
 
         if (fileName.lastIndexOf(extensionSeperator) != -1 && fileName.lastIndexOf(extensionSeperator) != 0) {
             fileExtension = fileName.substring(fileName.lastIndexOf(extensionSeperator) + 1);
+            name_lowerCase_withoutExtension = fileName.substring(0, fileName.length() - fileExtension.length() - 1).toLowerCase();
         }
 
         return fileExtension;
@@ -88,5 +91,9 @@ public class DetailedFile {
 
     public Path getPath() {
         return path;
+    }
+
+    public String getName_lowerCase_withoutExtension() {
+        return name_lowerCase_withoutExtension;
     }
 }

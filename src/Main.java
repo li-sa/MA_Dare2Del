@@ -9,6 +9,6 @@ public class Main {
         PrologFileWriter prologFW = new PrologFileWriter(fileCrawler.getFileList());
 
         // PROLOG
-        //PrologFirstTry prologFirst = new PrologFirstTry(fileCrawler.getFileList());
+        PrologFirstTry prologFirst = new PrologFirstTry(fileCrawler.getFileList());
     }
 }
