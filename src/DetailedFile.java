@@ -3,15 +3,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
+import java.time.Instant;
 
 public class DetailedFile {
 
     private File file;
 
     private String name;
-    private FileTime creation_time;
-    private FileTime access_time;
-    private FileTime change_time;
+    private long creation_time;
+    private long access_time;
+    private long change_time;
     private File in_directory;
     private String media_type;
     private long size;
@@ -34,9 +35,9 @@ public class DetailedFile {
         }
 
         this.name = file.getName();
-        this.creation_time = fileAttributes.creationTime();
-        this.access_time = fileAttributes.lastAccessTime();
-        this.change_time = fileAttributes.lastModifiedTime();
+        this.creation_time = getSecondsSinceEpoche(fileAttributes.creationTime());
+        this.access_time = getSecondsSinceEpoche(fileAttributes.lastAccessTime());
+        this.change_time = getSecondsSinceEpoche(fileAttributes.lastModifiedTime());
         this.in_directory = file.getParentFile();
         this.media_type = getFileExtension();
         this.size = fileAttributes.size();
@@ -57,19 +58,24 @@ public class DetailedFile {
         return fileExtension;
     }
 
+    public long getSecondsSinceEpoche(FileTime fileTime){
+        Instant instant = fileTime.toInstant();
+        return instant.getEpochSecond();
+    }
+
     public File getFile() {
         return file;
     }
 
-    public FileTime getCreation_time() {
+    public long getCreation_time() {
         return creation_time;
     }
 
-    public FileTime getAccess_time() {
+    public long getAccess_time() {
         return access_time;
     }
 
-    public FileTime getChange_time() {
+    public long getChange_time() {
         return change_time;
     }
 

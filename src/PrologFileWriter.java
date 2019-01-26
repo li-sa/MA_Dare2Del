@@ -10,7 +10,7 @@ public class PrologFileWriter {
     private List<DetailedFile> folderList;
     private List<DetailedFile> fileList;
 
-    private static String prologFile = "C:\\Users\\Lisa\\IdeaProjects\\MA_FirstSample\\src\\prolog\\test.pl";
+    private static String prologFile = "C:\\Users\\Lisa\\IdeaProjects\\MA_FirstSample\\src\\prolog\\clauses.pl";
 
     private Map<String, List<String>> prologStatements;
 
@@ -36,9 +36,6 @@ public class PrologFileWriter {
         List<String> list_in_directory = new ArrayList<>();
         List<String> list_media_type = new ArrayList<>();
         List<String> list_size = new ArrayList<>();
-
-        // Test File
-        list_file.add("file(foo). \n");
 
         for (DetailedFile file : fileList) {
             /*list_file.add("file(" + file.getPath() + "). \n");
