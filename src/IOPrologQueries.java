@@ -53,12 +53,14 @@ public class IOPrologQueries {
             return;
         }
 
-        String[] inputParameters = input.split("\\(|,|\\)");
+        String[] inputParameters = input.split("\\(|,|\\).|\\)");
 
         Term[] newTerms = new Term[inputParameters.length - 1];
+        Term variable_temp = null;
         for (int i = 1; i < inputParameters.length; i++) {
-            if (Character.isUpperCase(inputParameters[i].codePointAt(0))) {
-                newTerms[i-1] = new Variable(inputParameters[i].trim());
+            if (inputParameters[i].startsWith("_")) {
+                newTerms[i-1] = new Variable(inputParameters[i].split("_")[1].toUpperCase());
+                variable_temp = newTerms[i-1];
             } else {
                 newTerms[i-1] = new Atom(inputParameters[i].trim());
             }
@@ -73,13 +75,13 @@ public class IOPrologQueries {
             System.out.println("*** Result: " + (query.hasSolution() ? "succeeded" : "failed"));
 
             Map<String, Term> solution;
-            while (query.hasMoreSolutions() ){
+            while (query.hasMoreSolutions() && variable_temp != null){
                 solution = query.nextSolution();
-                System.out.println( "solution = " + solution.values());
+                System.out.println( "solution = " + solution.get(variable_temp.toString()));
             }
 
             System.out.println("\n");
-        } catch (PrologException plEx) {
+        } catch (PrologException prolog_exception) {
             System.out.println("No valid Query! \n");
         }
     }

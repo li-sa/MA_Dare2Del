@@ -57,13 +57,13 @@ public class PrologFirstTry {
         System.out.println("***Query result: " + (q_newer.hasSolution() ? "succeeded" : "failed"));*/
 
         System.out.println("***QUERY: creation_time(Textdokument_1-1.txt)");
-        Term term_creationTime = new Compound("creation_time", new Term[]{new Atom("Textdokument_1-1.txt"), new Variable("X")});
+        Term term_creationTime = new Compound("creation_time", new Term[]{new Atom("Textdokument_1-1.txt"), new Variable("ABC")});
         Query q_creationTime = new Query(term_creationTime);
         System.out.println("***Query result: " + (q_creationTime.hasSolution() ? "succeeded" : "failed"));
         Map<String, Term> solution;
         while (q_creationTime.hasMoreSolutions() ){
             solution = q_creationTime.nextSolution();
-            System.out.println( "X = " + solution.get("X"));
+            System.out.println( "X = " + solution.get("ABC"));
         }
 
 //        Query q1 =

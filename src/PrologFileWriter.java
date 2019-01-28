@@ -7,7 +7,7 @@ import java.util.Map;
 public class PrologFileWriter {
     FileWriter fileWriter;
 
-    private List<DetailedFile> folderList;
+//    private List<DetailedFile> folderList;
     private List<DetailedFile> fileList;
 
     private static String prologFile = "C:\\Users\\Lisa\\IdeaProjects\\MA_FirstSample\\src\\prolog\\clauses.pl";
