@@ -58,7 +58,7 @@ public class IOPrologQueries {
         Term[] newTerms = new Term[inputParameters.length - 1];
         Term variable_temp = null;
         for (int i = 1; i < inputParameters.length; i++) {
-            if (inputParameters[i].startsWith("_")) {
+            if (inputParameters[i].trim().startsWith("_")) {
                 newTerms[i-1] = new Variable(inputParameters[i].split("_")[1].toUpperCase());
                 variable_temp = newTerms[i-1];
             } else {
