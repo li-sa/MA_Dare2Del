@@ -68,8 +68,11 @@ public class IOPrologQueries {
             }
         }
 
-        System.out.println("*** QUERY: " + inputParameters[0] + "(" + Arrays.toString(newTerms) + ")");
-        Term term = new Compound(inputParameters[0] , newTerms);
+        QueryProlog(inputParameters[0] , newTerms, listOfVariables);
+    }
+
+    private void QueryProlog(String ruleToQuery, Term[] terms, List<Term> variables) {
+        Term term = new Compound(ruleToQuery, terms);
 
         try {
             Query query = new Query(term);
@@ -77,36 +80,45 @@ public class IOPrologQueries {
             System.out.println("*** Result: " + (query.hasSolution() ? "true" : "false"));
 
             Map<String, Term> solution;
-            while (query.hasMoreSolutions() && listOfVariables.size() > 0){
+            while (query.hasMoreSolutions() && variables.size() > 0){
                 solution = query.nextSolution();
                 StringBuilder stringBuilder = new StringBuilder();
-                for (Term variable : listOfVariables) {
+                for (Term variable : variables) {
                     stringBuilder.append(variable.toString() + " = " + solution.get(variable.toString()) + "\t");
                 }
                 System.out.println(stringBuilder);
             }
 
-            //askForUserDecision();
+            askForUserDecision(ruleToQuery, terms, variables);
 
         } catch (PrologException prolog_exception) {
             System.out.println("No valid Query! \n");
         }
     }
 
-    private void askForUserDecision() {
+    private void askForUserDecision(String ruleToQuery, Term[] terms, List<Term> variables) {
         Scanner scanner = new Scanner( System.in );
+        System.out.println("[0] Yeeah, another query!");
         System.out.println("[1] Show explanation.");
         System.out.println("[2] Show different example with first argument = X.");
         System.out.println("[3] Show different example with second argument = X.");
         String input = scanner.nextLine();
 
         switch (input) {
+            case "0":
+                break;
             case "1":
                 showExplanation();
                 break;
             case "2":
+                terms[0] = new Variable("XXX");
+                variables.add(terms[0]);
+                QueryProlog(ruleToQuery, terms, variables);
                 break;
             case "3":
+                terms[1] = new Variable("YYY");
+                variables.add(terms[1]);
+                QueryProlog(ruleToQuery, terms, variables);
                 break;
             default:
                 break;
