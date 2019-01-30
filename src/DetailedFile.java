@@ -39,8 +39,8 @@ public class DetailedFile {
         this.access_time = getSecondsSinceEpoche(fileAttributes.lastAccessTime());
         this.change_time = getSecondsSinceEpoche(fileAttributes.lastModifiedTime());
         this.in_directory = file.getParentFile();
-        this.media_type = getFileExtension();
-        this.size = fileAttributes.size();
+//        this.media_type = getFileExtension();
+//        this.size = fileAttributes.size();
         this.path = file.toPath();
     }
 

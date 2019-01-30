@@ -100,8 +100,8 @@ public class IOPrologQueries {
         Scanner scanner = new Scanner( System.in );
         System.out.println("[0] Yeeah, another query!");
         System.out.println("[1] Show explanation.");
-        System.out.println("[2] Show different example with first argument = X.");
-        System.out.println("[3] Show different example with second argument = X.");
+        System.out.println("[2] Show different example with first argument = XXX.");
+        System.out.println("[3] Show different example with second argument = YYY.");
         String input = scanner.nextLine();
 
         switch (input) {

@@ -34,36 +34,29 @@ public class PrologFileWriter {
         List<String> list_access_time = new ArrayList<>();
         List<String> list_change_time = new ArrayList<>();
         List<String> list_in_directory = new ArrayList<>();
-        List<String> list_media_type = new ArrayList<>();
-        List<String> list_size = new ArrayList<>();
+//        List<String> list_media_type = new ArrayList<>();
+//        List<String> list_size = new ArrayList<>();
+        List<String> list_path = new ArrayList<>();
 
         for (DetailedFile file : fileList) {
-            /*list_file.add("file(" + file.getPath() + "). \n");
-            list_name.add("name(" + file.getPath() + "," + file.getName() + "). \n");
-            list_creation_time.add("creation_time(" + file.getPath() + "," + file.getCreation_time() + "). \n");
-            list_access_time.add("access_time(" + file.getPath() + "," + file.getAccess_time() + "). \n");
-            list_change_time.add("change_time(" + file.getPath() + "," + file.getChange_time() + "). \n");
-            list_in_directory.add("in_directory(" + file.getPath() + "," + file.getIn_directory() + "). \n");
-            list_media_type.add("media_type(" + file.getPath() + "," + file.getMedia_type() + "). \n");
-            list_size.add("size(" + file.getPath() + "," + file.getSize() + "). \n");*/
-
             list_file.add("file('" + file.getName() + "'). \n");
             list_creation_time.add("creation_time('" + file.getName() + "'," + file.getCreation_time() + "). \n");
             list_access_time.add("access_time('" + file.getName() + "'," + file.getAccess_time() + "). \n");
             list_change_time.add("change_time('" + file.getName() + "'," + file.getChange_time() + "). \n");
             list_in_directory.add("in_directory('" + file.getName() + "','" + file.getIn_directory().toString().replace("\\", "\\\\") + "'). \n");
-            list_media_type.add("media_type('" + file.getName() + "','" + file.getMedia_type() + "'). \n");
-            list_size.add("size('" + file.getName() + "'," + file.getSize() + "). \n");
+//            list_media_type.add("media_type('" + file.getName() + "','" + file.getMedia_type() + "'). \n");
+//            list_size.add("size('" + file.getName() + "'," + file.getSize() + "). \n");
+            list_path.add("path('" + file.getName() + "','" + file.getPath().toString().replace("\\", "\\\\") + "'). \n");
         }
 
         prologStatements.put("file", list_file);
-        //prologStatements.put("name", list_name);
         prologStatements.put("creation_time", list_creation_time);
         prologStatements.put("access_time", list_access_time);
         prologStatements.put("change_time", list_change_time);
         prologStatements.put("in_directory", list_in_directory);
-        prologStatements.put("media_type", list_media_type);
-        prologStatements.put("size", list_size);
+//        prologStatements.put("media_type", list_media_type);
+//        prologStatements.put("size", list_size);
+        prologStatements.put("path", list_path);
     }
 
     private void writeStatementsToPrologFile() {

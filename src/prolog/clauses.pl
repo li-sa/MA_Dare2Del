@@ -20,6 +20,17 @@ in_directory('Textdokument_0-1.txt','C:\\Users\\Lisa\\Documents\\Studium_AI-M\\M
 in_directory('Textdokument_0-2.txt','C:\\Users\\Lisa\\Documents\\Studium_AI-M\\MA_2\\TestDir'). 
 in_directory('Word_0-3.docx','C:\\Users\\Lisa\\Documents\\Studium_AI-M\\MA_2\\TestDir'). 
 
+path('Excel_1-4.xlsx','C:\\Users\\Lisa\\Documents\\Studium_AI-M\\MA_2\\TestDir\\Ordner_1\\Excel_1-4.xlsx'). 
+path('JPG_1-5.jpg','C:\\Users\\Lisa\\Documents\\Studium_AI-M\\MA_2\\TestDir\\Ordner_1\\JPG_1-5.jpg'). 
+path('Textdokument_1-1-1.txt','C:\\Users\\Lisa\\Documents\\Studium_AI-M\\MA_2\\TestDir\\Ordner_1\\Ordner_1-1\\Textdokument_1-1-1.txt'). 
+path('Textdokument_1-1-2.txt','C:\\Users\\Lisa\\Documents\\Studium_AI-M\\MA_2\\TestDir\\Ordner_1\\Ordner_1-1\\Textdokument_1-1-2.txt'). 
+path('PDF_1-3.pdf','C:\\Users\\Lisa\\Documents\\Studium_AI-M\\MA_2\\TestDir\\Ordner_1\\PDF_1-3.pdf'). 
+path('Textdokument_1-1.txt','C:\\Users\\Lisa\\Documents\\Studium_AI-M\\MA_2\\TestDir\\Ordner_1\\Textdokument_1-1.txt'). 
+path('Textdokument_1-2.txt','C:\\Users\\Lisa\\Documents\\Studium_AI-M\\MA_2\\TestDir\\Ordner_1\\Textdokument_1-2.txt'). 
+path('Textdokument_0-1.txt','C:\\Users\\Lisa\\Documents\\Studium_AI-M\\MA_2\\TestDir\\Textdokument_0-1.txt'). 
+path('Textdokument_0-2.txt','C:\\Users\\Lisa\\Documents\\Studium_AI-M\\MA_2\\TestDir\\Textdokument_0-2.txt'). 
+path('Word_0-3.docx','C:\\Users\\Lisa\\Documents\\Studium_AI-M\\MA_2\\TestDir\\Word_0-3.docx'). 
+
 file('Excel_1-4.xlsx'). 
 file('JPG_1-5.jpg'). 
 file('Textdokument_1-1-1.txt'). 
@@ -30,28 +41,6 @@ file('Textdokument_1-2.txt').
 file('Textdokument_0-1.txt'). 
 file('Textdokument_0-2.txt'). 
 file('Word_0-3.docx'). 
-
-size('Excel_1-4.xlsx',6605). 
-size('JPG_1-5.jpg',767737). 
-size('Textdokument_1-1-1.txt',0). 
-size('Textdokument_1-1-2.txt',3566). 
-size('PDF_1-3.pdf',239019). 
-size('Textdokument_1-1.txt',0). 
-size('Textdokument_1-2.txt',0). 
-size('Textdokument_0-1.txt',591). 
-size('Textdokument_0-2.txt',8895). 
-size('Word_0-3.docx',12580). 
-
-media_type('Excel_1-4.xlsx','xlsx'). 
-media_type('JPG_1-5.jpg','jpg'). 
-media_type('Textdokument_1-1-1.txt','txt'). 
-media_type('Textdokument_1-1-2.txt','txt'). 
-media_type('PDF_1-3.pdf','pdf'). 
-media_type('Textdokument_1-1.txt','txt'). 
-media_type('Textdokument_1-2.txt','txt'). 
-media_type('Textdokument_0-1.txt','txt'). 
-media_type('Textdokument_0-2.txt','txt'). 
-media_type('Word_0-3.docx','docx'). 
 
 change_time('Excel_1-4.xlsx',1548101593). 
 change_time('JPG_1-5.jpg',1459541004). 
