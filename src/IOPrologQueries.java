@@ -89,7 +89,7 @@ public class IOPrologQueries {
                 System.out.println(stringBuilder);
             }
 
-            askForUserDecision(ruleToQuery, terms, variables);
+//            askForUserDecision(ruleToQuery, terms, variables);
 
         } catch (PrologException prolog_exception) {
             System.out.println("No valid Query! \n");
