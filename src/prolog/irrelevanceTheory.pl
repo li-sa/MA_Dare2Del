@@ -29,12 +29,12 @@ earlier_accessed_than(F1, F2) :-
     access_time(F2, T2),
     T1 < T2.
 
-filename_similarity(F1, F2, D) :-
+file_name_similarity(F1, F2, D) :-
     file_name_extension(N1, E1, F1),
     file_name_extension(N2, E2, F2),
     isub(N1, N2, true, D).
 
-filecontent_similarity(F1, F2, D) :-
+file_content_similarity(F1, F2, D) :-
     path(F1, P1),
     path(F2, P2),
     open(P1, read, Stream1),
@@ -44,8 +44,8 @@ filecontent_similarity(F1, F2, D) :-
     isub(S1, S2, true, D).
 
 very_similar(F1, F2) :-
-    filename_similarity(F1, F2, D1), D1 > 0.8,
-    filecontent_similarity(F1, F2, D2), D2 > 0.7.
+    file_name_similarity(F1, F2, D1), D1 > 0.8,
+    file_content_similarity(F1, F2, D2), D2 > 0.7.
 
 get_current_time(C) :-
     get_time(X),
@@ -60,11 +60,14 @@ irrelevant_according_to_accessing_time(F) :-
     access_time(F, T),
     get_current_time(C),
     subtract(C, T, R),
-    R > 86400.
+    R > 31536000.
 
-irrelevant_compared_to_other_file(F) :-
+irrelevant_compared_to_other_file(F, X) :-
     in_same_directory(F, X),
     same_file_extension(F, X, E),
     greater_or_equal_than(X, F),
     earlier_created_than(F, X),
     very_similar(F, X).
+
+set_of_clause(C, Set) :-
+    setof(Body, (clause(C, Body), call(Body)), Set).
