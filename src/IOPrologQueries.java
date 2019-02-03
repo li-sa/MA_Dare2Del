@@ -1,9 +1,6 @@
 import org.jpl7.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class IOPrologQueries {
 
@@ -71,7 +68,14 @@ public class IOPrologQueries {
             }
         }
 
-        getQueryTrace(inputParameters[0] , newTerms, listOfVariables);
+        HashMap<List<String>, String[]> traces;
+        traces = getQueryTrace(inputParameters[0] , newTerms, listOfVariables);
+
+        for (int i = 0; i < traces.size(); i++) {
+            String key_temp = traces.keySet().toArray()[i].toString();
+            String[] value_temp = traces.get(traces.keySet().toArray()[i]);
+            System.out.println("["+ i + "] " + key_temp + ": " + Arrays.toString(value_temp));
+        }
     }
 
     private void QueryProlog(String ruleToQuery, Term[] terms, List<Term> variables) {
@@ -99,7 +103,8 @@ public class IOPrologQueries {
         }
     }
 
-    private void getQueryTrace(String ruleToQuery, Term[] terms, List<Term> variables) {
+    private HashMap<List<String>, String[]> getQueryTrace(String ruleToQuery, Term[] terms, List<Term> variables) {
+        HashMap<List<String>, String[]> traces = new HashMap<>();
         Term term = new Compound(ruleToQuery, terms);
 
         try {
@@ -110,16 +115,23 @@ public class IOPrologQueries {
             System.out.println("*** Result: " + (query.hasSolution() ? "true" : "false"));
 
             Map<String, Term> solution;
-            while (query.hasMoreSolutions() && variables.size() > 0){
+            while (query.hasMoreSolutions()){
                 solution = query.nextSolution();
-                StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append(solution.get("Set"));
-                System.out.println(stringBuilder);
-            }
 
+                String term0 = solution.get(terms[0].toString()).toString();
+                String term1 = solution.get(terms[1].toString()).toString();
+
+                List<String> key_temp = Arrays.asList(term0, term1);
+                String value_raw_temp = solution.get("Set").toString();
+                String[] value_temp = value_raw_temp.substring(10, value_raw_temp.length() - 11).replaceAll("','", "").split(", \\(");
+
+                traces.put(key_temp, value_temp);
+            }
         } catch (PrologException prolog_exception) {
             System.out.println("No valid Query! \n");
         }
+
+        return traces;
     }
 
     private void getQueryTrace_old(String ruleToQuery, Term[] terms, List<Term> variables) {
