@@ -1,6 +1,8 @@
 import org.jpl7.*;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class IOPrologQueries {
 
@@ -68,13 +70,13 @@ public class IOPrologQueries {
             }
         }
 
-        HashMap<List<String>, String[]> traces;
+        HashMap<List<String>, List<String>> traces;
         traces = getQueryTrace(inputParameters[0] , newTerms, listOfVariables);
 
         for (int i = 0; i < traces.size(); i++) {
             String key_temp = traces.keySet().toArray()[i].toString();
-            String[] value_temp = traces.get(traces.keySet().toArray()[i]);
-            System.out.println("["+ i + "] " + key_temp + ": " + Arrays.toString(value_temp));
+            List<String> value_temp = traces.get(traces.keySet().toArray()[i]);
+            System.out.println("["+ i + "] " + key_temp + ": " + value_temp);
         }
     }
 
@@ -103,8 +105,8 @@ public class IOPrologQueries {
         }
     }
 
-    private HashMap<List<String>, String[]> getQueryTrace(String ruleToQuery, Term[] terms, List<Term> variables) {
-        HashMap<List<String>, String[]> traces = new HashMap<>();
+    private HashMap<List<String>, List<String>> getQueryTrace(String ruleToQuery, Term[] terms, List<Term> variables) {
+        HashMap<List<String>, List<String>> traces = new HashMap<>();
         Term term = new Compound(ruleToQuery, terms);
 
         try {
@@ -118,12 +120,17 @@ public class IOPrologQueries {
             while (query.hasMoreSolutions()){
                 solution = query.nextSolution();
 
-                String term0 = solution.get(terms[0].toString()).toString();
-                String term1 = solution.get(terms[1].toString()).toString();
+                String term0 = solution.get(terms[0].toString()).toString().replaceAll("\'", "");
+                String term1 = solution.get(terms[1].toString()).toString().replaceAll("\'", "");
 
                 List<String> key_temp = Arrays.asList(term0, term1);
-                String value_raw_temp = solution.get("Set").toString();
-                String[] value_temp = value_raw_temp.substring(10, value_raw_temp.length() - 11).replaceAll("','", "").split(", \\(");
+                String value_raw_temp = solution.get("Set").toString().replaceAll("\'", "");
+
+                List<String> value_temp = new ArrayList<>();
+                Matcher matcher  = Pattern.compile("[\\w]+\\((([\\w\\s.'-]+)+(,)*)+\\)").matcher(value_raw_temp);
+                while (matcher.find()) {
+                    value_temp.add(matcher.group());
+                }
 
                 traces.put(key_temp, value_temp);
             }
