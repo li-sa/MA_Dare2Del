@@ -120,8 +120,20 @@ public class IOPrologQueries {
             while (query.hasMoreSolutions()){
                 solution = query.nextSolution();
 
-                String term0 = solution.get(terms[0].toString()).toString().replaceAll("\'", "");
-                String term1 = solution.get(terms[1].toString()).toString().replaceAll("\'", "");
+                String term0;
+                String term1;
+
+                if (variables.contains(terms[0])) {
+                    term0 = solution.get(terms[0].toString()).toString().replaceAll("\'", "");
+                } else {
+                    term0 = terms[0].toString();
+                }
+
+                if (variables.contains(terms[1])) {
+                    term1 = solution.get(terms[1].toString()).toString().replaceAll("\'", "");
+                } else {
+                    term1 = terms[1].toString();
+                }
 
                 List<String> key_temp = Arrays.asList(term0, term1);
                 String value_raw_temp = solution.get("Set").toString().replaceAll("\'", "");
