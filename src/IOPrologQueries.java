@@ -70,14 +70,17 @@ public class IOPrologQueries {
             }
         }
 
-        HashMap<List<String>, List<String>> traces;
+        QueryProlog(inputParameters[0] , newTerms, listOfVariables);
+
+        // Just for Testing: Generating and output of trace
+/*        HashMap<List<String>, List<String>> traces;
         traces = getQueryTrace(inputParameters[0] , newTerms, listOfVariables);
 
         for (int i = 0; i < traces.size(); i++) {
             String key_temp = traces.keySet().toArray()[i].toString();
             List<String> value_temp = traces.get(traces.keySet().toArray()[i]);
             System.out.println("["+ i + "] " + key_temp + ": " + value_temp);
-        }
+        }*/
     }
 
     private void QueryProlog(String ruleToQuery, Term[] terms, List<Term> variables) {
@@ -98,7 +101,7 @@ public class IOPrologQueries {
                 System.out.println(stringBuilder);
             }
 
-//            askForUserDecision(ruleToQuery, terms, variables);
+            askForUserDecision(ruleToQuery, terms, variables);
 
         } catch (PrologException prolog_exception) {
             System.out.println("No valid Query! \n");
@@ -145,9 +148,9 @@ public class IOPrologQueries {
                 }
 
                 traces.put(key_temp, value_temp);
-//                askForUserDecision(ruleToQuery, terms, variables, traces);
             }
             showExplanation_simpleApproach(traces);
+            askForUserDecision(ruleToQuery, terms, variables);
 
         } catch (PrologException prolog_exception) {
             System.out.println("No valid Query! \n");
@@ -217,7 +220,7 @@ public class IOPrologQueries {
         }
     }
 
-    private void askForUserDecision(String ruleToQuery, Term[] terms, List<Term> variables, HashMap<List<String>, List<String>> traces) {
+    private void askForUserDecision(String ruleToQuery, Term[] terms, List<Term> variables) {
         int termCounter = terms.length;
 
         Scanner scanner = new Scanner( System.in );
@@ -236,15 +239,18 @@ public class IOPrologQueries {
             case "0":
                 break;
             case "1":
+                HashMap<List<String>, List<String>> traces = getQueryTrace(ruleToQuery , terms, variables);
                 showExplanation_simpleApproach(traces);
                 break;
             case "2":
-                terms[0] = new Variable("XXX");
-                variables.add(terms[0]);
+                if (!variables.contains(terms[0])) {
+                    terms[0] = new Variable("XXX");
+                    variables.add(terms[0]);
+                }
                 QueryProlog(ruleToQuery, terms, variables);
                 break;
             case "3":
-                if (termCounter == 2) {
+                if (termCounter == 2 && !variables.contains(terms[1])) {
                     terms[1] = new Variable("YYY");
                     variables.add(terms[1]);
                     QueryProlog(ruleToQuery, terms, variables);
@@ -295,20 +301,6 @@ public class IOPrologQueries {
         for (StringBuilder explanation : explanations.values()) {
             System.out.println(explanation);
         }
-
-
-/*        StringBuilder explanationBuilder = new StringBuilder();
-
-        for (List<String> deletionCandidate : traces.keySet()) {
-            explanationBuilder.append("File *" + deletionCandidate.get(0) + "* may be deleted because: \n");
-
-            for (String reason : traces.get(deletionCandidate)) {
-                explanationBuilder.append(generateReasonExplanation(deletionCandidate.get(1), reason)).append("\n");
-            }
-        }
-
-        System.out.println(explanationBuilder);*/
-
     }
 
     private String generateReasonExplanation(String comparedFile, String reason) {
