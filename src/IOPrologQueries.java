@@ -145,7 +145,10 @@ public class IOPrologQueries {
                 }
 
                 traces.put(key_temp, value_temp);
+//                askForUserDecision(ruleToQuery, terms, variables, traces);
             }
+            showExplanation_simpleApproach(traces);
+
         } catch (PrologException prolog_exception) {
             System.out.println("No valid Query! \n");
         }
@@ -214,7 +217,7 @@ public class IOPrologQueries {
         }
     }
 
-    private void askForUserDecision(String ruleToQuery, Term[] terms, List<Term> variables) {
+    private void askForUserDecision(String ruleToQuery, Term[] terms, List<Term> variables, HashMap<List<String>, List<String>> traces) {
         int termCounter = terms.length;
 
         Scanner scanner = new Scanner( System.in );
@@ -233,7 +236,7 @@ public class IOPrologQueries {
             case "0":
                 break;
             case "1":
-                showExplanation();
+                showExplanation_simpleApproach(traces);
                 break;
             case "2":
                 terms[0] = new Variable("XXX");
@@ -252,7 +255,68 @@ public class IOPrologQueries {
         }
     }
 
-    private void showExplanation(){
-        System.out.println("Here might be an explanation!");
+    private void showExplanation_simpleApproach(HashMap<List<String>, List<String>> traces){
+        HashMap<String, StringBuilder> explanations = new HashMap<>();
+
+        for (List<String> candidatePair : traces.keySet()) {
+            String candidateToDelete = candidatePair.get(0);
+            List<String> reasonList = traces.get(candidatePair);
+
+            StringBuilder explanationBuilder;
+            if (explanations.containsKey(candidateToDelete)) {
+                explanationBuilder = explanations.get(candidateToDelete);
+
+            } else {
+                explanationBuilder = new StringBuilder();
+                explanationBuilder.append("File *" + candidateToDelete + "* may be deleted because: \n");
+            }
+
+            explanationBuilder.append(">> file *" + candidatePair.get(1) + "* is ");
+
+
+            for (int i = 0; i < reasonList.size(); i++) {
+                String reason = reasonList.get(i);
+                String[] reasonComponents = reason.split("\\(|, |\\)");
+
+                if (i < reasonList.size() - 2) {
+                    explanationBuilder.append(reasonComponents[0].replaceAll("_", " ") + ", ");
+                } else if (i < reasonList.size() - 1) {
+                    explanationBuilder.append(reasonComponents[0].replaceAll("_", " "));
+                } else if (i == reasonList.size() - 1) {
+                    explanationBuilder.append(" and " + reasonComponents[0].replaceAll("_", " "));
+                }
+            }
+
+            explanationBuilder.append(" compared to *" + candidateToDelete + "*.\n");
+
+            explanations.put(candidateToDelete, explanationBuilder);
+        }
+
+        for (StringBuilder explanation : explanations.values()) {
+            System.out.println(explanation);
+        }
+
+
+/*        StringBuilder explanationBuilder = new StringBuilder();
+
+        for (List<String> deletionCandidate : traces.keySet()) {
+            explanationBuilder.append("File *" + deletionCandidate.get(0) + "* may be deleted because: \n");
+
+            for (String reason : traces.get(deletionCandidate)) {
+                explanationBuilder.append(generateReasonExplanation(deletionCandidate.get(1), reason)).append("\n");
+            }
+        }
+
+        System.out.println(explanationBuilder);*/
+
+    }
+
+    private String generateReasonExplanation(String comparedFile, String reason) {
+        String verbalizedReason = "";
+
+        String[] reasonComponents = reason.split("\\(|, |\\)");
+        verbalizedReason = ">> " + comparedFile + reasonComponents[2] + " is " + reasonComponents[0].replaceAll("_", " ") + ".";
+
+        return verbalizedReason;
     }
 }
