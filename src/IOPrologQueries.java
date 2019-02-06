@@ -227,8 +227,8 @@ public class IOPrologQueries {
         System.out.println("[0] Yeeah, another query!");
         System.out.println("[1] Show explanation.");
         if(termCounter == 2) {
-            System.out.println("[2] Show different example with first argument = XXX.");
-            System.out.println("[3] Show different example with second argument = YYY.");
+            System.out.println("[2] Generalization: Show different example with first argument as variable.");
+            System.out.println("[3] Generalization: Show different example with second argument as variable.");
         } else if (termCounter == 1) {
             System.out.println("[2] Show different example with argument = XXX.");
         }

@@ -17,6 +17,7 @@ public class DetailedFile {
     private String media_type;
     private long size;
     private Path path;
+    private String fileKey;
 
     private String name_lowerCase_withoutExtension;
 
@@ -39,8 +40,8 @@ public class DetailedFile {
         this.access_time = getSecondsSinceEpoche(fileAttributes.lastAccessTime());
         this.change_time = getSecondsSinceEpoche(fileAttributes.lastModifiedTime());
         this.in_directory = file.getParentFile();
-//        this.media_type = getFileExtension();
-//        this.size = fileAttributes.size();
+        this.media_type = getFileExtension();
+        this.size = fileAttributes.size();
         this.path = file.toPath();
     }
 
@@ -97,6 +98,10 @@ public class DetailedFile {
 
     public Path getPath() {
         return path;
+    }
+
+    public String getFileKey() {
+        return fileKey;
     }
 
     public String getName_lowerCase_withoutExtension() {

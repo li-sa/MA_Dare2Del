@@ -2,14 +2,14 @@ in_same_directory(F1, F2) :-
     in_directory(F1, D),
     in_directory(F2, D).
 
-same_media_type(F1, F2, E) :-
+same_media_type(P1, P2, E) :-
+    path(F1, P1),
+    path(F2, P2),
     file_name_extension(N1, E1, F1),
     file_name_extension(N2, E2, F2),
     E1 = E2.
 
-greater_or_equal(F1, F2) :-
-    path(F1, P1),
-    path(F2, P2),
+greater_or_equal(P1, P2) :-
     size_file(P1, S1),
     size_file(P2, S2),
     S1 >= S2.
@@ -29,16 +29,16 @@ earlier_accessed(F1, F2) :-
     access_time(F2, T2),
     T1 < T2.
 
-file_name_similarity(F1, F2, D) :-
+file_name_similarity(P1, P2, D) :-
+    path(F1, P1),
+    path(F2, P2),
     file_name_extension(N1, E1, F1),
     file_name_extension(N2, E2, F2),
     isub(N1, N2, true, D).
 
 file_content_similarity(F1, F2, D) :-
-    path(F1, P1),
-    path(F2, P2),
-    open(P1, read, Stream1),
-    open(P2, read, Stream2),
+    open(F1, read, Stream1),
+    open(F2, read, Stream2),
     read_string(Stream1, _, S1),
     read_string(Stream2, _, S2),
     isub(S1, S2, true, D).
