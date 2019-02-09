@@ -142,7 +142,7 @@ public class IOPrologQueries {
                 String value_raw_temp = solution.get("Set").toString().replaceAll("\'", "");
 
                 List<String> value_temp = new ArrayList<>();
-                Matcher matcher  = Pattern.compile("[\\w]+\\((([\\w\\s.'-]+)+(,)*)+\\)").matcher(value_raw_temp);
+                Matcher matcher  = Pattern.compile("[\\w]+\\((([\\w\\s.':\\-\\\\]+)+(,)*)+\\)").matcher(value_raw_temp);
                 while (matcher.find()) {
                     value_temp.add(matcher.group());
                 }
