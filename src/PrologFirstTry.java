@@ -4,24 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class PrologFirstTry {
-
-    private static String CLAUSE_FILE = "src/prolog/clauses.pl";
-    private static String RULE_FILE = "src/prolog/irrelevanceTheory.pl";
-    private List<DetailedFile> fileList;
+class PrologFirstTry {
 
     public PrologFirstTry(List<DetailedFile> fileList) {
         System.out.println(">> PROLOG First Try <<");
 
-        this.fileList = fileList;
+        List<DetailedFile> fileList1 = fileList;
 
         init();
 
     }
 
     private void init() {
-        List<String> plToLoad = new ArrayList<String>();
+        List<String> plToLoad = new ArrayList<>();
+        String CLAUSE_FILE = "src/prolog/clauses.pl";
         plToLoad.add(CLAUSE_FILE);
+        String RULE_FILE = "src/prolog/irrelevanceTheory.pl";
         plToLoad.add(RULE_FILE);
 
         JPL.init();

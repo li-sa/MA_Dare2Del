@@ -4,15 +4,15 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FileCrawler {
+class FileCrawler {
 
     private Path rootPath;
-    private List<DetailedFile> folderList;
-    private List<DetailedFile> fileList;
+    private final List<DetailedFile> folderList;
+    private final List<DetailedFile> fileList;
 
     public FileCrawler(String pathName) {
         System.out.println(">> File Crawler <<");
-        System.out.println("INFO. Crawling startet on: " + pathName);
+        System.out.println("INFO. Crawling started on: " + pathName);
 
         folderList = new ArrayList<>();
         fileList = new ArrayList<>();
@@ -33,8 +33,8 @@ public class FileCrawler {
             folderList.add(detailedFile);
             File[] subFiles = file.listFiles();
 
-            for (int i = 0; i < subFiles.length; i++) {
-                crawl(subFiles[i]);
+            for (File subFile : subFiles) {
+                crawl(subFile);
             }
         } else {
             fileList.add(detailedFile);
@@ -49,8 +49,7 @@ public class FileCrawler {
         }
 
         if (rootPath.toFile().isDirectory()) {
-            File rootFile = rootPath.toFile();
-            return rootFile;
+            return rootPath.toFile();
         } else {
             throw new IllegalArgumentException();
         }

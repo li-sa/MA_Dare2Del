@@ -4,23 +4,20 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class IOPrologQueries {
-
-    private static String CLAUSE_FILE = "src/prolog/clauses.pl";
-    private static String RULE_FILE = "src/prolog/irrelevanceTheory.pl";
-    private List<DetailedFile> fileList;
+class IOPrologQueries {
 
     private boolean readingInput = true;
 
     public IOPrologQueries(List<DetailedFile> fileList) {
         System.out.println(">> PROLOG IO <<");
-        this.fileList = fileList;
         init();
     }
 
     private void init() {
-        List<String> plToLoad = new ArrayList<String>();
+        List<String> plToLoad = new ArrayList<>();
+        String CLAUSE_FILE = "src/prolog/clauses.pl";
         plToLoad.add(CLAUSE_FILE);
+        String RULE_FILE = "src/prolog/irrelevanceTheory.pl";
         plToLoad.add(RULE_FILE);
 
         JPL.init();
@@ -45,13 +42,10 @@ public class IOPrologQueries {
             System.out.println("\n -> Enter a prolog query:");
             String input = scanner.nextLine();
 
-            switch (input.toLowerCase()) {
-                case "exit":
-                    readingInput = false;
-                    break;
-                default:
-                    ParseToPrologQuery(input);
-                    break;
+            if ("exit".equals(input.toLowerCase())) {
+                readingInput = false;
+            } else {
+                ParseToPrologQuery(input);
             }
         }
     }
@@ -60,7 +54,7 @@ public class IOPrologQueries {
         String[] inputParameters = input.split("\\(|,|\\).|\\)");
 
         Term[] newTerms = new Term[inputParameters.length - 1];
-        List<Term> listOfVariables = new ArrayList<Term>();
+        List<Term> listOfVariables = new ArrayList<>();
         for (int i = 1; i < inputParameters.length; i++) {
             if (inputParameters[i].trim().startsWith("_")) {
                 newTerms[i-1] = new Variable(inputParameters[i].split("_")[1].toUpperCase());
@@ -109,54 +103,68 @@ public class IOPrologQueries {
     }
 
     private HashMap<List<String>, List<String>> getQueryTrace(String ruleToQuery, Term[] terms, List<Term> variables) {
-        HashMap<List<String>, List<String>> traces = new HashMap<>();
-        Term term = new Compound(ruleToQuery, terms);
+        HashMap<List<String>, List<String>> tracesMap = new HashMap<>();
+        Term term_fromUserInput = new Compound(ruleToQuery, terms);
 
         try {
-            Term term_setof = new Compound("set_of_clause", new Term[]{term, new Variable("Set")});
+            Term term_setOfClause = new Compound("set_of_clause", new Term[]{term_fromUserInput, new Variable("Set")});
 
-            Query query = new Query(term_setof);
-            System.out.println("*** QUERY: " + query.toString());
-            System.out.println("*** Result: " + (query.hasSolution() ? "true" : "false"));
+            Query query_setOfClause = new Query(term_setOfClause);
+            System.out.println("*** QUERY: " + query_setOfClause.toString());
+            System.out.println("*** Result: " + (query_setOfClause.hasSolution() ? "true" : "false"));
 
-            Map<String, Term> solution;
-            while (query.hasMoreSolutions()){
-                solution = query.nextSolution();
+            Map<String, Term> solution_setOfClause;
+            while (query_setOfClause.hasMoreSolutions()){
+                solution_setOfClause = query_setOfClause.nextSolution();
 
-                String term0;
-                String term1;
+                System.out.println("Solution: " + solution_setOfClause.toString());
+
+                /*String firstParameter;
+                String secondParameter;
 
                 if (variables.contains(terms[0])) {
-                    term0 = solution.get(terms[0].toString()).toString().replaceAll("\'", "");
+                    firstParameter = solution_setOfClause.get(terms[0].toString()).toString().replaceAll("\'", "");
                 } else {
-                    term0 = terms[0].toString();
-                }
+                    firstParameter = terms[0].toString();
+                }*/
 
-                if (variables.contains(terms[1])) {
-                    term1 = solution.get(terms[1].toString()).toString().replaceAll("\'", "");
-                } else {
-                    term1 = terms[1].toString();
-                }
-
-                List<String> key_temp = Arrays.asList(term0, term1);
-                String value_raw_temp = solution.get("Set").toString().replaceAll("\'", "");
+                String solution_rawValue = solution_setOfClause.get("Set").toString().replaceAll("\'", "");
 
                 List<String> value_temp = new ArrayList<>();
-                Matcher matcher  = Pattern.compile("[\\w]+\\((([\\w\\s.':\\-\\\\]+)+(,)*)+\\)").matcher(value_raw_temp);
+                Matcher matcher  = Pattern.compile("[\\w]+\\((([\\w\\s.':\\-\\\\]+)+(,)*)+\\)").matcher(solution_rawValue);
                 while (matcher.find()) {
+
                     value_temp.add(matcher.group());
                 }
 
-                traces.put(key_temp, value_temp);
+                // *** Sort entries in value_temp according to different keys
+                HashMap<List<String>, List<String>> tempMapToSortSolution = new HashMap<>();
+
+                for (String each : value_temp) {
+                    String[] fileNames = each.split("\\(|, |\\)");
+                    List<String> keyToProof = new ArrayList<>(Arrays.asList(fileNames[1], fileNames[2]));
+
+                    if (tempMapToSortSolution.containsKey(keyToProof)) {
+                        tempMapToSortSolution.get(keyToProof).add(each);
+                    } else {
+                        List<String> newValueList = new ArrayList<>(Collections.singletonList(each));
+                        tempMapToSortSolution.put(keyToProof, newValueList);
+                    }
+                }
+
+                for (List<String> eachKeyInMap : tempMapToSortSolution.keySet()) {
+                    tracesMap.put(eachKeyInMap, tempMapToSortSolution.get(eachKeyInMap));
+                }
+                // ***
             }
-            showExplanation_simpleApproach(traces);
+            showExplanation_simpleApproach(tracesMap);
             askForUserDecision(ruleToQuery, terms, variables);
 
         } catch (PrologException prolog_exception) {
             System.out.println("No valid Query! \n");
         }
 
-        return traces;
+        return tracesMap;
     }
 
     private void getQueryTrace_old(String ruleToQuery, Term[] terms, List<Term> variables) {
@@ -224,7 +232,7 @@ public class IOPrologQueries {
         int termCounter = terms.length;
 
         Scanner scanner = new Scanner( System.in );
-        System.out.println("[0] Yeeah, another query!");
+        System.out.println("[0] New query!");
         System.out.println("[1] Show explanation.");
         if(termCounter == 2) {
             System.out.println("[2] Generalization: Show different example with first argument as variable.");
@@ -304,7 +312,7 @@ public class IOPrologQueries {
     }
 
     private String generateReasonExplanation(String comparedFile, String reason) {
-        String verbalizedReason = "";
+        String verbalizedReason;
 
         String[] reasonComponents = reason.split("\\(|, |\\)");
         verbalizedReason = ">> " + comparedFile + reasonComponents[2] + " is " + reasonComponents[0].replaceAll("_", " ") + ".";

@@ -2,38 +2,43 @@ in_same_directory(F1, F2) :-
     in_directory(F1, D),
     in_directory(F2, D).
 
+not_in_same_directory(F1, F2) :-
+    in_directory(F1, D1),
+    in_directory(F2, D2),
+    D1 \= D2.
+
 same_media_type(P1, P2, E) :-
     path(F1, P1),
     path(F2, P2),
-    file_name_extension(N1, E1, F1),
-    file_name_extension(N2, E2, F2),
-    E1 = E2.
+    file_name_extension(N1, E, F1),
+    file_name_extension(N2, E, F2).
 
 greater_or_equal(P1, P2) :-
     size_file(P1, S1),
     size_file(P2, S2),
-    S1 >= S2.
+    S2 >= S1.
 
-earlier_created(F1, F2) :-
+earlier_or_equal_created(F1, F2) :-
     creation_time(F1, T1),
     creation_time(F2, T2),
-    T1 < T2.
+    T2 >= T1.
 
-earlier_changed(F1, F2) :-
+earlier_or_equal_changed(F1, F2) :-
     change_time(F1, T1),
     change_time(F2, T2),
-    T1 < T2.
+    T2 >= T1.
 
-earlier_accessed(F1, F2) :-
+earlier_or_equal_accessed(F1, F2) :-
     access_time(F1, T1),
     access_time(F2, T2),
-    T1 < T2.
+    T2 >= T1.
 
 file_name_similarity(P1, P2, D) :-
     path(F1, P1),
     path(F2, P2),
     file_name_extension(N1, E1, F1),
     file_name_extension(N2, E2, F2),
+    E1 = E2,
     isub(N1, N2, true, D).
 
 file_content_similarity(F1, F2, D) :-
@@ -44,8 +49,11 @@ file_content_similarity(F1, F2, D) :-
     isub(S1, S2, true, D).
 
 very_similar(F1, F2) :-
-    file_name_similarity(F1, F2, D1), D1 > 0.8,
-    file_content_similarity(F1, F2, D2), D2 > 0.7.
+    F1 \= F2,
+    file_name_similarity(F1, F2, D1),
+    D1 > 0.8,
+    file_content_similarity(F1, F2, D2),
+    D2 > 0.7.
 
 get_current_time(C) :-
     get_time(X),
@@ -56,17 +64,18 @@ subtract(A, B, R) :-
     S is round(B),
     R is M - S.
 
-irrelevant_according_to_accessing_time(F) :-
+irrelevant(F) :-
     access_time(F, T),
     get_current_time(C),
     subtract(C, T, R),
     R > 31536000.
 
-irrelevant_compared_to_other_file(F, X) :-
+irrelevant(F) :-
     in_same_directory(F, X),
     same_media_type(F, X, E),
-    greater_or_equal(X, F),
-    earlier_created(F, X),
+    greater_or_equal(F, X),
+    earlier_or_equal_created(F, X),
+    earlier_or_equal_changed(F, X),
     very_similar(F, X).
 
 set_of_clause(C, Set) :-

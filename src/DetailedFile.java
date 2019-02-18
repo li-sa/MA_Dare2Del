@@ -5,9 +5,9 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
 import java.time.Instant;
 
-public class DetailedFile {
+class DetailedFile {
 
-    private File file;
+    private final File file;
 
     private String name;
     private long creation_time;
@@ -36,9 +36,9 @@ public class DetailedFile {
         }
 
         this.name = file.getName();
-        this.creation_time = getSecondsSinceEpoche(fileAttributes.creationTime());
-        this.access_time = getSecondsSinceEpoche(fileAttributes.lastAccessTime());
-        this.change_time = getSecondsSinceEpoche(fileAttributes.lastModifiedTime());
+        this.creation_time = getSecondsSinceEpoch(fileAttributes.creationTime());
+        this.access_time = getSecondsSinceEpoch(fileAttributes.lastAccessTime());
+        this.change_time = getSecondsSinceEpoch(fileAttributes.lastModifiedTime());
         this.in_directory = file.getParentFile();
         this.media_type = getFileExtension();
         this.size = fileAttributes.size();
@@ -48,18 +48,18 @@ public class DetailedFile {
     private String getFileExtension() {
         String fileExtension = null;
 
-        String extensionSeperator = ".";
+        String extensionSeparator = ".";
         String fileName = this.file.getName();
 
-        if (fileName.lastIndexOf(extensionSeperator) != -1 && fileName.lastIndexOf(extensionSeperator) != 0) {
-            fileExtension = fileName.substring(fileName.lastIndexOf(extensionSeperator) + 1);
+        if (fileName.lastIndexOf(extensionSeparator) != -1 && fileName.lastIndexOf(extensionSeparator) != 0) {
+            fileExtension = fileName.substring(fileName.lastIndexOf(extensionSeparator) + 1);
             name_lowerCase_withoutExtension = fileName.substring(0, fileName.length() - fileExtension.length() - 1).toLowerCase();
         }
 
         return fileExtension;
     }
 
-    public long getSecondsSinceEpoche(FileTime fileTime){
+    public long getSecondsSinceEpoch(FileTime fileTime){
         Instant instant = fileTime.toInstant();
         return instant.getEpochSecond();
     }

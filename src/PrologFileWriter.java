@@ -4,11 +4,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PrologFileWriter {
+class PrologFileWriter {
     FileWriter fileWriter;
 
 //    private List<DetailedFile> folderList;
-    private List<DetailedFile> fileList;
+    private final List<DetailedFile> fileList;
 
     private static String prologFile = "C:\\Users\\Lisa\\IdeaProjects\\MA_FirstSample\\src\\prolog\\clauses.pl";
 
@@ -26,10 +26,9 @@ public class PrologFileWriter {
     }
 
     private void collectPrologStatements() {
-        prologStatements = new HashMap<String, List<String>>();
+        prologStatements = new HashMap<>();
 
         List<String> list_file = new ArrayList<>();
-        List<String> list_name = new ArrayList<>();
         List<String> list_creation_time = new ArrayList<>();
         List<String> list_access_time = new ArrayList<>();
         List<String> list_change_time = new ArrayList<>();
