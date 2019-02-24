@@ -14,57 +14,57 @@ class IOPrologQueries {
     }
 
     private void init() {
-        List<String> plToLoad = new ArrayList<>();
+        List<String> prologFilesToLoad = new ArrayList<>();
         String CLAUSE_FILE = "src/prolog/clauses.pl";
-        plToLoad.add(CLAUSE_FILE);
+        prologFilesToLoad.add(CLAUSE_FILE);
         String RULE_FILE = "src/prolog/irrelevanceTheory.pl";
-        plToLoad.add(RULE_FILE);
+        prologFilesToLoad.add(RULE_FILE);
 
         JPL.init();
 
-        for (String eachPl : plToLoad) {
+        for (String eachPrologFile : prologFilesToLoad) {
             Query consultQuery = new Query("consult", new Term[]{
-                    new Atom(eachPl)});
+                    new Atom(eachPrologFile)});
             if (!consultQuery.hasSolution()) {
                 // TODO: Exception Handling
-                //throw new Exception("File not found: " + eachPl);
-                System.out.println("!!! EXCEPTION: No file " + eachPl + " found !!!");
+                //throw new Exception("File not found: " + eachPrologFile);
+                System.out.println("!!! EXCEPTION: No file " + eachPrologFile + " found !!!");
             }
             consultQuery.close();
         }
 
-        ReadConsoleInput();
+        readConsoleInput();
     }
 
-    private void ReadConsoleInput() {
+    private void readConsoleInput() {
         while (readingInput) {
-            Scanner scanner = new Scanner( System.in );
+            Scanner scanner = new Scanner(System.in);
             System.out.println("\n -> Enter a prolog query:");
             String input = scanner.nextLine();
 
             if ("exit".equals(input.toLowerCase())) {
                 readingInput = false;
             } else {
-                ParseToPrologQuery(input);
+                parseToPrologQuery(input);
             }
         }
     }
 
-    private void ParseToPrologQuery(String input) {
+    private void parseToPrologQuery(String input) {
         String[] inputParameters = input.split("\\(|,|\\).|\\)");
 
         Term[] newTerms = new Term[inputParameters.length - 1];
         List<Term> listOfVariables = new ArrayList<>();
         for (int i = 1; i < inputParameters.length; i++) {
             if (inputParameters[i].trim().startsWith("_")) {
-                newTerms[i-1] = new Variable(inputParameters[i].split("_")[1].toUpperCase());
-                listOfVariables.add(newTerms[i-1]);
+                newTerms[i - 1] = new Variable(inputParameters[i].split("_")[1].toUpperCase());
+                listOfVariables.add(newTerms[i - 1]);
             } else {
-                newTerms[i-1] = new Atom(inputParameters[i].trim());
+                newTerms[i - 1] = new Atom(inputParameters[i].trim());
             }
         }
 
-        QueryProlog(inputParameters[0] , newTerms, listOfVariables);
+        queryProlog(inputParameters[0], newTerms, listOfVariables);
 
         // Just for Testing: Generating and output of trace
 /*        HashMap<List<String>, List<String>> traces;
@@ -77,7 +77,7 @@ class IOPrologQueries {
         }*/
     }
 
-    private void QueryProlog(String ruleToQuery, Term[] terms, List<Term> variables) {
+    private void queryProlog(String ruleToQuery, Term[] terms, List<Term> variables) {
         Term term = new Compound(ruleToQuery, terms);
 
         try {
@@ -86,7 +86,7 @@ class IOPrologQueries {
             System.out.println("*** Result: " + (query.hasSolution() ? "true" : "false"));
 
             Map<String, Term> solution;
-            while (query.hasMoreSolutions() && variables.size() > 0){
+            while (query.hasMoreSolutions() && variables.size() > 0) {
                 solution = query.nextSolution();
                 StringBuilder stringBuilder = new StringBuilder();
                 for (Term variable : variables) {
@@ -114,24 +114,15 @@ class IOPrologQueries {
             System.out.println("*** Result: " + (query_setOfClause.hasSolution() ? "true" : "false"));
 
             Map<String, Term> solution_setOfClause;
-            while (query_setOfClause.hasMoreSolutions()){
+            while (query_setOfClause.hasMoreSolutions()) {
                 solution_setOfClause = query_setOfClause.nextSolution();
 
                 System.out.println("Solution: " + solution_setOfClause.toString());
 
-                /*String firstParameter;
-                String secondParameter;
-
-                if (variables.contains(terms[0])) {
-                    firstParameter = solution_setOfClause.get(terms[0].toString()).toString().replaceAll("\'", "");
-                } else {
-                    firstParameter = terms[0].toString();
-                }*/
-
                 String solution_rawValue = solution_setOfClause.get("Set").toString().replaceAll("\'", "");
 
                 List<String> value_temp = new ArrayList<>();
-                Matcher matcher  = Pattern.compile("[\\w]+\\((([\\w\\s.':\\-\\\\]+)+(,)*)+\\)").matcher(solution_rawValue);
+                Matcher matcher = Pattern.compile("[\\w]+\\((([\\w\\s.':\\-\\\\]+)+(,)*)+\\)").matcher(solution_rawValue);
                 while (matcher.find()) {
 
                     value_temp.add(matcher.group());
@@ -142,7 +133,12 @@ class IOPrologQueries {
 
                 for (String each : value_temp) {
                     String[] fileNames = each.split("\\(|, |\\)");
-                    List<String> keyToProof = new ArrayList<>(Arrays.asList(fileNames[1], fileNames[2]));
+                    List<String> keyToProof = new ArrayList<>();
+                    if (fileNames.length == 2) {
+                        keyToProof = new ArrayList<>(Arrays.asList(fileNames[1]));
+                    } else if (fileNames.length > 2) {
+                        keyToProof = new ArrayList<>(Arrays.asList(fileNames[1], fileNames[2]));
+                    }
 
                     if (tempMapToSortSolution.containsKey(keyToProof)) {
                         tempMapToSortSolution.get(keyToProof).add(each);
@@ -167,74 +163,13 @@ class IOPrologQueries {
         return tracesMap;
     }
 
-    private void getQueryTrace_old(String ruleToQuery, Term[] terms, List<Term> variables) {
-        Term term = new Compound(ruleToQuery, terms);
-
-        // setof(Body,(clause(irrelevant_compared_to_other_file(A,B),Body),call(Body)),List).
-        Variable variable_body = new Variable("Body");
-        Variable variable_resultList = new Variable("ResultList");
-        Term term_clause = new Compound("clause", new Term[]{term, variable_body});
-        Term term_call = new Compound("call", new Term[]{variable_body});
-        Term term_setof = new Compound("setof", new Term[]{variable_body, new Atom("("+ term_clause + "," + term_call +")"), variable_resultList});
-
-        try {
-/*            // Clause
-            Query query_clause = new Query(term_clause);
-            System.out.println("*** QUERY: " + query_clause.toString());
-            System.out.println("*** Result: " + (query_clause.hasSolution() ? "true" : "false"));
-
-            Map<String, Term> solution1;
-            Term body_fromClause = null;
-            while (query_clause.hasMoreSolutions()) {
-                solution1 = query_clause.nextSolution();
-                body_fromClause = solution1.get("Body");
-            }
-
-            // Call
-            Term term_call = new Compound("call", new Term[]{body_fromClause});
-            Query query_call = new Query(term_call);
-            System.out.println("*** QUERY: " + query_call.toString());
-            System.out.println("*** Result: " + (query_call.hasSolution() ? "true" : "false"));
-
-            Map<String, Term> solution2;
-            Term goal_fromCall = null;
-            while (query_call.hasMoreSolutions()) {
-                solution2 = query_call.nextSolution();
-                goal_fromCall = solution2.get("Body");
-            }*/
-
-            // Setof
-//            Term term_setof = new Compound("setof", new Term[]{variable_body, goal_fromCall, variable_resultList});
-
-            Query query = new Query(term_setof);
-            System.out.println("*** QUERY: " + query.toString());
-            System.out.println("*** Result: " + (query.hasSolution() ? "true" : "false"));
-
-            Map<String, Term> solution;
-            while (query.hasMoreSolutions() && variables.size() > 0){
-                solution = query.nextSolution();
-                StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append(solution.get("ResultList"));
-                /*for (Term variable : variables) {
-                    stringBuilder.append(variable.toString() + " = " + solution.get(variable.toString()) + "\t");
-                }*/
-                System.out.println(stringBuilder);
-            }
-
-//            askForUserDecision(ruleToQuery, terms, variables);
-
-        } catch (PrologException prolog_exception) {
-            System.out.println("No valid Query! \n");
-        }
-    }
-
     private void askForUserDecision(String ruleToQuery, Term[] terms, List<Term> variables) {
         int termCounter = terms.length;
 
-        Scanner scanner = new Scanner( System.in );
+        Scanner scanner = new Scanner(System.in);
         System.out.println("[0] New query!");
         System.out.println("[1] Show explanation.");
-        if(termCounter == 2) {
+        if (termCounter == 2) {
             System.out.println("[2] Generalization: Show different example with first argument as variable.");
             System.out.println("[3] Generalization: Show different example with second argument as variable.");
         } else if (termCounter == 1) {
@@ -247,7 +182,7 @@ class IOPrologQueries {
             case "0":
                 break;
             case "1":
-                HashMap<List<String>, List<String>> traces = getQueryTrace(ruleToQuery , terms, variables);
+                HashMap<List<String>, List<String>> traces = getQueryTrace(ruleToQuery, terms, variables);
                 showExplanation_simpleApproach(traces);
                 break;
             case "2":
@@ -255,13 +190,13 @@ class IOPrologQueries {
                     terms[0] = new Variable("XXX");
                     variables.add(terms[0]);
                 }
-                QueryProlog(ruleToQuery, terms, variables);
+                queryProlog(ruleToQuery, terms, variables);
                 break;
             case "3":
                 if (termCounter == 2 && !variables.contains(terms[1])) {
                     terms[1] = new Variable("YYY");
                     variables.add(terms[1]);
-                    QueryProlog(ruleToQuery, terms, variables);
+                    queryProlog(ruleToQuery, terms, variables);
                 }
                 break;
             default:
@@ -269,11 +204,12 @@ class IOPrologQueries {
         }
     }
 
-    private void showExplanation_simpleApproach(HashMap<List<String>, List<String>> traces){
+    private void showExplanation_simpleApproach(HashMap<List<String>, List<String>> traces) {
         HashMap<String, StringBuilder> explanations = new HashMap<>();
 
         for (List<String> candidatePair : traces.keySet()) {
             String candidateToDelete = candidatePair.get(0);
+            String candidateToReplace = candidatePair.size() == 2 ? candidatePair.get(1) : candidatePair.get(0);
             List<String> reasonList = traces.get(candidatePair);
 
             StringBuilder explanationBuilder;
@@ -285,14 +221,15 @@ class IOPrologQueries {
                 explanationBuilder.append("File *" + candidateToDelete + "* may be deleted because: \n");
             }
 
-            explanationBuilder.append(">> file *" + candidatePair.get(1) + "* is ");
-
+            explanationBuilder.append(">> file *" + candidateToReplace + "* is ");
 
             for (int i = 0; i < reasonList.size(); i++) {
                 String reason = reasonList.get(i);
                 String[] reasonComponents = reason.split("\\(|, |\\)");
 
-                if (i < reasonList.size() - 2) {
+                if (reasonList.size() == 1) {
+                    explanationBuilder.append(reasonComponents[0].replaceAll("_", " "));
+                } else if (i < reasonList.size() - 2) {
                     explanationBuilder.append(reasonComponents[0].replaceAll("_", " ") + ", ");
                 } else if (i < reasonList.size() - 1) {
                     explanationBuilder.append(reasonComponents[0].replaceAll("_", " "));
@@ -301,7 +238,11 @@ class IOPrologQueries {
                 }
             }
 
-            explanationBuilder.append(" compared to *" + candidateToDelete + "*.\n");
+            if (!candidateToDelete.equals(candidateToReplace)) { //Only if reasons according to another file
+                explanationBuilder.append(" compared to *" + candidateToDelete + "*.\n");
+            } else {
+                explanationBuilder.append(".\n");
+            }
 
             explanations.put(candidateToDelete, explanationBuilder);
         }
