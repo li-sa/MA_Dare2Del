@@ -10,7 +10,6 @@ class Main {
         PrologFileWriter prologFW = new PrologFileWriter(fileCrawler.getFileList());
 
         // PROLOG
-        //PrologFirstTry prologFirst = new PrologFirstTry(fileCrawler.getFileList());
         IOPrologQueries ioProlog = new IOPrologQueries(fileCrawler.getFileList());
     }
 }

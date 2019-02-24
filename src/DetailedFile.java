@@ -17,7 +17,6 @@ class DetailedFile {
     private String media_type;
     private long size;
     private Path path;
-    private String fileKey;
 
     private String name_lowerCase_withoutExtension;
 
@@ -98,10 +97,6 @@ class DetailedFile {
 
     public Path getPath() {
         return path;
-    }
-
-    public String getFileKey() {
-        return fileKey;
     }
 
     public String getName_lowerCase_withoutExtension() {
