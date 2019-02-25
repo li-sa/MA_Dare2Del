@@ -34,9 +34,39 @@ class IOPrologQueries {
         }
 
         readConsoleInput();
+//        readConsoleInput_firstApproach();
     }
 
     private void readConsoleInput() {
+        while (readingInput) {
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("\n -> What do you want to do?");
+            System.out.println("[0] Find all irrelevant files.");
+            System.out.println("[1] Ask if specific file is irrelevant.");
+
+            String input = scanner.nextLine();
+
+            switch (input) {
+                case "0":
+                    Term[] parameter = new Term[1];
+                    parameter[0] = new Variable("X");
+                    queryProlog("irrelevant", parameter, new ArrayList<>(Arrays.asList(parameter)));
+                    break;
+                case "1":
+                    System.out.println("\n Enter file to ask for.");
+                    String inputFile = scanner.nextLine();
+                    Term[] parameter_inputFile = new Term[1];
+                    parameter_inputFile[0] = new Variable(inputFile);
+                    queryProlog("irrelevant", parameter_inputFile, new ArrayList<>());
+                    break;
+                default:
+                    readConsoleInput();
+                    break;
+            }
+        }
+    }
+
+    private void readConsoleInput_firstApproach() {
         while (readingInput) {
             Scanner scanner = new Scanner(System.in);
             System.out.println("\n -> Enter a prolog query:");
@@ -96,6 +126,7 @@ class IOPrologQueries {
             }
 
             askForUserDecision(ruleToQuery, terms, variables);
+//            askForUserDecision_firstApproach(ruleToQuery, terms, variables);
 
         } catch (PrologException prolog_exception) {
             System.out.println("No valid Query! \n");
@@ -117,12 +148,11 @@ class IOPrologQueries {
             while (query_setOfClause.hasMoreSolutions()) {
                 solution_setOfClause = query_setOfClause.nextSolution();
 
-                System.out.println("Solution: " + solution_setOfClause.toString());
-
                 String solution_rawValue = solution_setOfClause.get("Set").toString().replaceAll("\'", "");
+                String solution_rawValue_withNeg = solution_rawValue.replaceAll("\\\\\\+\\(", "not_");
 
                 List<String> value_temp = new ArrayList<>();
-                Matcher matcher = Pattern.compile("[\\w]+\\((([\\w\\s.':\\-\\\\]+)+(,)*)+\\)").matcher(solution_rawValue);
+                Matcher matcher = Pattern.compile("[\\w]+\\((([\\w\\s.':\\-\\\\]+)+(,)*)+\\)").matcher(solution_rawValue_withNeg);
                 while (matcher.find()) {
 
                     value_temp.add(matcher.group());
@@ -153,8 +183,16 @@ class IOPrologQueries {
                 }
                 // ***
             }
-            showExplanation_simpleApproach(tracesMap);
-            askForUserDecision(ruleToQuery, terms, variables);
+
+            if (ruleToQuery.equals("irrelevant")) {
+                showExplanation_simpleApproach(tracesMap);
+            } else if (ruleToQuery.equals("relevant")) {
+                // TODO: showExplanation of relevant examples!
+                showExplanation_simpleApproach(tracesMap);
+            }
+
+            readConsoleInput();
+//            askForUserDecision_firstApproach(ruleToQuery, terms, variables);
 
         } catch (PrologException prolog_exception) {
             System.out.println("No valid Query! \n");
@@ -164,6 +202,33 @@ class IOPrologQueries {
     }
 
     private void askForUserDecision(String ruleToQuery, Term[] terms, List<Term> variables) {
+        int termCounter = terms.length;
+
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("[0] Back to main menu.");
+        System.out.println("[1] Show explanation.");
+        System.out.println("[2] Show contrary example explanation.");
+
+        String input = scanner.nextLine();
+
+        switch (input) {
+            case "0":
+                readConsoleInput();
+                break;
+            case "1":
+                HashMap<List<String>, List<String>> traces = getQueryTrace(ruleToQuery, terms, variables);
+                showExplanation_simpleApproach(traces);
+                break;
+            case "2":
+                HashMap<List<String>, List<String>> contraryExamples_traces = getQueryTrace("relevant", terms, variables);
+                showExplanation_simpleApproach(contraryExamples_traces);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void askForUserDecision_firstApproach(String ruleToQuery, Term[] terms, List<Term> variables) {
         int termCounter = terms.length;
 
         Scanner scanner = new Scanner(System.in);
@@ -238,7 +303,7 @@ class IOPrologQueries {
                 }
             }
 
-            if (!candidateToDelete.equals(candidateToReplace)) { //Only if reasons according to another file
+            if (!candidateToDelete.equals(candidateToReplace)) { //Only if deletion suggestion according to another file
                 explanationBuilder.append(" compared to *" + candidateToDelete + "*.\n");
             } else {
                 explanationBuilder.append(".\n");
