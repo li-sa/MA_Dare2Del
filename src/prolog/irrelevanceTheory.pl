@@ -1,11 +1,12 @@
-in_same_directory(F1, F2) :-
-    in_directory(F1, D),
-    in_directory(F2, D).
-
 not_in_same_directory(F1, F2) :-
     in_directory(F1, D1),
     in_directory(F2, D2),
     D1 \= D2.
+
+in_same_directory(F1, F2) :-
+    in_directory(F1, D1),
+    in_directory(F2, D2),
+    D1 = D2.
 
 same_media_type(P1, P2, E) :-
     path(F1, P1),
@@ -64,11 +65,14 @@ subtract(A, B, R) :-
     S is round(B),
     R is M - S.
 
-irrelevant(F) :-
-    access_time(F, T),
+older_than_one_year(F) :-
+    change_time(F, T),
     get_current_time(C),
     subtract(C, T, R),
     R > 31536000.
+
+irrelevant(F) :-
+    older_than_one_year(F).
 
 irrelevant(F) :-
     in_same_directory(F, X),
@@ -77,6 +81,63 @@ irrelevant(F) :-
     earlier_or_equal_created(F, X),
     earlier_or_equal_changed(F, X),
     very_similar(F, X).
+
+relevant(F) :-
+    in_same_directory(F, X),
+    same_media_type(F, X, E),
+    greater_or_equal(F, X),
+    earlier_or_equal_created(F, X),
+    earlier_or_equal_changed(F, X),
+    \+ very_similar(F, X),
+    \+ irrelevant(X).
+
+relevant(F) :-
+    in_same_directory(F, X),
+    same_media_type(F, X, E),
+    greater_or_equal(F, X),
+    earlier_or_equal_created(F, X),
+    very_similar(F, X),
+    \+ earlier_or_equal_changed(F, X),
+    \+ irrelevant(X).
+
+relevant(F) :-
+    in_same_directory(F, X),
+    same_media_type(F, X, E),
+    greater_or_equal(F, X),
+    very_similar(F, X),
+    earlier_or_equal_changed(F, X),
+    \+ earlier_or_equal_created(F, X),
+    \+ irrelevant(X).
+
+relevant(F) :-
+    in_same_directory(F, X),
+    same_media_type(F, X, E),
+    very_similar(F, X),
+    earlier_or_equal_changed(F, X),
+    earlier_or_equal_created(F, X),
+    \+ greater_or_equal(F, X),
+    \+ irrelevant(X).
+
+relevant(F) :-
+    in_same_directory(F, X),
+    very_similar(F, X),
+    earlier_or_equal_changed(F, X),
+    earlier_or_equal_created(F, X),
+    greater_or_equal(F, X),
+    \+ same_media_type(F, X, E),
+    \+ irrelevant(X).
+
+relevant(F) :-
+    very_similar(F, X),
+    earlier_or_equal_changed(F, X),
+    earlier_or_equal_created(F, X),
+    greater_or_equal(F, X),
+    same_media_type(F, X, E),
+    \+ in_same_directory(F, X),
+    \+ irrelevant(X).
+
+neg(C) :-
+    C, !, fail.
 
 set_of_clause(C, Set) :-
     setof(Body, (clause(C, Body), call(Body)), Set).
