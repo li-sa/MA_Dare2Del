@@ -4,9 +4,14 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+enum QueryKind {
+    RELEVANT, IRRELEVANT;
+}
+
 class IOPrologQueries {
 
     private boolean readingInput = true;
+
 
     public IOPrologQueries(List<DetailedFile> fileList) {
         System.out.println(">> PROLOG IO <<");
@@ -185,10 +190,10 @@ class IOPrologQueries {
             }
 
             if (ruleToQuery.equals("irrelevant")) {
-                showExplanation_simpleApproach(tracesMap);
+                showExplanation_simpleApproach(tracesMap, QueryKind.IRRELEVANT);
             } else if (ruleToQuery.equals("relevant")) {
                 // TODO: showExplanation of relevant examples!
-                showExplanation_simpleApproach(tracesMap);
+                showExplanation_simpleApproach(tracesMap, QueryKind.RELEVANT);
             }
 
             readConsoleInput();
@@ -217,11 +222,11 @@ class IOPrologQueries {
                 break;
             case "1":
                 HashMap<List<String>, List<String>> traces = getQueryTrace(ruleToQuery, terms, variables);
-                showExplanation_simpleApproach(traces);
+                showExplanation_simpleApproach(traces, QueryKind.IRRELEVANT);
                 break;
             case "2":
                 HashMap<List<String>, List<String>> contraryExamples_traces = getQueryTrace("relevant", terms, variables);
-                showExplanation_simpleApproach(contraryExamples_traces);
+                showExplanation_simpleApproach(contraryExamples_traces, QueryKind.RELEVANT);
                 break;
             default:
                 break;
@@ -248,7 +253,7 @@ class IOPrologQueries {
                 break;
             case "1":
                 HashMap<List<String>, List<String>> traces = getQueryTrace(ruleToQuery, terms, variables);
-                showExplanation_simpleApproach(traces);
+                showExplanation_simpleApproach(traces, QueryKind.IRRELEVANT);
                 break;
             case "2":
                 if (!variables.contains(terms[0])) {
@@ -269,47 +274,61 @@ class IOPrologQueries {
         }
     }
 
-    private void showExplanation_simpleApproach(HashMap<List<String>, List<String>> traces) {
+    private void showExplanation_simpleApproach(HashMap<List<String>, List<String>> traces, QueryKind queryKind) {
         HashMap<String, StringBuilder> explanations = new HashMap<>();
 
         for (List<String> candidatePair : traces.keySet()) {
-            String candidateToDelete = candidatePair.get(0);
-            String candidateToReplace = candidatePair.size() == 2 ? candidatePair.get(1) : candidatePair.get(0);
-            List<String> reasonList = traces.get(candidatePair);
+            if (!traces.get(candidatePair).get(0).contains(QueryKind.IRRELEVANT.toString().toLowerCase())) {
+                String candidateToDelete_path = candidatePair.get(0);
+                String[] candidateToDelete_splitted = candidateToDelete_path.split("\\\\");
+                String candidateToDelete = candidateToDelete_splitted[candidateToDelete_splitted.length - 1];
 
-            StringBuilder explanationBuilder;
-            if (explanations.containsKey(candidateToDelete)) {
-                explanationBuilder = explanations.get(candidateToDelete);
+                String candidateToReplace_path = candidatePair.size() == 2 ? candidatePair.get(1) : candidatePair.get(0);
+                String[] candidateToReplace_splitted = candidateToReplace_path.split("\\\\");
+                String candidateToReplace = candidateToReplace_splitted[candidateToReplace_splitted.length - 1];
 
-            } else {
-                explanationBuilder = new StringBuilder();
-                explanationBuilder.append("File *" + candidateToDelete + "* may be deleted because: \n");
-            }
+                List<String> reasonList = traces.get(candidatePair);
 
-            explanationBuilder.append(">> file *" + candidateToReplace + "* is ");
-
-            for (int i = 0; i < reasonList.size(); i++) {
-                String reason = reasonList.get(i);
-                String[] reasonComponents = reason.split("\\(|, |\\)");
-
-                if (reasonList.size() == 1) {
-                    explanationBuilder.append(reasonComponents[0].replaceAll("_", " "));
-                } else if (i < reasonList.size() - 2) {
-                    explanationBuilder.append(reasonComponents[0].replaceAll("_", " ") + ", ");
-                } else if (i < reasonList.size() - 1) {
-                    explanationBuilder.append(reasonComponents[0].replaceAll("_", " "));
-                } else if (i == reasonList.size() - 1) {
-                    explanationBuilder.append(" and " + reasonComponents[0].replaceAll("_", " "));
+                StringBuilder explanationBuilder;
+                if (explanations.containsKey(candidateToDelete_path)) {
+                    explanationBuilder = explanations.get(candidateToDelete_path);
+                } else if (queryKind.equals(QueryKind.IRRELEVANT)) {
+                    explanationBuilder = new StringBuilder();
+                    explanationBuilder.append("File *" + candidateToDelete_path + "* may be deleted because: \n");
+                } else if (queryKind.equals(QueryKind.RELEVANT)) {
+                    explanationBuilder = new StringBuilder();
+                    explanationBuilder.append("File *" + candidateToDelete_path + "* is a near miss because: \n");
+                } else {
+                    explanationBuilder = new StringBuilder();
                 }
-            }
 
-            if (!candidateToDelete.equals(candidateToReplace)) { //Only if deletion suggestion according to another file
-                explanationBuilder.append(" compared to *" + candidateToDelete + "*.\n");
-            } else {
-                explanationBuilder.append(".\n");
-            }
+                explanationBuilder.append("- file *" + candidateToReplace + "* is ");
 
-            explanations.put(candidateToDelete, explanationBuilder);
+                for (int i = 0; i < reasonList.size(); i++) {
+                    String reason = reasonList.get(i);
+                    String[] reasonComponents = reason.split("\\(|, |\\)");
+
+                    if (reasonList.size() == 1) {
+                        explanationBuilder.append(reasonComponents[0].replaceAll("_", " "));
+                    } else if (i < reasonList.size() - 2) {
+                        explanationBuilder.append(reasonComponents[0].replaceAll("_", " ") + ", ");
+                    } else if (i < reasonList.size() - 1) {
+                        explanationBuilder.append(reasonComponents[0].replaceAll("_", " "));
+                    } else if (i == reasonList.size() - 1 && queryKind.equals(QueryKind.IRRELEVANT)) {
+                        explanationBuilder.append(" and " + reasonComponents[0].replaceAll("_", " "));
+                    } else if (i == reasonList.size() - 1 && queryKind.equals(QueryKind.RELEVANT)) {
+                        explanationBuilder.append(" BUT " + reasonComponents[0].replaceAll("_", " "));
+                    }
+                }
+
+                if (!candidateToDelete_path.equals(candidateToReplace_path)) { //Only if deletion suggestion according to another file
+                    explanationBuilder.append(" compared to *" + candidateToDelete + "*.\n");
+                } else {
+                    explanationBuilder.append(".\n");
+                }
+
+                explanations.put(candidateToDelete_path, explanationBuilder);
+            }
         }
 
         for (StringBuilder explanation : explanations.values()) {
