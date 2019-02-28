@@ -19,17 +19,17 @@ greater_or_equal(P1, P2) :-
     size_file(P2, S2),
     S2 >= S1.
 
-earlier_or_equal_created(F1, F2) :-
+later_or_equal_created(F1, F2) :-
     creation_time(F1, T1),
     creation_time(F2, T2),
     T2 >= T1.
 
-earlier_or_equal_changed(F1, F2) :-
+later_or_equal_changed(F1, F2) :-
     change_time(F1, T1),
     change_time(F2, T2),
     T2 >= T1.
 
-earlier_or_equal_accessed(F1, F2) :-
+later_or_equal_accessed(F1, F2) :-
     access_time(F1, T1),
     access_time(F2, T2),
     T2 >= T1.
@@ -75,66 +75,72 @@ irrelevant(F) :-
     older_than_one_year(F).
 
 irrelevant(F) :-
-    in_same_directory(F, X),
-    same_media_type(F, X, E),
-    greater_or_equal(F, X),
-    earlier_or_equal_created(F, X),
-    earlier_or_equal_changed(F, X),
-    very_similar(F, X).
+    in_same_directory(F, Y),
+    same_media_type(F, Y, EY),
+    greater_or_equal(F, Y),
+    later_or_equal_created(F, Y),
+    later_or_equal_changed(F, Y),
+    very_similar(F, Y).
 
 relevant(F) :-
     in_same_directory(F, X),
-    same_media_type(F, X, E),
+    same_media_type(F, X, EX),
     greater_or_equal(F, X),
-    earlier_or_equal_created(F, X),
-    earlier_or_equal_changed(F, X),
+    later_or_equal_created(F, X),
+    later_or_equal_changed(F, X),
     \+ very_similar(F, X),
-    \+ irrelevant(X).
+    \+ irrelevant(F),
+    F \= X.
 
 relevant(F) :-
     in_same_directory(F, X),
     same_media_type(F, X, E),
     greater_or_equal(F, X),
-    earlier_or_equal_created(F, X),
+    later_or_equal_created(F, X),
     very_similar(F, X),
-    \+ earlier_or_equal_changed(F, X),
-    \+ irrelevant(X).
+    \+ later_or_equal_changed(F, X),
+    \+ irrelevant(F),
+    F \= X.
 
 relevant(F) :-
     in_same_directory(F, X),
     same_media_type(F, X, E),
     greater_or_equal(F, X),
     very_similar(F, X),
-    earlier_or_equal_changed(F, X),
-    \+ earlier_or_equal_created(F, X),
-    \+ irrelevant(X).
+    later_or_equal_changed(F, X),
+    \+ later_or_equal_created(F, X),
+    \+ irrelevant(F),
+    F \= X.
 
 relevant(F) :-
     in_same_directory(F, X),
     same_media_type(F, X, E),
     very_similar(F, X),
-    earlier_or_equal_changed(F, X),
-    earlier_or_equal_created(F, X),
+    later_or_equal_changed(F, X),
+    later_or_equal_created(F, X),
     \+ greater_or_equal(F, X),
-    \+ irrelevant(X).
+    \+ irrelevant(F),
+    F \= X.
 
 relevant(F) :-
     in_same_directory(F, X),
     very_similar(F, X),
-    earlier_or_equal_changed(F, X),
-    earlier_or_equal_created(F, X),
+    later_or_equal_changed(F, X),
+    later_or_equal_created(F, X),
     greater_or_equal(F, X),
     \+ same_media_type(F, X, E),
-    \+ irrelevant(X).
+    \+ irrelevant(F),
+    F \= X.
 
 relevant(F) :-
     very_similar(F, X),
-    earlier_or_equal_changed(F, X),
-    earlier_or_equal_created(F, X),
+    later_or_equal_changed(F, X),
+    later_or_equal_created(F, X),
     greater_or_equal(F, X),
     same_media_type(F, X, E),
     \+ in_same_directory(F, X),
-    \+ irrelevant(X).
+    \+ irrelevant(F),
+    F \= X.
 
 neg(C) :-
     C, !, fail.
