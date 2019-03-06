@@ -1,4 +1,6 @@
-class Main {
+package dare2del.logic;
+
+class IOMain {
 
     public static void main(String[] args) {
         // CRAWLING

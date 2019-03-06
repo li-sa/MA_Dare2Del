@@ -1,3 +1,5 @@
+package dare2del.logic;
+
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -5,7 +7,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
 import java.time.Instant;
 
-class DetailedFile {
+public class DetailedFile {
 
     private final File file;
 

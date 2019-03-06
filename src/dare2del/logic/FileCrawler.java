@@ -1,3 +1,5 @@
+package dare2del.logic;
+
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
