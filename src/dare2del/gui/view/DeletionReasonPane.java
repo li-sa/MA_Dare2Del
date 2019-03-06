@@ -4,8 +4,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 
-import java.io.File;
-
 
 public class DeletionReasonPane extends VBox {
 
@@ -27,12 +25,11 @@ public class DeletionReasonPane extends VBox {
         String contentHTML = String.format(reason);
         final WebView browser = new WebView();
         final WebEngine webEngine = browser.getEngine();
-        //webEngine.loadContent(contentHTML);
-        File reasonHtml = new File("reason.html");
-        String url = reasonHtml.toString(); //TODO: getClass().getResource()
-        System.out.println(url);
-        webEngine.load(String.valueOf(reasonHtml));
-        this.getChildren().add(browser);
+//        webEngine.loadContent(contentHTML);
+//        String url = getClass().getResource("./resources/reason.html").toExternalForm();
+//        System.out.println(url);
+//        webEngine.load(url);
+//        this.getChildren().add(browser);
     }
 
 }

@@ -16,6 +16,7 @@ import org.eclipse.fx.ui.controls.filesystem.*;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Locale;
 
 public class Main extends Application {
 
@@ -74,6 +75,7 @@ public class Main extends Application {
 
 
     public static void main(String[] args) {
+        Locale.setDefault(Locale.GERMAN);
         launch(args);
     }
 }

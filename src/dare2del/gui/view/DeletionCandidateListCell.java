@@ -82,7 +82,7 @@ class DeletionCandidateListCell extends ListCell<DetailedFile> {
     }
 
     private Button createShowReasonButton() {
-        Button button = new Button("Explain");  //TODO: Messages.getString()
+        Button button = new Button(Messages.getString("DeletionCandidateListCell.explainButton"));
         button.setOnMouseClicked(event -> reasonController.showDeletionReasonStage());
         return button;
     }

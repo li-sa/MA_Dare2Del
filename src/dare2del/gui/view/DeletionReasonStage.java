@@ -9,7 +9,7 @@ import javafx.stage.Stage;
 public class DeletionReasonStage extends Stage {
 
     public DeletionReasonStage(DeletionReasonController deletionReasonController) {
-        String contentHTML = String.format("<p>File: %s</p><p><b>Why could this file be deleted: </b>%s</p>",  //TODO: Messages.getString()
+        String contentHTML = String.format(Messages.getString("DeletionReasonStage.reasonHTML"),
                 deletionReasonController.getFilePath().toString(),
                 deletionReasonController.getReason());
         final WebView browser = new WebView();
@@ -19,7 +19,7 @@ public class DeletionReasonStage extends Stage {
         this.setScene(new Scene(browser));
         this.setMinWidth(480);
         this.setMinHeight(320);
-        this.setTitle("Explanation"); //TODO: Messages.getString()
+        this.setTitle(Messages.getString("DeletionReasonStage.windowTitle"));
     }
 
 }

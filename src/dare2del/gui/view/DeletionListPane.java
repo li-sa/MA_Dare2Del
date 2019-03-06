@@ -26,7 +26,7 @@ public class DeletionListPane extends VBox {
     }
 
     public void init() {
-        Label uWannaDeleteTheseFiles = new Label("Which of these files shall be deleted?"); //TODO: Messages.getString()
+        Label uWannaDeleteTheseFiles = new Label(Messages.getString("DeletionWindowStage.topLabel"));
         uWannaDeleteTheseFiles.setPadding(new Insets(10, 10, 10, 10));
 
         ListView<DetailedFile> deletionCandidates = new ListView<>(
@@ -47,10 +47,10 @@ public class DeletionListPane extends VBox {
     private HBox createButtonBox() {
         HBox buttonBox = new HBox();
 
-        Button notNowButton = new Button("Not now"); //TODO: Messages.getString()
+        Button notNowButton = new Button(Messages.getString("DeletionWindowStage.cancelButton"));
         //notNowButton.setOnAction(event -> stage.close());
 
-        Button confirmButton = new Button("Delete marked files"); //TODO: Messages.getString()
+        Button confirmButton = new Button(Messages.getString("DeletionWindowStage.okButton"));
         //confirmButton.setOnAction(event -> stage.close());
 
         buttonBox.getChildren().addAll(notNowButton, confirmButton);
