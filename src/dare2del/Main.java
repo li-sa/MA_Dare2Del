@@ -1,5 +1,6 @@
 package dare2del;
 
+import dare2del.gui.controller.MainWindowController;
 import dare2del.gui.view.DeletionListPane;
 import dare2del.gui.view.DeletionReasonPane;
 import javafx.application.Application;
@@ -20,10 +21,25 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Path rootPath = Paths.get("C:\\Users\\Lisa\\Documents\\Studium_AI-M\\MA_2\\TestDir_2");
+        String rootName = "C:\\Users\\Lisa\\Documents\\Studium_AI-M\\MA_2\\TestDir_2";
+        MainWindowController mainWindowController = new MainWindowController(rootName);
+
+        Path rootPath;
+        if (!mainWindowController.validatePath(rootName)) {
+            throw new IllegalArgumentException("No valid path :" + rootName);
+        } else {
+            rootPath = Paths.get(rootName);
+        }
+
         ObservableList<DirItem> rootDirs = FXCollections.observableArrayList();
-        for (File dir : rootPath.toFile().listFiles(f -> f.isDirectory())) {
-            rootDirs.add(ResourceItem.createObservedPath(dir.toPath()));
+
+        File rootfile = rootPath.toFile();
+        if (rootfile.isDirectory()) {
+            rootDirs.add(ResourceItem.createObservedPath(rootPath));
+        } else {
+            for (File dir : rootPath.toFile().listFiles(f -> f.isDirectory())) {
+                rootDirs.add(ResourceItem.createObservedPath(dir.toPath()));
+            }
         }
 
         DirectoryTreeView tv = new DirectoryTreeView();
@@ -41,7 +57,7 @@ public class Main extends Application {
             }
         });
 
-        DeletionListPane delList = new DeletionListPane();
+        DeletionListPane delList = new DeletionListPane(mainWindowController);
         DeletionReasonPane delReason = new DeletionReasonPane();
         SplitPane vPaneRight = new SplitPane(delList, delReason);
         vPaneRight.setOrientation(Orientation.VERTICAL);

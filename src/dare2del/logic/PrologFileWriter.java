@@ -6,13 +6,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-class PrologFileWriter {
+public class PrologFileWriter {
     FileWriter fileWriter;
 
-//    private List<DetailedFile> folderList;
+    //    private List<DetailedFile> folderList;
     private final List<DetailedFile> fileList;
 
-    private static String prologFile = "C:\\Users\\Lisa\\IdeaProjects\\MA_FirstSample\\src\\prolog\\clauses.pl";
+    private static String prologFile = "C:\\Users\\Lisa\\IdeaProjects\\MA_FirstSample\\src\\dare2del\\logic\\prolog\\clauses.pl";
 
     private Map<String, List<String>> prologStatements;
 

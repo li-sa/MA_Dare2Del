@@ -6,10 +6,6 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-enum QueryKind {
-    RELEVANT, IRRELEVANT;
-}
-
 class IOPrologQueries {
 
     private boolean readingInput = true;

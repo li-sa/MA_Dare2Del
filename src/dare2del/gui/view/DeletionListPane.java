@@ -1,5 +1,6 @@
 package dare2del.gui.view;
 
+import dare2del.gui.controller.MainWindowController;
 import dare2del.gui.model.DeletionModel;
 import dare2del.logic.DetailedFile;
 import javafx.beans.property.ReadOnlyObjectProperty;
@@ -14,11 +15,13 @@ import javafx.scene.layout.VBox;
 public class DeletionListPane extends VBox {
 
     private DeletionModel deletionModel;
+    private MainWindowController mainWindowController;
     private ReadOnlyObjectProperty<DetailedFile> selectedItem;
 
 
-    public DeletionListPane() {
-        this.deletionModel = new DeletionModel();
+    public DeletionListPane(MainWindowController mainWindowController) {
+        this.mainWindowController = mainWindowController;
+        this.deletionModel = mainWindowController.deletionModel;
         init();
     }
 

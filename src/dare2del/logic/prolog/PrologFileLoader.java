@@ -1,0 +1,34 @@
+package dare2del.logic.prolog;
+
+import org.jpl7.Atom;
+import org.jpl7.JPL;
+import org.jpl7.Query;
+import org.jpl7.Term;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class PrologFileLoader {
+
+    String CLAUSE_FILE = "src/dare2del/logic/prolog/clauses.pl";
+    String RULE_FILE = "src/dare2del/logic/prolog/irrelevanceTheory.pl";
+
+    public PrologFileLoader() {
+        List<String> prologFilesToLoad = new ArrayList<>();
+        prologFilesToLoad.add(CLAUSE_FILE);
+        prologFilesToLoad.add(RULE_FILE);
+
+        JPL.init();
+
+        for (String eachPrologFile : prologFilesToLoad) {
+            Query consultQuery = new Query("consult", new Term[]{
+                    new Atom(eachPrologFile)});
+            if (!consultQuery.hasSolution()) {
+                // TODO: Exception Handling
+                //throw new Exception("File not found: " + eachPrologFile);
+                System.out.println("!!! EXCEPTION: No file " + eachPrologFile + " found !!!");
+            }
+            consultQuery.close();
+        }
+    }
+}

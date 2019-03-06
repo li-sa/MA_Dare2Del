@@ -6,21 +6,22 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-class FileCrawler {
+public class FileCrawler {
 
     private Path rootPath;
     private final List<DetailedFile> folderList;
     private final List<DetailedFile> fileList;
 
-    public FileCrawler(String pathName) {
+    public FileCrawler(Path rootPath) {
+        this.rootPath = rootPath;
+
         System.out.println(">> File Crawler <<");
-        System.out.println("INFO. Crawling started on: " + pathName);
+        System.out.println("INFO. Crawling started on: " + rootPath);
 
         folderList = new ArrayList<>();
         fileList = new ArrayList<>();
 
-        File rootFile = init(pathName);
-
+        File rootFile = rootPath.toFile();
         crawl(rootFile);
 
         printResults();
