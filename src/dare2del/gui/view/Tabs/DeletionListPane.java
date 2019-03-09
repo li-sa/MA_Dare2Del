@@ -1,7 +1,8 @@
-package dare2del.gui.view;
+package dare2del.gui.view.Tabs;
 
 import dare2del.gui.controller.MainWindowController;
 import dare2del.gui.model.DeletionModel;
+import dare2del.gui.view.Messages;
 import dare2del.logic.DetailedFile;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.geometry.Insets;
@@ -18,7 +19,6 @@ public class DeletionListPane extends VBox {
     private MainWindowController mainWindowController;
     private ReadOnlyObjectProperty<DetailedFile> selectedItem;
 
-
     public DeletionListPane(MainWindowController mainWindowController) {
         this.mainWindowController = mainWindowController;
         this.deletionModel = mainWindowController.deletionModel;
@@ -32,8 +32,7 @@ public class DeletionListPane extends VBox {
         ListView<DetailedFile> deletionCandidates = new ListView<>(
                 deletionModel.getCandidates());
         deletionCandidates.setCellFactory(callback -> {
-            ListCell<DetailedFile> cell = new DeletionCandidateListCell();
-            // Resize the cell width automatically depending on the window width
+            ListCell<DetailedFile> cell = new DeletionCandidateListCell(mainWindowController);
             cell.setPrefWidth(this.getWidth());
             return cell;
         });

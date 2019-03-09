@@ -1,7 +1,9 @@
-package dare2del.gui.view;
+package dare2del.gui.view.Tabs;
 
 import dare2del.gui.controller.DeletionReasonController;
+import dare2del.gui.controller.MainWindowController;
 import dare2del.gui.model.DeletionDecision;
+import dare2del.gui.view.Messages;
 import dare2del.logic.DetailedFile;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -19,6 +21,7 @@ import javafx.scene.layout.BorderPane;
  */
 class DeletionCandidateListCell extends ListCell<DetailedFile> {
 
+    private MainWindowController mainWindowController;
     private DeletionReasonController reasonController;
 
     private BorderPane borderPane;
@@ -30,8 +33,9 @@ class DeletionCandidateListCell extends ListCell<DetailedFile> {
     private final Image KEEP_DECISION_ICON = new Image("file:resources/icons/keep.png");
     private final Image DONT_KNOW_DECISON_ICON = new Image("file:resources/icons/dont-know.png");
 
-    public DeletionCandidateListCell() {
+    public DeletionCandidateListCell(MainWindowController mainWindowController) {
         super();
+        this.mainWindowController = mainWindowController;
 
         this.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
@@ -52,7 +56,7 @@ class DeletionCandidateListCell extends ListCell<DetailedFile> {
         borderPane = new BorderPane();
         borderPane.setLeft(cycleDecisionButton);
         borderPane.setCenter(filenameLabel);
-        //borderPane.setRight(showReasonButton);
+        borderPane.setRight(showReasonButton);
         BorderPane.setAlignment(filenameLabel, Pos.CENTER_LEFT);
 
         setText(null);
@@ -95,10 +99,9 @@ class DeletionCandidateListCell extends ListCell<DetailedFile> {
             setGraphic(null);
         } else {
             reasonController = new DeletionReasonController(item);
-            String filePath = item.getPath().toString();
+            String filePath = item.getPath().toString().replace(mainWindowController.getRootPath().toString(), "");
             filenameLabel.setText(filePath);
             filenameLabel.setTooltip(new Tooltip(filePath));
-            // setText(item.toString());
             setGraphic(borderPane);
         }
     }

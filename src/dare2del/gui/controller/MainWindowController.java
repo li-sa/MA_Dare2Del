@@ -1,8 +1,9 @@
 package dare2del.gui.controller;
 
 import dare2del.gui.model.DeletionModel;
-import dare2del.gui.view.DeletionListPane;
 import dare2del.gui.view.DeletionReasonPane;
+import dare2del.gui.view.Tabs.DeletionListPane;
+import dare2del.gui.view.Tabs.NearMissListPane;
 import dare2del.logic.DetailedFile;
 import dare2del.logic.FileCrawler;
 import dare2del.logic.PrologFileWriter;
@@ -28,7 +29,7 @@ import java.util.List;
 
 public class MainWindowController {
 
-    private final String default_rootPath = "C:\\Users\\Lisa\\Documents\\Studium_AI-M\\MA_2\\TestDir";
+    private final String default_rootPath = "C:\\Users\\Lisa\\Documents\\Studium_AI-M\\MA_2\\TestDir_2";
 
     private Stage primaryStage;
     public DeletionModel deletionModel;
@@ -105,6 +106,25 @@ public class MainWindowController {
 
         DirectoryView v = new DirectoryView();
         v.setIconSize(IconSize.MEDIUM);
+        v.setDir(tv.getRootDirectories().get(0));
+
+        v.getSelectedItems().addListener((Observable o) -> {
+            if (!v.getSelectedItems().isEmpty()) {
+                File selectedItem_file = null;
+                try {
+                    Path selectedItem_path = Paths.get(v.getSelectedItems().get(0).getUri().replace("file:/", ""));
+                    selectedItem_file = selectedItem_path.toFile();
+                } catch (Exception e) {
+                    throw new IllegalArgumentException(e);
+                }
+
+                if (selectedItem_file != null && selectedItem_file.isDirectory()) {
+//                    ObservableList<DirItem> dirs_temp = FXCollections.observableArrayList();
+//                    dirs_temp.add(ResourceItem.createObservedPath(selectedItem_file.toPath()));
+//                    tv.setRootDirectories(dirs_temp);
+                }
+            }
+        });
 
         tv.getSelectedItems().addListener((Observable o) -> {
             if (!tv.getSelectedItems().isEmpty()) {
@@ -116,12 +136,31 @@ public class MainWindowController {
 
         DeletionListPane delList = new DeletionListPane(this);
         DeletionReasonPane delReason = new DeletionReasonPane();
-        SplitPane vPaneRight = new SplitPane(delList, delReason);
-        vPaneRight.setOrientation(Orientation.VERTICAL);
-        vPaneRight.setDividerPositions(0.5);
+        SplitPane splitPane_deletion = new SplitPane(delList, delReason);
+        splitPane_deletion.setOrientation(Orientation.VERTICAL);
+        splitPane_deletion.setDividerPositions(0.5);
 
-        SplitPane hPane = new SplitPane(tv, v, vPaneRight);
-        hPane.setDividerPositions(0.235, 0.6);
+        NearMissListPane nearMissList = new NearMissListPane(this);
+        DeletionReasonPane nearMissReason = new DeletionReasonPane();
+        SplitPane splitPane_nearMiss = new SplitPane(nearMissList, nearMissReason);
+        splitPane_nearMiss.setOrientation(Orientation.VERTICAL);
+        splitPane_nearMiss.setDividerPositions(0.5);
+
+        TabPane tabPane = new TabPane();
+
+        Tab deletionTab = new Tab();
+        deletionTab.setText("Deletion Tab");
+        deletionTab.setContent(splitPane_deletion);
+
+        Tab nearMissTab = new Tab();
+        nearMissTab.setText("Near Misses Tab");
+        nearMissTab.setContent(splitPane_nearMiss);
+
+        tabPane.getTabs().addAll(deletionTab, nearMissTab);
+        tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
+
+        SplitPane hPane = new SplitPane(tv, v, tabPane);
+        hPane.setDividerPositions(0.2, 0.6);
 
         BorderPane borderPane = new BorderPane(hPane);
         borderPane.setTop(createMenuBar());
@@ -184,5 +223,9 @@ public class MainWindowController {
         } else {
             throw new IllegalArgumentException();
         }
+    }
+
+    public Path getRootPath() {
+        return rootPath;
     }
 }
