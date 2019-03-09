@@ -1,5 +1,5 @@
 package dare2del.logic;
 
-enum QueryKind {
+public enum QueryKind {
     RELEVANT, IRRELEVANT;
 }
