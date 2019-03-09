@@ -15,7 +15,6 @@ import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.DirectoryChooser;
@@ -40,8 +39,8 @@ public class MainWindowController {
     public MainWindowController(Stage primaryStage) {
         this.primaryStage = primaryStage;
 
-        String choosenRootPath = showDirectoryFileChooser(primaryStage);
-        validatePath(choosenRootPath);
+        //String choosenRootPath = showDirectoryFileChooser(primaryStage);
+        validatePath(default_rootPath); // just for testing! -> parameter might be choosenRootPath
         // Preparation: Crawl files within rootPath and write metadata to prolog file clauses.pl
         initProlog();
         initView(primaryStage);
@@ -82,32 +81,38 @@ public class MainWindowController {
         tv.setIconSize(IconSize.MEDIUM);
         tv.setRootDirectories(rootDirs);
 
-        // Context menu to load new Directory
-        ContextMenu contextMenu = new ContextMenu();
-        MenuItem item1 = new MenuItem("Open Directory");
-        item1.setOnAction(new EventHandler<ActionEvent>() {
-
-            @Override
-            public void handle(ActionEvent event) {
-                validatePath(showDirectoryFileChooser(primaryStage));
-                initProlog();
-                initView(primaryStage);
-            }
-        });
-        contextMenu.getItems().addAll(item1);
-
-        tv.setOnContextMenuRequested(new EventHandler<ContextMenuEvent>() {
-            @Override
-            public void handle(ContextMenuEvent event) {
-                contextMenu.show(tv, event.getScreenX(), event.getScreenY());
-            }
-        });
-        // END Context menu
-
         DirectoryView v = new DirectoryView();
         v.setIconSize(IconSize.MEDIUM);
         v.setDir(tv.getRootDirectories().get(0));
 
+        createListenerForDirectoryView(v);
+        createListenerForTreeView(tv, v);
+
+        TabPane tabPane = createTabs();
+
+        SplitPane hPane = new SplitPane(tv, v, tabPane);
+        hPane.setDividerPositions(0.2, 0.6);
+
+        BorderPane borderPane = new BorderPane(hPane);
+        borderPane.setTop(createMenuBar());
+
+        Scene s = new Scene(borderPane, 1200, 600);
+        primaryStage.setScene(s);
+        primaryStage.setTitle("Dare2Del");
+        primaryStage.show();
+    }
+
+    private void createListenerForTreeView(DirectoryTreeView tv, DirectoryView v) {
+        tv.getSelectedItems().addListener((Observable o) -> {
+            if (!tv.getSelectedItems().isEmpty()) {
+                v.setDir(tv.getSelectedItems().get(0));
+            } else {
+                v.setDir(null);
+            }
+        });
+    }
+
+    private void createListenerForDirectoryView(DirectoryView v) {
         v.getSelectedItems().addListener((Observable o) -> {
             if (!v.getSelectedItems().isEmpty()) {
                 File selectedItem_file = null;
@@ -125,15 +130,9 @@ public class MainWindowController {
                 }
             }
         });
+    }
 
-        tv.getSelectedItems().addListener((Observable o) -> {
-            if (!tv.getSelectedItems().isEmpty()) {
-                v.setDir(tv.getSelectedItems().get(0));
-            } else {
-                v.setDir(null);
-            }
-        });
-
+    private TabPane createTabs() {
         DeletionListPane delList = new DeletionListPane(this);
         DeletionReasonPane delReason = new DeletionReasonPane();
         SplitPane splitPane_deletion = new SplitPane(delList, delReason);
@@ -158,17 +157,7 @@ public class MainWindowController {
 
         tabPane.getTabs().addAll(deletionTab, nearMissTab);
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
-
-        SplitPane hPane = new SplitPane(tv, v, tabPane);
-        hPane.setDividerPositions(0.2, 0.6);
-
-        BorderPane borderPane = new BorderPane(hPane);
-        borderPane.setTop(createMenuBar());
-
-        Scene s = new Scene(borderPane, 1200, 600);
-        primaryStage.setScene(s);
-        primaryStage.setTitle("Dare2Del");
-        primaryStage.show();
+        return tabPane;
     }
 
     private MenuBar createMenuBar() {
