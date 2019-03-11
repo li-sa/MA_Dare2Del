@@ -1,0 +1,30 @@
+<component name="ArtifactManager">
+  <artifact type="javafx" name="Dare2Del_JavaFX">
+    <output-path>$PROJECT_DIR$/out/artifacts/Dare2Del_JavaFX</output-path>
+    <properties id="javafx-properties">
+      <options>
+        <option name="appClass" value="dare2del.Main" />
+        <option name="description" value="" />
+        <option name="htmlPlaceholderId" value="" />
+        <option name="nativeBundle" value="all" />
+        <option name="title" value="Dare2Del" />
+        <option name="vendor" value="" />
+        <option name="version" value="" />
+      </options>
+    </properties>
+    <root id="root">
+      <element id="archive" name="Dare2Del_JavaFX.jar">
+        <element id="file-copy" path="C:/Program Files/swipl/lib/jpl.jar" />
+        <element id="library" level="project" name="Maven: at.bestsolution.efxclipse.eclipse:com.google.guava:15.0.0" />
+        <element id="library" level="project" name="Maven: at.bestsolution.efxclipse.eclipse:javax.inject:1.0.0" />
+        <element id="library" level="project" name="Maven: at.bestsolution.efxclipse.eclipse:org.apache.commons.lang:2.6.0" />
+        <element id="library" level="project" name="Maven: at.bestsolution.efxclipse.rt:org.eclipse.fx.core:3.0.0" />
+        <element id="library" level="project" name="Maven: at.bestsolution.efxclipse.rt:org.eclipse.fx.ui.controls:3.0.0" />
+        <element id="library" level="project" name="Maven: at.bestsolution.efxclipse.rt:org.eclipse.fx.ui.panes:3.0.0" />
+        <element id="module-output" name="Dare2Del_JavaFX" />
+        <element id="library" level="project" name="Maven: com.google.code.findbugs:jsr305:2.0.1" />
+      </element>
+      <element id="file-copy" path="$PROJECT_DIR$/resources/prolog/irrelevanceTheory.pl" />
+    </root>
+  </artifact>
+</component>
