@@ -18,9 +18,11 @@ class IOPrologQueries {
 
     private void init() {
         List<String> prologFilesToLoad = new ArrayList<>();
-        String CLAUSE_FILE = "src/prolog/clauses.pl";
+//        String CLAUSE_FILE = getClass().getResource("/prolog/clauses.pl").getPath();
+        String CLAUSE_FILE = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + "/../clauses.pl";
         prologFilesToLoad.add(CLAUSE_FILE);
-        String RULE_FILE = "src/prolog/irrelevanceTheory.pl";
+//        String RULE_FILE = getClass().getResource("/prolog/irrelevanceTheory.pl").getPath();
+        String RULE_FILE = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + "/../irrelevanceTheory.pl";
         prologFilesToLoad.add(RULE_FILE);
 
         JPL.init();

@@ -10,8 +10,8 @@ import java.util.List;
 
 public class PrologFileLoader {
 
-    String CLAUSE_FILE = "src/dare2del/logic/prolog/clauses.pl";
-    String RULE_FILE = "src/dare2del/logic/prolog/irrelevanceTheory.pl";
+    String CLAUSE_FILE = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + "/../clauses.pl";
+    String RULE_FILE = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + "/../irrelevanceTheory.pl";
 
     public PrologFileLoader() {
         List<String> prologFilesToLoad = new ArrayList<>();

@@ -12,17 +12,18 @@ public class PrologFileWriter {
     //    private List<DetailedFile> folderList;
     private final List<DetailedFile> fileList;
 
-    private static String prologFile = "C:\\Users\\Lisa\\IdeaProjects\\MA_FirstSample\\src\\dare2del\\logic\\prolog\\clauses.pl";
+    private String clauseFile_pathString = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + "/../clauses.pl";
 
     private Map<String, List<String>> prologStatements;
 
     public PrologFileWriter(List<DetailedFile> fileList) {
         System.out.println(">> Prolog File Writer <<");
-        System.out.println("INFO. Writing prolog file: " + prologFile);
+        System.out.println(getClass().getProtectionDomain().getCodeSource().getLocation());
+        System.out.println("INFO. Writing prolog file: " + clauseFile_pathString);
 
         this.fileList = fileList;
         collectPrologStatements();
-        writeStatementsToPrologFile();
+        writeClausesToPrologFile();
 
         System.out.println("INFO. Finished writing. \n");
     }
@@ -56,9 +57,9 @@ public class PrologFileWriter {
         prologStatements.put("path", list_path);
     }
 
-    private void writeStatementsToPrologFile() {
+    private void writeClausesToPrologFile() {
         try {
-            fileWriter = new FileWriter(prologFile);
+            fileWriter = new FileWriter(clauseFile_pathString);
 
             for (List<String> mapEntry : prologStatements.values()) {
                 for (String listItem : mapEntry) {
@@ -70,7 +71,7 @@ public class PrologFileWriter {
             fileWriter.close();
 
         } catch (Exception e) {
-            // TODO: Exception Handling!
+            throw new IllegalArgumentException("EXCEPTION in writeClausesToPrologFile(): " + e.getMessage());
         }
     }
 }

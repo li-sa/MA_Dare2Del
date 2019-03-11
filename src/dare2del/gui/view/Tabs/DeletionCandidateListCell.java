@@ -28,10 +28,9 @@ class DeletionCandidateListCell extends ListCell<DetailedFile> {
     private Label filenameLabel;
 
     private DeletionDecision decision = DeletionDecision.DONTKNOW;
-    // TODO: Refactor
-    private final Image DELETE_DECISION_ICON = new Image("file:resources/icons/delete.png");
-    private final Image KEEP_DECISION_ICON = new Image("file:resources/icons/keep.png");
-    private final Image DONT_KNOW_DECISON_ICON = new Image("file:resources/icons/dont-know.png");
+    private final Image DELETE_DECISION_ICON = new Image(getClass().getClassLoader().getResource("icons/delete.png").toExternalForm());
+    private final Image KEEP_DECISION_ICON = new Image(getClass().getClassLoader().getResource("icons/keep.png").toExternalForm());
+    private final Image DONT_KNOW_DECISON_ICON = new Image(getClass().getClassLoader().getResource("icons/dont-know.png").toExternalForm());
 
     public DeletionCandidateListCell(MainWindowController mainWindowController) {
         super();

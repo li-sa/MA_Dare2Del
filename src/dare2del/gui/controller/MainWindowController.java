@@ -39,8 +39,8 @@ public class MainWindowController {
     public MainWindowController(Stage primaryStage) {
         this.primaryStage = primaryStage;
 
-        //String choosenRootPath = showDirectoryFileChooser(primaryStage);
-        validatePath(default_rootPath); // just for testing! -> parameter might be choosenRootPath
+        String choosenRootPath = showDirectoryFileChooser(primaryStage);
+        validatePath(choosenRootPath); // just for testing! -> parameter might be choosenRootPath
         // Preparation: Crawl files within rootPath and write metadata to prolog file clauses.pl
         initProlog();
         initView(primaryStage);
@@ -134,13 +134,13 @@ public class MainWindowController {
 
     private TabPane createTabs() {
         DeletionListPane delList = new DeletionListPane(this);
-        DeletionReasonPane delReason = new DeletionReasonPane();
+        DeletionReasonPane delReason = new DeletionReasonPane(this);
         SplitPane splitPane_deletion = new SplitPane(delList, delReason);
         splitPane_deletion.setOrientation(Orientation.VERTICAL);
         splitPane_deletion.setDividerPositions(0.5);
 
         NearMissListPane nearMissList = new NearMissListPane(this);
-        DeletionReasonPane nearMissReason = new DeletionReasonPane();
+        DeletionReasonPane nearMissReason = new DeletionReasonPane(this);
         SplitPane splitPane_nearMiss = new SplitPane(nearMissList, nearMissReason);
         splitPane_nearMiss.setOrientation(Orientation.VERTICAL);
         splitPane_nearMiss.setDividerPositions(0.5);

@@ -9,7 +9,6 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 
@@ -21,10 +20,6 @@ public class NearMissCandidateListCell extends ListCell<DetailedFile> {
     private Label filenameLabel;
 
     private DeletionDecision decision = DeletionDecision.DONTKNOW;
-    // TODO: Refactor
-    private final Image DELETE_DECISION_ICON = new Image("file:resources/icons/delete.png");
-    private final Image KEEP_DECISION_ICON = new Image("file:resources/icons/keep.png");
-    private final Image DONT_KNOW_DECISON_ICON = new Image("file:resources/icons/dont-know.png");
 
     public NearMissCandidateListCell(MainWindowController mainWindowController) {
         super();
