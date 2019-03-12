@@ -1,25 +1,18 @@
 package dare2del.gui.controller;
 
 import dare2del.gui.model.DeletionModel;
-import dare2del.gui.view.DeletionReasonPane;
-import dare2del.gui.view.Tabs.DeletionListPane;
-import dare2del.gui.view.Tabs.NearMissListPane;
+import dare2del.gui.view.MainView;
 import dare2del.logic.DetailedFile;
 import dare2del.logic.FileCrawler;
 import dare2del.logic.PrologFileWriter;
-import javafx.beans.Observable;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Orientation;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.input.KeyCombination;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.MenuItem;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
-import org.eclipse.fx.ui.controls.filesystem.*;
+import org.eclipse.fx.ui.controls.filesystem.DirectoryTreeView;
+import org.eclipse.fx.ui.controls.filesystem.DirectoryView;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -33,17 +26,32 @@ public class MainWindowController {
     private Stage primaryStage;
     public DeletionModel deletionModel;
 
+    private MainView mainView;
+
     private Path rootPath;
     private List<DetailedFile> fileList;
 
     public MainWindowController(Stage primaryStage) {
         this.primaryStage = primaryStage;
 
+        this.deletionModel = new DeletionModel();
+
         String choosenRootPath = showDirectoryFileChooser(primaryStage);
         validatePath(choosenRootPath); // just for testing! -> parameter might be choosenRootPath
         // Preparation: Crawl files within rootPath and write metadata to prolog file clauses.pl
         initProlog();
-        initView(primaryStage);
+
+        this.deletionModel.initDeletionModel();
+
+        //Create MainView
+        mainView = new MainView(deletionModel, primaryStage);
+        setEventHandler_OpenFile(mainView.getOpenFileItem());
+        setEventHandler_Exit(mainView.getExitItem());
+        createListenerForTreeView(mainView.getDirectoryTreeView(), mainView.getDirectoryView());
+        createListenerForDirectoryView(mainView.getDirectoryView());
+
+        createListenerForDeletionCells(mainView.getDelList().getDeletionCandidatesCellList());
+
     }
 
     private String showDirectoryFileChooser(Stage primaryStage) {
@@ -62,48 +70,49 @@ public class MainWindowController {
         fileList = fileCrawler.getFileList();
         PrologFileWriter prologFileWriter = new PrologFileWriter(fileList);
 
-        this.deletionModel = new DeletionModel(fileList);
+        this.deletionModel.setFileList(fileList);
     }
 
-    private void initView(Stage primaryStage) {
-        ObservableList<DirItem> rootDirs = FXCollections.observableArrayList();
-
-        File rootfile = rootPath.toFile();
-        if (rootfile.isDirectory()) {
-            rootDirs.add(ResourceItem.createObservedPath(rootPath));
-        } else {
-            for (File dir : rootPath.toFile().listFiles(f -> f.isDirectory())) {
-                rootDirs.add(ResourceItem.createObservedPath(dir.toPath()));
-            }
+    public boolean validatePath(String pathName) {
+        try {
+            rootPath = Paths.get(pathName);
+            deletionModel.setRootPath(rootPath);
+        } catch (Exception e) {
+            System.out.println("INFO. Root folder ist no valid path (" + pathName + ").");
+            throw new IllegalArgumentException();
         }
 
-        DirectoryTreeView tv = new DirectoryTreeView();
-        tv.setIconSize(IconSize.MEDIUM);
-        tv.setRootDirectories(rootDirs);
+        if (rootPath.toFile().isDirectory()) {
+            return true;
+        } else {
+            throw new IllegalArgumentException();
+        }
+    }
 
-        DirectoryView v = new DirectoryView();
-        v.setIconSize(IconSize.MEDIUM);
-        v.setDir(tv.getRootDirectories().get(0));
+    private void setEventHandler_OpenFile(MenuItem openFileItem) {
+        openFileItem.setOnAction(new EventHandler<ActionEvent>() {
 
-        createListenerForDirectoryView(v);
-        createListenerForTreeView(tv, v);
+            @Override
+            public void handle(ActionEvent event) {
+                validatePath(showDirectoryFileChooser(primaryStage));
+                initProlog();
+                mainView.initView();
+            }
+        });
+    }
 
-        TabPane tabPane = createTabs();
+    private void setEventHandler_Exit(MenuItem exitItem) {
+        exitItem.setOnAction(new EventHandler<ActionEvent>() {
 
-        SplitPane hPane = new SplitPane(tv, v, tabPane);
-        hPane.setDividerPositions(0.2, 0.6);
-
-        BorderPane borderPane = new BorderPane(hPane);
-        borderPane.setTop(createMenuBar());
-
-        Scene s = new Scene(borderPane, 1200, 600);
-        primaryStage.setScene(s);
-        primaryStage.setTitle("Dare2Del");
-        primaryStage.show();
+            @Override
+            public void handle(ActionEvent event) {
+                System.exit(0);
+            }
+        });
     }
 
     private void createListenerForTreeView(DirectoryTreeView tv, DirectoryView v) {
-        tv.getSelectedItems().addListener((Observable o) -> {
+        tv.getSelectedItems().addListener((javafx.beans.Observable o) -> {
             if (!tv.getSelectedItems().isEmpty()) {
                 v.setDir(tv.getSelectedItems().get(0));
             } else {
@@ -113,7 +122,7 @@ public class MainWindowController {
     }
 
     private void createListenerForDirectoryView(DirectoryView v) {
-        v.getSelectedItems().addListener((Observable o) -> {
+        v.getSelectedItems().addListener((javafx.beans.Observable o) -> {
             if (!v.getSelectedItems().isEmpty()) {
                 File selectedItem_file = null;
                 try {
@@ -132,89 +141,7 @@ public class MainWindowController {
         });
     }
 
-    private TabPane createTabs() {
-        DeletionListPane delList = new DeletionListPane(this);
-        DeletionReasonPane delReason = new DeletionReasonPane(this);
-        SplitPane splitPane_deletion = new SplitPane(delList, delReason);
-        splitPane_deletion.setOrientation(Orientation.VERTICAL);
-        splitPane_deletion.setDividerPositions(0.5);
-
-        NearMissListPane nearMissList = new NearMissListPane(this);
-        DeletionReasonPane nearMissReason = new DeletionReasonPane(this);
-        SplitPane splitPane_nearMiss = new SplitPane(nearMissList, nearMissReason);
-        splitPane_nearMiss.setOrientation(Orientation.VERTICAL);
-        splitPane_nearMiss.setDividerPositions(0.5);
-
-        TabPane tabPane = new TabPane();
-
-        Tab deletionTab = new Tab();
-        deletionTab.setText("Deletion Tab");
-        deletionTab.setContent(splitPane_deletion);
-
-        Tab nearMissTab = new Tab();
-        nearMissTab.setText("Near Misses Tab");
-        nearMissTab.setContent(splitPane_nearMiss);
-
-        tabPane.getTabs().addAll(deletionTab, nearMissTab);
-        tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
-        return tabPane;
-    }
-
-    private MenuBar createMenuBar() {
-        MenuBar menuBar = new MenuBar();
-
-        Menu fileMenu = new Menu("File");
-        Menu editMenu = new Menu("Edit");
-        Menu helpMenu = new Menu("Help");
-
-        MenuItem openFileItem = new MenuItem("Open Directory");
-        openFileItem.setOnAction(new EventHandler<ActionEvent>() {
-
-            @Override
-            public void handle(ActionEvent event) {
-                validatePath(showDirectoryFileChooser(primaryStage));
-                initProlog();
-                initView(primaryStage);
-            }
-        });
-
-        MenuItem exitItem = new MenuItem("Exit");
-        exitItem.setAccelerator(KeyCombination.keyCombination("Ctrl+X"));
-        exitItem.setOnAction(new EventHandler<ActionEvent>() {
-
-            @Override
-            public void handle(ActionEvent event) {
-                System.exit(0);
-            }
-        });
-
-        fileMenu.getItems().addAll(openFileItem, exitItem);
-
-        menuBar.getMenus().addAll(fileMenu, editMenu, helpMenu);
-
-        return menuBar;
-    }
-
-    private void getDeletionCandidates() {
-
-    }
-
-    public boolean validatePath(String pathName) {
-        try {
-            rootPath = Paths.get(pathName);
-        } catch (Exception e) {
-            System.out.println("INFO. Root folder ist no valid path (" + pathName + ").");
-            throw new IllegalArgumentException();
-        }
-
-        if (rootPath.toFile().isDirectory()) {
-            return true;
-        } else {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    public Path getRootPath() {
-        return rootPath;
+    private void createListenerForDeletionCells(List<ListCell<DetailedFile>> deletionCandidatesCellList) {
+        this.mainView.getDelList().getDeletionCandidates();
     }
 }

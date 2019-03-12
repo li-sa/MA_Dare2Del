@@ -5,18 +5,23 @@ import dare2del.logic.DetailedFile;
 
 public class DeletionReasonController {
 
+
     private DeletionReasonPane reasonPane;
+
     private DetailedFile deletionCandidate;
 
-    public DeletionReasonController(DetailedFile deletionCandidate) {
-        this.deletionCandidate = deletionCandidate;
-        reasonPane = new DeletionReasonPane(this);
+    public DeletionReasonController() {
+        reasonPane = new DeletionReasonPane();
         reasonPane.setDeletionReasonController(this);
     }
 
     public void showDeletionReasonStage() {
         reasonPane.show();
-//        reasonStage.show();
+    }
+
+
+    public void setDeletionCandidate(DetailedFile deletionCandidate) {
+        this.deletionCandidate = deletionCandidate;
     }
 
     public String getFilePath() {

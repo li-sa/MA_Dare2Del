@@ -15,41 +15,25 @@ public class DeletionReasonPane extends VBox {
     final WebView browser;
     final WebEngine webEngine;
 
-    private String reason = "<span style='font-family:sans-serif;'>File "
-            + "<span style='font-family:monospaced; padding: 0 0.5em;'>KI_Conference_v3.pptx</span> "
-            + "may be deleted because <ul>"
-            + "<li>file <span style='font-family:monospaced; padding: 0 0.5em;'>KI_Conference_final.pptx</span> "
-            + "is in the same directory,</li>"
-            + "<li>files <span style='font-family:monospaced; padding: 0 0.5em;'>KI_Conference_v3.pptx</span> and "
-            + "<span style='font-family:monospaced;'>KI_Conference_final.pptx</span> are very similar,</li>"
-            + "<li>files <span style='font-family:monospaced;'>KI_Conference_v3.pptx</span> and "
-            + "<span style='font-family:monospaced;'>KI_Conference_final.pptx</span> start with"
-            + "(at least) 5 identical characters, and</li>"
-            + "<li>file <span style='font-family:monospaced;'>KI_Conference_final.pptx</span> is newer "
-            + "than file <span style='font-family:monospaced;'>KI_Conference_v3.pptx</span>.</li>"
-            + "</span>";
+    private String reason_default = "<span style='font-family:sans-serif;'>[REASON]</span>";
 
-    public DeletionReasonPane(MainWindowController mainWindowController) {
-        this.mainWindowController = mainWindowController;
-
+    public DeletionReasonPane() {
         browser = new WebView();
         webEngine = browser.getEngine();
-    }
+        this.getChildren().add(browser);
 
-    public DeletionReasonPane(DeletionReasonController deletionReasonController) {
-        this.deletionReasonController = deletionReasonController;
-
-        browser = new WebView();
-        webEngine = browser.getEngine();
+//        showDefault();
     }
 
     public void show() {
-        String contentHTML = String.format(reason);
+        String url = getClass().getResource("/reason_dummy.html").toExternalForm();
+        System.out.println(url);
+        webEngine.loadContent(url);
+    }
+
+    public void showDefault() {
+        String contentHTML = String.format(reason_default);
         webEngine.loadContent(contentHTML);
-//        String url = getClass().getResource("/reason.html").toExternalForm();
-//        System.out.println(url);
-//        webEngine.load(url);
-        this.getChildren().add(browser);
     }
 
     public void setDeletionReasonController(DeletionReasonController deletionReasonController) {

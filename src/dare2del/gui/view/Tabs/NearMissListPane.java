@@ -1,6 +1,5 @@
 package dare2del.gui.view.Tabs;
 
-import dare2del.gui.controller.MainWindowController;
 import dare2del.gui.model.DeletionModel;
 import dare2del.gui.view.Messages;
 import dare2del.logic.DetailedFile;
@@ -11,16 +10,28 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.VBox;
 
-public class NearMissListPane extends VBox {
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
+
+public class NearMissListPane extends VBox implements Observer {
     private DeletionModel deletionModel;
-    private MainWindowController mainWindowController;
+
+    private List<ListCell<DetailedFile>> nearMissCandidatesCellList;
     private ReadOnlyObjectProperty<DetailedFile> selectedItem;
 
+    public NearMissListPane(DeletionModel deletionModel) {
+        this.deletionModel = deletionModel;
+        this.deletionModel.addObserver(this);
 
-    public NearMissListPane(MainWindowController mainWindowController) {
-        this.mainWindowController = mainWindowController;
-        this.deletionModel = mainWindowController.deletionModel;
+        nearMissCandidatesCellList = new ArrayList<>();
+
         init();
+    }
+
+    public void update(Observable observable, Object object) {
+
     }
 
     public void init() {
@@ -29,8 +40,9 @@ public class NearMissListPane extends VBox {
 
         ListView<DetailedFile> deletionCandidates = new ListView<>(deletionModel.getNearMissCandidates());
         deletionCandidates.setCellFactory(callback -> {
-            ListCell<DetailedFile> cell = new NearMissCandidateListCell(mainWindowController);
+            ListCell<DetailedFile> cell = new NearMissCandidateListCell(deletionModel);
             cell.setPrefWidth(this.getWidth());
+            nearMissCandidatesCellList.add(cell);
             return cell;
         });
 

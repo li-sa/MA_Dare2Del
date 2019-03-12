@@ -1,6 +1,5 @@
 package dare2del.gui.view.Tabs;
 
-import dare2del.gui.controller.MainWindowController;
 import dare2del.gui.model.DeletionModel;
 import dare2del.gui.view.Messages;
 import dare2del.logic.DetailedFile;
@@ -13,34 +12,46 @@ import javafx.scene.control.ListView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
-public class DeletionListPane extends VBox {
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
+
+public class DeletionListPane extends VBox implements Observer {
 
     private DeletionModel deletionModel;
-    private MainWindowController mainWindowController;
+
+    private ListView<DetailedFile> deletionCandidates;
+    private List<ListCell<DetailedFile>> deletionCandidatesCellList;
     private ReadOnlyObjectProperty<DetailedFile> selectedItem;
 
-    public DeletionListPane(MainWindowController mainWindowController) {
-        this.mainWindowController = mainWindowController;
-        this.deletionModel = mainWindowController.deletionModel;
+    public DeletionListPane(DeletionModel deletionModel) {
+        this.deletionModel = deletionModel;
+        this.deletionModel.addObserver(this);
+
+        deletionCandidatesCellList = new ArrayList<>();
+
         init();
     }
 
-    public void init() {
-        Label uWannaDeleteTheseFiles = new Label(Messages.getString("DeletionWindowStage.topLabel"));
-        uWannaDeleteTheseFiles.setPadding(new Insets(10, 10, 10, 10));
+    public void update(Observable observable, Object object) {
 
-        ListView<DetailedFile> deletionCandidates = new ListView<>(
-                deletionModel.getCandidates());
+    }
+
+    public void init() {
+        Label label_filesToDelete = new Label(Messages.getString("DeletionWindowStage.topLabel"));
+        label_filesToDelete.setPadding(new Insets(10, 10, 10, 10));
+
+        deletionCandidates = new ListView<>(deletionModel.getCandidates());
         deletionCandidates.setCellFactory(callback -> {
-            ListCell<DetailedFile> cell = new DeletionCandidateListCell(mainWindowController);
+            ListCell<DetailedFile> cell = new DeletionCandidateListCell(deletionModel);
             cell.setPrefWidth(this.getWidth());
+            deletionCandidatesCellList.add(cell);
             return cell;
         });
 
-
-        this.getChildren().addAll(uWannaDeleteTheseFiles, deletionCandidates);
+        this.getChildren().addAll(label_filesToDelete, deletionCandidates);
         this.selectedItem = deletionCandidates.getSelectionModel().selectedItemProperty();
-
     }
 
     private HBox createButtonBox() {
@@ -64,5 +75,11 @@ public class DeletionListPane extends VBox {
         return selectedItem.get();
     }
 
+    public ListView<DetailedFile> getDeletionCandidates() {
+        return deletionCandidates;
+    }
 
+    public List<ListCell<DetailedFile>> getDeletionCandidatesCellList() {
+        return deletionCandidatesCellList;
+    }
 }

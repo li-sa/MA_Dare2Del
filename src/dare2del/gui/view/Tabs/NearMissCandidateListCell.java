@@ -1,8 +1,6 @@
 package dare2del.gui.view.Tabs;
 
-import dare2del.gui.controller.DeletionReasonController;
-import dare2del.gui.controller.MainWindowController;
-import dare2del.gui.model.DeletionDecision;
+import dare2del.gui.model.DeletionModel;
 import dare2del.gui.view.Messages;
 import dare2del.logic.DetailedFile;
 import javafx.event.EventHandler;
@@ -12,18 +10,22 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 
-public class NearMissCandidateListCell extends ListCell<DetailedFile> {
-    private MainWindowController mainWindowController;
-    private DeletionReasonController reasonController;
+import java.util.Observable;
+import java.util.Observer;
+
+public class NearMissCandidateListCell extends ListCell<DetailedFile> implements Observer {
+    private DeletionModel deletionModel;
+
+    private DetailedFile detailedFile;
+    private Button button_nearMiss_explain;
 
     private BorderPane borderPane;
     private Label filenameLabel;
 
-    private DeletionDecision decision = DeletionDecision.DONTKNOW;
-
-    public NearMissCandidateListCell(MainWindowController mainWindowController) {
+    public NearMissCandidateListCell(DeletionModel deletionModel) {
         super();
-        this.mainWindowController = mainWindowController;
+        this.deletionModel = deletionModel;
+        this.deletionModel.addObserver(this);
 
         this.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
@@ -48,10 +50,14 @@ public class NearMissCandidateListCell extends ListCell<DetailedFile> {
         setText(null);
     }
 
+    public void update(Observable observable, Object object) {
+
+    }
+
     private Button createShowReasonButton() {
-        Button button = new Button(Messages.getString("DeletionCandidateListCell.explainButton"));
-        button.setOnMouseClicked(event -> reasonController.showDeletionReasonStage());
-        return button;
+        button_nearMiss_explain = new Button(Messages.getString("DeletionCandidateListCell.explainButton"));
+        button_nearMiss_explain.setOnMouseClicked(event -> this.deletionModel.setCurrentSelectedNearMissCandidate(detailedFile));
+        return button_nearMiss_explain;
     }
 
     public void updateItem(DetailedFile item, boolean empty) {
@@ -61,8 +67,8 @@ public class NearMissCandidateListCell extends ListCell<DetailedFile> {
             setText(null);
             setGraphic(null);
         } else {
-            reasonController = new DeletionReasonController(item);
-            String filePath = item.getPath().toString().replace(mainWindowController.getRootPath().toString(), "");
+            this.detailedFile = item;
+            String filePath = item.getPath().toString().replace(deletionModel.getRootPath().toString(), "");
             filenameLabel.setText(filePath);
             filenameLabel.setTooltip(new Tooltip(filePath));
             setGraphic(borderPane);
