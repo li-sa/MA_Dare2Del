@@ -45,13 +45,15 @@ public class MainWindowController {
 
         //Create MainView
         mainView = new MainView(deletionModel, primaryStage);
+        setAllListeners();
+    }
+
+    private void setAllListeners() {
         setEventHandler_OpenFile(mainView.getOpenFileItem());
         setEventHandler_Exit(mainView.getExitItem());
         createListenerForTreeView(mainView.getDirectoryTreeView(), mainView.getDirectoryView());
         createListenerForDirectoryView(mainView.getDirectoryView());
-
         createListenerForDeletionCells(mainView.getDelList().getDeletionCandidatesCellList());
-
     }
 
     private String showDirectoryFileChooser(Stage primaryStage) {
@@ -91,12 +93,14 @@ public class MainWindowController {
 
     private void setEventHandler_OpenFile(MenuItem openFileItem) {
         openFileItem.setOnAction(new EventHandler<ActionEvent>() {
-
             @Override
             public void handle(ActionEvent event) {
+                deletionModel.resetFileList();
                 validatePath(showDirectoryFileChooser(primaryStage));
                 initProlog();
+                deletionModel.initDeletionModel();
                 mainView.initView();
+                setAllListeners();
             }
         });
     }

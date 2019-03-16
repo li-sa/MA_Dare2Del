@@ -3,6 +3,7 @@ package dare2del.gui.view;
 import dare2del.gui.model.DeletionModel;
 import dare2del.gui.view.Tabs.DeletionListPane;
 import dare2del.gui.view.Tabs.NearMissListPane;
+import dare2del.logic.DetailedFile;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Orientation;
@@ -94,7 +95,7 @@ public class MainView implements Observer {
 
 
     private TabPane createTabs() {
-        reasonPane = new DeletionReasonPane();
+        reasonPane = new DeletionReasonPane(this.deletionModel);
 
         delList = new DeletionListPane(deletionModel);
         splitPane_deletion = new SplitPane(delList, reasonPane);
@@ -141,7 +142,10 @@ public class MainView implements Observer {
     }
 
     public void update(Observable observable, Object object) {
-
+        if (object instanceof DetailedFile) {
+            initView();
+//            this.reasonPane = new DeletionReasonPane(this.deletionModel);
+        }
     }
 
     public MenuItem getOpenFileItem() {

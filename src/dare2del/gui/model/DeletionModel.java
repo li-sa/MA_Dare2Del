@@ -43,11 +43,25 @@ public class DeletionModel extends Observable {
     public void setCurrentSelectedDeletionCandidate(DetailedFile detailedFile) {
         this.currentSelectedDeletionCandidate = detailedFile;
         System.out.println(">> Current selected deletion candidate: " + detailedFile.getName());
+
+        this.setChanged();
+        this.notifyObservers(currentSelectedDeletionCandidate);
+    }
+
+    public DetailedFile getCurrentSelectedDeletionCandidate() {
+        return currentSelectedDeletionCandidate;
     }
 
     public void setCurrentSelectedNearMissCandidate(DetailedFile detailedFile) {
         this.currentSelectedNearMissCandidate = detailedFile;
         System.out.println(">> Current selected near miss candidate: " + detailedFile.getName());
+
+        this.setChanged();
+        this.notifyObservers();
+    }
+
+    public void resetFileList() {
+        this.fileList = new ArrayList<>();
     }
 
     public ObservableList<DetailedFile> getCandidates() {

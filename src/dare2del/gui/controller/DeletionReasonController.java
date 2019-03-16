@@ -11,12 +11,12 @@ public class DeletionReasonController {
     private DetailedFile deletionCandidate;
 
     public DeletionReasonController() {
-        reasonPane = new DeletionReasonPane();
-        reasonPane.setDeletionReasonController(this);
+//        reasonPane = new DeletionReasonPane();
+//        reasonPane.setDeletionReasonController(this);
     }
 
     public void showDeletionReasonStage() {
-        reasonPane.show();
+//        reasonPane.show();
     }
 
 
