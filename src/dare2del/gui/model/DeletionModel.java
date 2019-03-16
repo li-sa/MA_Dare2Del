@@ -27,6 +27,8 @@ public class DeletionModel extends Observable {
     private HashMap<List<String>, List<String>> deletionCandidatePairsWithReasons;
     private HashMap<List<String>, List<String>> nearMissCandidatePairsWithReasons;
 
+    private HashMap<DetailedFile, HashMap<DetailedFile, List<String>>> deletionCandidatePairsWithReasonsGROUPED;
+
     public DeletionModel() {
         this.fileList = new ArrayList<>();
     }
@@ -38,6 +40,8 @@ public class DeletionModel extends Observable {
         this.nearMissCandidates = FXCollections.observableList(deletionService.getCandidates(QueryKind.RELEVANT));
         this.deletionCandidatePairsWithReasons = deletionService.getCandidatesWithReasoning(QueryKind.IRRELEVANT);
         this.nearMissCandidatePairsWithReasons = deletionService.getCandidatesWithReasoning(QueryKind.RELEVANT);
+
+        this.deletionCandidatePairsWithReasonsGROUPED = deletionService.getCandidatesWithReasoning_Grouped(QueryKind.IRRELEVANT);
     }
 
     public void setCurrentSelectedDeletionCandidate(DetailedFile detailedFile) {
