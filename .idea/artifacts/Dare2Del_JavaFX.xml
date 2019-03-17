@@ -23,6 +23,7 @@
         <element id="library" level="project" name="Maven: at.bestsolution.efxclipse.rt:org.eclipse.fx.ui.panes:3.0.0" />
         <element id="module-output" name="Dare2Del_JavaFX" />
         <element id="library" level="project" name="Maven: com.google.code.findbugs:jsr305:2.0.1" />
+        <element id="file-copy" path="$USER_HOME$/Documents/Studium_AI-M/MA_2/jsoup-1.11.3.jar" />
       </element>
       <element id="file-copy" path="$PROJECT_DIR$/resources/prolog/irrelevanceTheory.pl" />
     </root>
