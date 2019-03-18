@@ -26,10 +26,11 @@ public class DeletionModel extends Observable {
 
     private ObservableList<DetailedFile> deletionCandidates;
     private ObservableList<DetailedFile> nearMissCandidates;
-    private HashMap<List<String>, List<String>> deletionCandidatePairsWithReasons;
-    private HashMap<List<String>, List<String>> nearMissCandidatePairsWithReasons;
+    private HashMap<List<String>, List<String>> deletionPairs_reasoned;
+    private HashMap<List<String>, List<String>> nearMissPairs_reasoned;
 
-    private HashMap<DetailedFile, HashMap<DetailedFile, List<String>>> deletionCandidatePairsWithReasonsGROUPED;
+    private HashMap<DetailedFile, HashMap<DetailedFile, List<String>>> deletionPairs_grouped;
+    private HashMap<DetailedFile, HashMap<DetailedFile, List<String>>> nearMissPairs_grouped;
 
     public DeletionModel() {
         this.fileList = new ArrayList<>();
@@ -40,10 +41,11 @@ public class DeletionModel extends Observable {
 
         this.deletionCandidates = FXCollections.observableList(deletionService.getCandidates(QueryKind.IRRELEVANT));
         this.nearMissCandidates = FXCollections.observableList(deletionService.getCandidates(QueryKind.RELEVANT));
-        this.deletionCandidatePairsWithReasons = deletionService.getCandidatesWithReasoning(QueryKind.IRRELEVANT);
-        this.nearMissCandidatePairsWithReasons = deletionService.getCandidatesWithReasoning(QueryKind.RELEVANT);
+        this.deletionPairs_reasoned = deletionService.getCandidatesWithReasoning(QueryKind.IRRELEVANT);
+        this.nearMissPairs_reasoned = deletionService.getCandidatesWithReasoning(QueryKind.RELEVANT);
 
-        this.deletionCandidatePairsWithReasonsGROUPED = deletionService.getCandidatesWithReasoning_Grouped(QueryKind.IRRELEVANT);
+        this.deletionPairs_grouped = deletionService.getCandidatesWithReasoning_Grouped(QueryKind.IRRELEVANT);
+        this.nearMissPairs_grouped = deletionService.getCandidatesWithReasoning_Grouped(QueryKind.RELEVANT);
     }
 
     public void setCurrentSelectedDeletionCandidate(DetailedFile detailedFile) {
@@ -82,12 +84,12 @@ public class DeletionModel extends Observable {
         return nearMissCandidates;
     }
 
-    public HashMap<List<String>, List<String>> getDeletionCandidatePairsWithReasons() {
-        return deletionCandidatePairsWithReasons;
+    public HashMap<List<String>, List<String>> getDeletionPairs_reasoned() {
+        return deletionPairs_reasoned;
     }
 
-    public HashMap<List<String>, List<String>> getNearMissCandidatePairsWithReasons() {
-        return nearMissCandidatePairsWithReasons;
+    public HashMap<List<String>, List<String>> getNearMissPairs_reasoned() {
+        return nearMissPairs_reasoned;
     }
 
     public Path getRootPath() {
@@ -106,8 +108,12 @@ public class DeletionModel extends Observable {
         return fileList;
     }
 
-    public HashMap<DetailedFile, HashMap<DetailedFile, List<String>>> getDeletionCandidatePairsWithReasonsGROUPED() {
-        return deletionCandidatePairsWithReasonsGROUPED;
+    public HashMap<DetailedFile, HashMap<DetailedFile, List<String>>> getDeletionPairs_grouped() {
+        return deletionPairs_grouped;
+    }
+
+    public HashMap<DetailedFile, HashMap<DetailedFile, List<String>>> getNearMissPairs_grouped() {
+        return nearMissPairs_grouped;
     }
 
     public void resetCurrentChoices() {

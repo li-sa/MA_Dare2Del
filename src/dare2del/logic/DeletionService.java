@@ -60,7 +60,7 @@ public class DeletionService {
                 solution_setOfClause = query_setOfClause.nextSolution();
 
                 String solution_rawValue = solution_setOfClause.get("Set").toString().replaceAll("\'", "");
-                String solution_rawValue_withNeg = solution_rawValue.replaceAll("\\\\\\+\\(", "not_");
+                String solution_rawValue_withNeg = solution_rawValue.replaceAll("\\\\\\+\\(", "NOT_");
 
                 Matcher matcher = Pattern.compile("[\\w]+\\((([\\w\\s.':\\-\\\\]+)+(,)*)+\\)").matcher(solution_rawValue_withNeg);
                 while (matcher.find()) {
