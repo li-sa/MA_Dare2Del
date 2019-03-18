@@ -3,7 +3,6 @@ package dare2del.gui.view;
 import dare2del.gui.model.DeletionModel;
 import dare2del.gui.view.Tabs.DeletionListPane;
 import dare2del.gui.view.Tabs.NearMissListPane;
-import dare2del.logic.DetailedFile;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Orientation;
@@ -20,33 +19,30 @@ import java.util.Observable;
 import java.util.Observer;
 
 public class MainView implements Observer {
-    private DeletionModel deletionModel;
-    private Stage primaryStage;
+    private final DeletionModel deletionModel;
+    private final Stage primaryStage;
 
     //Main components
     private DirectoryTreeView tv;
     private DirectoryView v;
     private TabPane tabPane;
-    private SplitPane hPane;
-    private BorderPane borderPane;
-    private Scene s;
 
     //TabPane components
-    DeletionReasonPane reasonPane;
-    DeletionListPane delList;
+    private DeletionReasonPane reasonPane;
+    private DeletionListPane delList;
     SplitPane splitPane_deletion;
-    NearMissListPane nearMissList;
+    private NearMissListPane nearMissList;
     SplitPane splitPane_nearMiss;
-    Tab deletionTab;
-    Tab nearMissTab;
+    private Tab deletionTab;
+    private Tab nearMissTab;
 
     //Menu
-    MenuBar menuBar;
-    Menu fileMenu;
-    Menu editMenu;
-    Menu helpMenu;
-    MenuItem openFileItem;
-    MenuItem exitItem;
+    private MenuBar menuBar;
+    private Menu fileMenu;
+    private Menu editMenu;
+    private Menu helpMenu;
+    private MenuItem openFileItem;
+    private MenuItem exitItem;
 
     public MainView(DeletionModel deletionModel, Stage primaryStage) {
         this.deletionModel = deletionModel;
@@ -62,8 +58,8 @@ public class MainView implements Observer {
 
         ObservableList<DirItem> rootDirs = FXCollections.observableArrayList();
 
-        File rootfile = rootPath.toFile();
-        if (rootfile.isDirectory()) {
+        File rootFile = rootPath.toFile();
+        if (rootFile.isDirectory()) {
             rootDirs.add(ResourceItem.createObservedPath(rootPath));
         } else {
             for (File dir : rootPath.toFile().listFiles(f -> f.isDirectory())) {
@@ -85,13 +81,13 @@ public class MainView implements Observer {
         thirdColumn.setOrientation(Orientation.VERTICAL);
         thirdColumn.setDividerPositions(0.5);
 
-        hPane = new SplitPane(tv, v, thirdColumn);
+        SplitPane hPane = new SplitPane(tv, v, thirdColumn);
         hPane.setDividerPositions(0.2, 0.6);
 
-        borderPane = new BorderPane(hPane);
+        BorderPane borderPane = new BorderPane(hPane);
         borderPane.setTop(createMenuBar());
 
-        s = new Scene(borderPane, 1600, 800);
+        Scene s = new Scene(borderPane, 1600, 800);
         primaryStage.setScene(s);
         primaryStage.setTitle("Dare2Del");
         primaryStage.show();

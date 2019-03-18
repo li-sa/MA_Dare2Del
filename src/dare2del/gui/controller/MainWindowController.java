@@ -21,23 +21,22 @@ import java.util.List;
 
 public class MainWindowController {
 
-    private final String default_rootPath = "C:\\Users\\Lisa\\Documents\\Studium_AI-M\\MA_2\\TestDir_2";
+    private final String default_rootPath = "C:\\Users\\Lisa\\Desktop\\MA_Beispiele\\TestDir_2";
 
-    private Stage primaryStage;
-    public DeletionModel deletionModel;
+    private final Stage primaryStage;
+    private final DeletionModel deletionModel;
 
-    private MainView mainView;
+    private final MainView mainView;
 
     private Path rootPath;
-    private List<DetailedFile> fileList;
 
     public MainWindowController(Stage primaryStage) {
         this.primaryStage = primaryStage;
 
         this.deletionModel = new DeletionModel();
 
-//        String choosenRootPath = showDirectoryFileChooser(primaryStage);
-        validatePath(default_rootPath); // just for testing! -> parameter might be choosenRootPath
+//        String chosenRootPath = showDirectoryFileChooser(primaryStage);
+        validatePath(default_rootPath); // just for testing! -> parameter might be chosenRootPath
         // Preparation: Crawl files within rootPath and write metadata to prolog file clauses.pl
         initProlog();
 
@@ -69,13 +68,13 @@ public class MainWindowController {
 
     private void initProlog() {
         FileCrawler fileCrawler = new FileCrawler(rootPath);
-        fileList = fileCrawler.getFileList();
+        List<DetailedFile> fileList = fileCrawler.getFileList();
         PrologFileWriter prologFileWriter = new PrologFileWriter(fileList);
 
         this.deletionModel.setFileList(fileList);
     }
 
-    public boolean validatePath(String pathName) {
+    private void validatePath(String pathName) {
         try {
             rootPath = Paths.get(pathName);
             deletionModel.setRootPath(rootPath);
@@ -84,9 +83,7 @@ public class MainWindowController {
             throw new IllegalArgumentException();
         }
 
-        if (rootPath.toFile().isDirectory()) {
-            return true;
-        } else {
+        if (!rootPath.toFile().isDirectory()) {
             throw new IllegalArgumentException();
         }
     }
@@ -136,11 +133,11 @@ public class MainWindowController {
                     throw new IllegalArgumentException(e);
                 }
 
-                if (selectedItem_file != null && selectedItem_file.isDirectory()) {
+//                if (selectedItem_file != null && selectedItem_file.isDirectory()) {
 //                    ObservableList<DirItem> dirs_temp = FXCollections.observableArrayList();
 //                    dirs_temp.add(ResourceItem.createObservedPath(selectedItem_file.toPath()));
 //                    tv.setRootDirectories(dirs_temp);
-                }
+//                }
             }
         });
     }

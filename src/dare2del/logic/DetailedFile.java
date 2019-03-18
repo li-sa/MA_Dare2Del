@@ -60,7 +60,7 @@ public class DetailedFile {
         return fileExtension;
     }
 
-    public long getSecondsSinceEpoch(FileTime fileTime){
+    private long getSecondsSinceEpoch(FileTime fileTime){
         Instant instant = fileTime.toInstant();
         return instant.getEpochSecond();
     }

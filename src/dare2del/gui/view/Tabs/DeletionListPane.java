@@ -19,10 +19,10 @@ import java.util.Observer;
 
 public class DeletionListPane extends VBox implements Observer {
 
-    private DeletionModel deletionModel;
+    private final DeletionModel deletionModel;
 
     private ListView<DetailedFile> deletionCandidates;
-    private List<ListCell<DetailedFile>> deletionCandidatesCellList;
+    private final List<ListCell<DetailedFile>> deletionCandidatesCellList;
     private ReadOnlyObjectProperty<DetailedFile> selectedItem;
 
     public DeletionListPane(DeletionModel deletionModel) {
@@ -38,7 +38,7 @@ public class DeletionListPane extends VBox implements Observer {
 
     }
 
-    public void init() {
+    private void init() {
         Label label_filesToDelete = new Label(Messages.getString("DeletionWindowStage.topLabel"));
         label_filesToDelete.setPadding(new Insets(10, 10, 10, 10));
 

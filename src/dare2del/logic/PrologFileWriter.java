@@ -7,12 +7,12 @@ import java.util.List;
 import java.util.Map;
 
 public class PrologFileWriter {
-    FileWriter fileWriter;
+    private FileWriter fileWriter;
 
     //    private List<DetailedFile> folderList;
     private final List<DetailedFile> fileList;
 
-    private String clauseFile_pathString = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + "/../clauses.pl";
+    private final String clauseFile_pathString = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + "/../clauses.pl";
 
     private Map<String, List<String>> prologStatements;
 

@@ -16,10 +16,9 @@ import java.util.Observable;
 import java.util.Observer;
 
 public class NearMissListPane extends VBox implements Observer {
-    private DeletionModel deletionModel;
+    private final DeletionModel deletionModel;
 
-    private ListView<DetailedFile> nearMissCandidates;
-    private List<ListCell<DetailedFile>> nearMissCandidatesCellList;
+    private final List<ListCell<DetailedFile>> nearMissCandidatesCellList;
     private ReadOnlyObjectProperty<DetailedFile> selectedItem;
 
     public NearMissListPane(DeletionModel deletionModel) {
@@ -35,11 +34,11 @@ public class NearMissListPane extends VBox implements Observer {
 
     }
 
-    public void init() {
+    private void init() {
         Label label_nearMisses = new Label(Messages.getString("NearMissListPane.topLabel"));
         label_nearMisses.setPadding(new Insets(10, 10, 10, 10));
 
-        nearMissCandidates = new ListView<>(deletionModel.getNearMissCandidates());
+        ListView<DetailedFile> nearMissCandidates = new ListView<>(deletionModel.getNearMissCandidates());
         nearMissCandidates.setCellFactory(callback -> {
             ListCell<DetailedFile> cell = new NearMissCandidateListCell(deletionModel);
             cell.setPrefWidth(this.getWidth());

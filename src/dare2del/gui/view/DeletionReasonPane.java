@@ -1,6 +1,5 @@
 package dare2del.gui.view;
 
-import dare2del.gui.controller.DeletionReasonController;
 import dare2del.gui.controller.MainWindowController;
 import dare2del.gui.model.DeletionModel;
 import dare2del.logic.DetailedFile;
@@ -23,13 +22,12 @@ import java.util.Observer;
 
 public class DeletionReasonPane extends VBox implements Observer {
 
-    private DeletionModel deletionModel;
+    private final DeletionModel deletionModel;
 
     private MainWindowController mainWindowController;
-    private DeletionReasonController deletionReasonController;
 
-    final WebView browser;
-    final WebEngine webEngine;
+    private final WebView browser;
+    private final WebEngine webEngine;
 
     private String reason_default = "<span style='font-family:sans-serif;'>[REASON]</span>";
 
@@ -46,7 +44,7 @@ public class DeletionReasonPane extends VBox implements Observer {
         showDel();
     }
 
-    public void showDel() {
+    private void showDel() {
         URL url = getClass().getResource("/deletion_dummy.html");
 
         DetailedFile currentSelected = deletionModel.getCurrentSelectedDeletionCandidate();
@@ -60,7 +58,7 @@ public class DeletionReasonPane extends VBox implements Observer {
         }
     }
 
-    public void showNearMiss() {
+    private void showNearMiss() {
         URL url = getClass().getResource("/nearmiss_dummy.html");
 
         DetailedFile currentSelected = deletionModel.getCurrentSelectedNearMissCandidate();
@@ -143,10 +141,6 @@ public class DeletionReasonPane extends VBox implements Observer {
         }
 
         return doc;
-    }
-
-    public void setDeletionReasonController(DeletionReasonController deletionReasonController) {
-        this.deletionReasonController = deletionReasonController;
     }
 
     public void update(Observable observable, Object object) {

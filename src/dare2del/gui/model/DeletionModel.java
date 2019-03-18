@@ -15,8 +15,6 @@ import java.util.Observable;
 
 public class DeletionModel extends Observable {
 
-    private DeletionService deletionService;
-
     private Path rootPath;
     public WebEngine webEngine;
 
@@ -37,7 +35,7 @@ public class DeletionModel extends Observable {
     }
 
     public void initDeletionModel() {
-        this.deletionService = new DeletionService(this);
+        DeletionService deletionService = new DeletionService(this);
 
         this.deletionCandidates = FXCollections.observableList(deletionService.getCandidates(QueryKind.IRRELEVANT));
         this.nearMissCandidates = FXCollections.observableList(deletionService.getCandidates(QueryKind.RELEVANT));

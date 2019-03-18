@@ -125,7 +125,7 @@ class IOPrologQueries {
                 solution = query.nextSolution();
                 StringBuilder stringBuilder = new StringBuilder();
                 for (Term variable : variables) {
-                    stringBuilder.append(variable.toString() + " = " + solution.get(variable.toString()) + "\t");
+                    stringBuilder.append(variable.toString()).append(" = ").append(solution.get(variable.toString())).append("\t");
                 }
                 System.out.println(stringBuilder);
             }
@@ -170,7 +170,7 @@ class IOPrologQueries {
                     String[] fileNames = each.split("\\(|, |\\)");
                     List<String> keyToProof = new ArrayList<>();
                     if (fileNames.length == 2) {
-                        keyToProof = new ArrayList<>(Arrays.asList(fileNames[1]));
+                        keyToProof = new ArrayList<>(Collections.singletonList(fileNames[1]));
                     } else if (fileNames.length > 2) {
                         keyToProof = new ArrayList<>(Arrays.asList(fileNames[1], fileNames[2]));
                     }
@@ -294,15 +294,15 @@ class IOPrologQueries {
                     explanationBuilder = explanations.get(candidateToDelete_path);
                 } else if (queryKind.equals(QueryKind.IRRELEVANT)) {
                     explanationBuilder = new StringBuilder();
-                    explanationBuilder.append("File *" + candidateToDelete_path + "* may be deleted because: \n");
+                    explanationBuilder.append("File *").append(candidateToDelete_path).append("* may be deleted because: \n");
                 } else if (queryKind.equals(QueryKind.RELEVANT)) {
                     explanationBuilder = new StringBuilder();
-                    explanationBuilder.append("File *" + candidateToDelete_path + "* is a near miss because: \n");
+                    explanationBuilder.append("File *").append(candidateToDelete_path).append("* is a near miss because: \n");
                 } else {
                     explanationBuilder = new StringBuilder();
                 }
 
-                explanationBuilder.append("- file *" + candidateToReplace + "* is ");
+                explanationBuilder.append("- file *").append(candidateToReplace).append("* is ");
 
                 for (int i = 0; i < reasonList.size(); i++) {
                     String reason = reasonList.get(i);
@@ -311,18 +311,18 @@ class IOPrologQueries {
                     if (reasonList.size() == 1) {
                         explanationBuilder.append(reasonComponents[0].replaceAll("_", " "));
                     } else if (i < reasonList.size() - 2) {
-                        explanationBuilder.append(reasonComponents[0].replaceAll("_", " ") + ", ");
+                        explanationBuilder.append(reasonComponents[0].replaceAll("_", " ")).append(", ");
                     } else if (i < reasonList.size() - 1) {
                         explanationBuilder.append(reasonComponents[0].replaceAll("_", " "));
                     } else if (i == reasonList.size() - 1 && queryKind.equals(QueryKind.IRRELEVANT)) {
-                        explanationBuilder.append(" and " + reasonComponents[0].replaceAll("_", " "));
+                        explanationBuilder.append(" and ").append(reasonComponents[0].replaceAll("_", " "));
                     } else if (i == reasonList.size() - 1 && queryKind.equals(QueryKind.RELEVANT)) {
-                        explanationBuilder.append(" BUT " + reasonComponents[0].replaceAll("_", " "));
+                        explanationBuilder.append(" BUT ").append(reasonComponents[0].replaceAll("_", " "));
                     }
                 }
 
                 if (!candidateToDelete_path.equals(candidateToReplace_path)) { //Only if deletion suggestion according to another file
-                    explanationBuilder.append(" compared to *" + candidateToDelete + "*.\n");
+                    explanationBuilder.append(" compared to *").append(candidateToDelete).append("*.\n");
                 } else {
                     explanationBuilder.append(".\n");
                 }

@@ -24,18 +24,18 @@ import java.util.Observer;
  */
 class DeletionCandidateListCell extends ListCell<DetailedFile> implements Observer {
 
-    private DeletionModel deletionModel;
+    private final DeletionModel deletionModel;
 
-    DetailedFile detailedFile;
-    Button button_deletion_explain;
+    private DetailedFile detailedFile;
+    private Button button_deletion_explain;
 
-    private BorderPane borderPane;
-    private Label filenameLabel;
+    private final BorderPane borderPane;
+    private final Label filenameLabel;
 
     private DeletionDecision decision = DeletionDecision.DONTKNOW;
     private final Image DELETE_DECISION_ICON = new Image(getClass().getClassLoader().getResource("icons/delete.png").toExternalForm());
     private final Image KEEP_DECISION_ICON = new Image(getClass().getClassLoader().getResource("icons/keep.png").toExternalForm());
-    private final Image DONT_KNOW_DECISON_ICON = new Image(getClass().getClassLoader().getResource("icons/dont-know.png").toExternalForm());
+    private final Image DONT_KNOW_DECISION_ICON = new Image(getClass().getClassLoader().getResource("icons/dont-know.png").toExternalForm());
 
     public DeletionCandidateListCell(DeletionModel deletionModel) {
         super();
@@ -72,7 +72,7 @@ class DeletionCandidateListCell extends ListCell<DetailedFile> implements Observ
 
     private Button createCycleDecisionButton() {
         Button button = new Button();
-        button.setGraphic(new ImageView(DONT_KNOW_DECISON_ICON));
+        button.setGraphic(new ImageView(DONT_KNOW_DECISION_ICON));
         button.setOnMouseClicked(event -> {
             // This just cycles through the icons right now, the decision is not stored in any way.
             switch (decision) {
@@ -86,7 +86,7 @@ class DeletionCandidateListCell extends ListCell<DetailedFile> implements Observ
                     break;
                 case KEEP:
                     decision = DeletionDecision.DONTKNOW;
-                    button.setGraphic(new ImageView(DONT_KNOW_DECISON_ICON));
+                    button.setGraphic(new ImageView(DONT_KNOW_DECISION_ICON));
                     break;
             }
         });

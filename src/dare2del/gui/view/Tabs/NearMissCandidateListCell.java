@@ -14,14 +14,13 @@ import javafx.scene.layout.BorderPane;
 import java.util.Observable;
 import java.util.Observer;
 
-public class NearMissCandidateListCell extends ListCell<DetailedFile> implements Observer {
-    private DeletionModel deletionModel;
+class NearMissCandidateListCell extends ListCell<DetailedFile> implements Observer {
+    private final DeletionModel deletionModel;
 
     private DetailedFile detailedFile;
-    private Button button_nearMiss_explain;
 
-    private BorderPane borderPane;
-    private Label filenameLabel;
+    private final BorderPane borderPane;
+    private final Label filenameLabel;
 
     public NearMissCandidateListCell(DeletionModel deletionModel) {
         super();
@@ -56,7 +55,7 @@ public class NearMissCandidateListCell extends ListCell<DetailedFile> implements
     }
 
     private Button createShowReasonButton() {
-        button_nearMiss_explain = new Button(Messages.getString("DeletionCandidateListCell.explainButton"));
+        Button button_nearMiss_explain = new Button(Messages.getString("DeletionCandidateListCell.explainButton"));
         button_nearMiss_explain.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {

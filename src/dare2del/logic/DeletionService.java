@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 
 public class DeletionService {
 
-    private DeletionModel deletionModel;
+    private final DeletionModel deletionModel;
 
     public DeletionService(DeletionModel deletionModel) {
         this.deletionModel = deletionModel;
@@ -42,9 +42,6 @@ public class DeletionService {
     public HashMap<DetailedFile, HashMap<DetailedFile, List<String>>> getCandidatesWithReasoning_Grouped(QueryKind queryKind) {
         Term variable_term = new Variable("X");
         Term[] terms = new Term[]{variable_term};
-        List<Term> variables = new ArrayList<Term>() {{
-            add(variable_term);
-        }};
 
         HashMap<DetailedFile, HashMap<DetailedFile, List<String>>> tracesMap = new HashMap<>();
 
@@ -107,36 +104,12 @@ public class DeletionService {
             System.out.println("No valid Query! \n");
         }
 
-//        System.out.println("TEEEST");
-//        for (DetailedFile eachOuter : tracesMap.keySet()) {
-//            StringBuilder stringBuilder = new StringBuilder();
-//
-//            stringBuilder.append(eachOuter.getName() + " >> ");
-//
-//            HashMap<DetailedFile, List<String>> innerHashMap = tracesMap.get(eachOuter);
-//
-//            for (DetailedFile eachInner : innerHashMap.keySet()) {
-//                stringBuilder.append(eachInner.getName() + " : ");
-//
-//                List<String> stringList = innerHashMap.get(eachInner);
-//                for (String stringItem : stringList) {
-//                    stringBuilder.append(stringItem + ", ");
-//                }
-//            }
-//
-//            System.out.println(stringBuilder);
-//        }
-//        System.out.println("EEEND");
-
         return tracesMap;
     }
 
     public HashMap<List<String>, List<String>> getCandidatesWithReasoning(QueryKind queryKind) {
         Term variable_term = new Variable("X");
         Term[] terms = new Term[]{variable_term};
-        List<Term> variables = new ArrayList<Term>() {{
-            add(variable_term);
-        }};
 
         HashMap<List<String>, List<String>> tracesMap = new HashMap<>();
 
@@ -166,7 +139,7 @@ public class DeletionService {
                     String[] fileNames = each.split("\\(|, |\\)");
                     List<String> keyToProof = new ArrayList<>();
                     if (fileNames.length == 2) {
-                        keyToProof = new ArrayList<>(Arrays.asList(fileNames[1]));
+                        keyToProof = new ArrayList<>(Collections.singletonList(fileNames[1]));
                     } else if (fileNames.length > 2) {
                         keyToProof = new ArrayList<>(Arrays.asList(fileNames[1], fileNames[2]));
                     }
