@@ -5,6 +5,7 @@ import dare2del.logic.DetailedFile;
 import dare2del.logic.QueryKind;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.web.WebEngine;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ public class DeletionModel extends Observable {
     private DeletionService deletionService;
 
     private Path rootPath;
+    public WebEngine webEngine;
 
     private List<DetailedFile> fileList;
     private DetailedFile currentSelectedDeletionCandidate;
@@ -61,7 +63,11 @@ public class DeletionModel extends Observable {
         System.out.println(">> Current selected near miss candidate: " + detailedFile.getName());
 
         this.setChanged();
-        this.notifyObservers();
+        this.notifyObservers(currentSelectedNearMissCandidate);
+    }
+
+    public DetailedFile getCurrentSelectedNearMissCandidate() {
+        return currentSelectedNearMissCandidate;
     }
 
     public void resetFileList() {
@@ -98,5 +104,14 @@ public class DeletionModel extends Observable {
 
     public List<DetailedFile> getFileList() {
         return fileList;
+    }
+
+    public HashMap<DetailedFile, HashMap<DetailedFile, List<String>>> getDeletionCandidatePairsWithReasonsGROUPED() {
+        return deletionCandidatePairsWithReasonsGROUPED;
+    }
+
+    public void resetCurrentChoices() {
+        this.currentSelectedDeletionCandidate = null;
+        this.currentSelectedNearMissCandidate = null;
     }
 }

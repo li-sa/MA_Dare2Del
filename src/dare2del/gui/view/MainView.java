@@ -87,12 +87,11 @@ public class MainView implements Observer {
         borderPane = new BorderPane(hPane);
         borderPane.setTop(createMenuBar());
 
-        s = new Scene(borderPane, 1200, 600);
+        s = new Scene(borderPane, 1600, 800);
         primaryStage.setScene(s);
         primaryStage.setTitle("Dare2Del");
         primaryStage.show();
     }
-
 
     private TabPane createTabs() {
         reasonPane = new DeletionReasonPane(this.deletionModel);
@@ -142,10 +141,6 @@ public class MainView implements Observer {
     }
 
     public void update(Observable observable, Object object) {
-        if (object instanceof DetailedFile) {
-            initView();
-//            this.reasonPane = new DeletionReasonPane(this.deletionModel);
-        }
     }
 
     public MenuItem getOpenFileItem() {

@@ -4,6 +4,7 @@ import dare2del.gui.model.DeletionDecision;
 import dare2del.gui.model.DeletionModel;
 import dare2del.gui.view.Messages;
 import dare2del.logic.DetailedFile;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -94,7 +95,14 @@ class DeletionCandidateListCell extends ListCell<DetailedFile> implements Observ
 
     private Button createShowReasonButton() {
         button_deletion_explain = new Button(Messages.getString("DeletionCandidateListCell.explainButton"));
-        button_deletion_explain.setOnMouseClicked(event -> this.deletionModel.setCurrentSelectedDeletionCandidate(this.detailedFile));
+        button_deletion_explain.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                deletionModel.resetCurrentChoices();
+                deletionModel.setCurrentSelectedDeletionCandidate(detailedFile);
+            }
+        });
+
         return button_deletion_explain;
     }
 

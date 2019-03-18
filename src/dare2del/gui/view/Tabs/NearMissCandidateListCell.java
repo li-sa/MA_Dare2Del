@@ -3,6 +3,7 @@ package dare2del.gui.view.Tabs;
 import dare2del.gui.model.DeletionModel;
 import dare2del.gui.view.Messages;
 import dare2del.logic.DetailedFile;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -56,7 +57,13 @@ public class NearMissCandidateListCell extends ListCell<DetailedFile> implements
 
     private Button createShowReasonButton() {
         button_nearMiss_explain = new Button(Messages.getString("DeletionCandidateListCell.explainButton"));
-        button_nearMiss_explain.setOnMouseClicked(event -> this.deletionModel.setCurrentSelectedNearMissCandidate(detailedFile));
+        button_nearMiss_explain.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                deletionModel.resetCurrentChoices();
+                deletionModel.setCurrentSelectedNearMissCandidate(detailedFile);
+            }
+        });
         return button_nearMiss_explain;
     }
 
