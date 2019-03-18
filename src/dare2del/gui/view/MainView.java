@@ -80,8 +80,12 @@ public class MainView implements Observer {
         v.setDir(tv.getRootDirectories().get(0));
 
         tabPane = createTabs();
+        reasonPane = new DeletionReasonPane(this.deletionModel);
+        SplitPane thirdColumn = new SplitPane(tabPane, reasonPane);
+        thirdColumn.setOrientation(Orientation.VERTICAL);
+        thirdColumn.setDividerPositions(0.5);
 
-        hPane = new SplitPane(tv, v, tabPane);
+        hPane = new SplitPane(tv, v, thirdColumn);
         hPane.setDividerPositions(0.2, 0.6);
 
         borderPane = new BorderPane(hPane);
@@ -94,27 +98,17 @@ public class MainView implements Observer {
     }
 
     private TabPane createTabs() {
-        reasonPane = new DeletionReasonPane(this.deletionModel);
-
-        delList = new DeletionListPane(deletionModel);
-        splitPane_deletion = new SplitPane(delList, reasonPane);
-        splitPane_deletion.setOrientation(Orientation.VERTICAL);
-        splitPane_deletion.setDividerPositions(0.5);
-
-        nearMissList = new NearMissListPane(deletionModel);
-        splitPane_nearMiss = new SplitPane(nearMissList, reasonPane);
-        splitPane_nearMiss.setOrientation(Orientation.VERTICAL);
-        splitPane_nearMiss.setDividerPositions(0.5);
-
         tabPane = new TabPane();
 
+        delList = new DeletionListPane(deletionModel);
         deletionTab = new Tab();
         deletionTab.setText("Deletion Tab");
-        deletionTab.setContent(splitPane_deletion);
+        deletionTab.setContent(delList);
 
+        nearMissList = new NearMissListPane(deletionModel);
         nearMissTab = new Tab();
         nearMissTab.setText("Near Misses Tab");
-        nearMissTab.setContent(splitPane_nearMiss);
+        nearMissTab.setContent(nearMissList);
 
         tabPane.getTabs().addAll(deletionTab, nearMissTab);
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
