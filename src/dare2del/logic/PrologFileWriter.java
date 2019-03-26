@@ -5,8 +5,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class PrologFileWriter {
+
+    private final Logger myLogger;
     private FileWriter fileWriter;
 
     //    private List<DetailedFile> folderList;
@@ -16,16 +19,16 @@ public class PrologFileWriter {
 
     private Map<String, List<String>> prologStatements;
 
-    public PrologFileWriter(List<DetailedFile> fileList) {
-        System.out.println(">> Prolog File Writer <<");
-        System.out.println(getClass().getProtectionDomain().getCodeSource().getLocation());
-        System.out.println("INFO. Writing prolog file: " + clauseFile_pathString);
+    public PrologFileWriter(List<DetailedFile> fileList, Logger myLogger) {
+        this.myLogger = myLogger;
+
+        myLogger.info("[PrologFileWriter] Start writing prolog file " + clauseFile_pathString + ".");
 
         this.fileList = fileList;
         collectPrologStatements();
         writeClausesToPrologFile();
 
-        System.out.println("INFO. Finished writing. \n");
+        myLogger.info("[PrologFileWriter] Finished writing prolog file.");
     }
 
     private void collectPrologStatements() {
@@ -71,7 +74,8 @@ public class PrologFileWriter {
             fileWriter.close();
 
         } catch (Exception e) {
-            throw new IllegalArgumentException("EXCEPTION in writeClausesToPrologFile(): " + e.getMessage());
+            myLogger.warning("[PrologFileWriter] Exception in writeClausesToPrologFile(): " + e.getMessage());
+            throw new IllegalArgumentException();
         }
     }
 }

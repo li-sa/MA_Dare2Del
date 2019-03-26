@@ -28,11 +28,9 @@ class NearMissCandidateListCell extends ListCell<DetailedFile> implements Observ
         this.deletionModel.addObserver(this);
 
         this.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
             @Override
             public void handle(MouseEvent arg0) {
-                // TODO Auto-generated method stub
-                // Just do nothing?
+                // TODO
             }
         });
 

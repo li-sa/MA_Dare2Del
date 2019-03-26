@@ -5,18 +5,21 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class FileCrawler {
+
+    private final Logger myLogger;
 
     private Path rootPath;
     private final List<DetailedFile> folderList;
     private final List<DetailedFile> fileList;
 
-    public FileCrawler(Path rootPath) {
+    public FileCrawler(Path rootPath, Logger myLogger) {
+        this.myLogger = myLogger;
         this.rootPath = rootPath;
 
-        System.out.println(">> File Crawler <<");
-        System.out.println("INFO. Crawling started on: " + rootPath);
+        myLogger.info("[FileCrawler] Start crawling on " + rootPath + ".");
 
         folderList = new ArrayList<>();
         fileList = new ArrayList<>();
@@ -26,7 +29,7 @@ public class FileCrawler {
 
         printResults();
 
-        System.out.println("INFO. Finished crawling. Found " + folderList.size() + " folders and " + fileList.size() + " files. \n");
+        myLogger.info("[FileCrawler] Finished crawling. Found " + folderList.size() + " folders and " + fileList.size() + " files.");
     }
 
     private void crawl(File file) {
@@ -48,12 +51,14 @@ public class FileCrawler {
         try {
             rootPath = Paths.get(pathName);
         } catch (Exception e) {
-            System.out.println("INFO. Root folder ist no valid path (" + pathName + ").");
+            myLogger.warning("[FileCrawler] Exception in init(): " + e.getMessage());
+            throw new IllegalArgumentException();
         }
 
         if (rootPath.toFile().isDirectory()) {
             return rootPath.toFile();
         } else {
+            myLogger.warning("[FileCrawler] Exception in init(): " + pathName + " is no valid directory.");
             throw new IllegalArgumentException();
         }
     }

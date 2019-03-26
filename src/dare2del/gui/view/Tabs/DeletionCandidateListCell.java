@@ -17,11 +17,6 @@ import javafx.scene.layout.BorderPane;
 import java.util.Observable;
 import java.util.Observer;
 
-/**
- * Custom {@code ListCell} class that shows a list element as a {@code Button}
- * cycling through icons on the left, a simple text {@code Label} in the middle
- * and a {@code Button} offering more information on the right.
- */
 class DeletionCandidateListCell extends ListCell<DetailedFile> implements Observer {
 
     private final DeletionModel deletionModel;
@@ -43,7 +38,6 @@ class DeletionCandidateListCell extends ListCell<DetailedFile> implements Observ
         this.deletionModel.addObserver(this);
 
         this.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
             @Override
             public void handle(MouseEvent arg0) {
 //                deletionReasonController.showDeletionReasonStage();
@@ -120,5 +114,4 @@ class DeletionCandidateListCell extends ListCell<DetailedFile> implements Observ
             setGraphic(borderPane);
         }
     }
-
 }

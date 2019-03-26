@@ -7,13 +7,22 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.web.WebEngine;
 
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Observable;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 public class DeletionModel extends Observable {
+
+    public final Logger myLogger;
 
     private Path rootPath;
     public WebEngine webEngine;
@@ -31,6 +40,9 @@ public class DeletionModel extends Observable {
     private HashMap<DetailedFile, HashMap<DetailedFile, List<String>>> nearMissPairs_grouped;
 
     public DeletionModel() {
+        myLogger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+        initLogger();
+
         this.fileList = new ArrayList<>();
     }
 
@@ -46,9 +58,26 @@ public class DeletionModel extends Observable {
         this.nearMissPairs_grouped = deletionService.getCandidatesWithReasoning_Grouped(QueryKind.RELEVANT);
     }
 
+    public void initLogger() {
+        File logDir = new File("./logs/");
+        if( !(logDir.exists()) )
+            logDir.mkdir();
+
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate localDate = LocalDate.now();
+        FileHandler fh = null;
+        try {
+            fh = new FileHandler("logs/dar2del_log_" + dtf.format(localDate) + ".log", true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        fh.setFormatter(new SimpleFormatter());
+        myLogger.addHandler(fh);
+    }
+
     public void setCurrentSelectedDeletionCandidate(DetailedFile detailedFile) {
         this.currentSelectedDeletionCandidate = detailedFile;
-        System.out.println(">> Current selected deletion candidate: " + detailedFile.getName());
+        myLogger.info("[DeletionModel] Current selected deletion candidate: " + detailedFile.getName());
 
         this.setChanged();
         this.notifyObservers(currentSelectedDeletionCandidate);
@@ -60,7 +89,7 @@ public class DeletionModel extends Observable {
 
     public void setCurrentSelectedNearMissCandidate(DetailedFile detailedFile) {
         this.currentSelectedNearMissCandidate = detailedFile;
-        System.out.println(">> Current selected near miss candidate: " + detailedFile.getName());
+        myLogger.info("[DeletionModel] Current selected near miss candidate: " + detailedFile.getName());
 
         this.setChanged();
         this.notifyObservers(currentSelectedNearMissCandidate);

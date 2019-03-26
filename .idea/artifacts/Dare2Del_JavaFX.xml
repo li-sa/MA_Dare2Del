@@ -23,9 +23,18 @@
         <element id="library" level="project" name="Maven: at.bestsolution.efxclipse.rt:org.eclipse.fx.ui.panes:3.0.0" />
         <element id="module-output" name="Dare2Del_JavaFX" />
         <element id="library" level="project" name="Maven: com.google.code.findbugs:jsr305:2.0.1" />
-        <element id="file-copy" path="$USER_HOME$/Documents/Studium_AI-M/MA_2/jsoup-1.11.3.jar" />
+        <element id="file-copy" path="$USER_HOME$/OneDrive - Otto-Friedrich-Universität Bamberg/MA_2.0/Java/jsoup-1.11.3.jar" />
+        <element id="file-copy" path="$USER_HOME$/OneDrive - Otto-Friedrich-Universität Bamberg/MA_2.0/Java/bestsolution/jsr305-2.0.1.jar" />
+        <element id="file-copy" path="$USER_HOME$/OneDrive - Otto-Friedrich-Universität Bamberg/MA_2.0/Java/bestsolution/javax.inject-1.0.0.jar" />
+        <element id="file-copy" path="$USER_HOME$/OneDrive - Otto-Friedrich-Universität Bamberg/MA_2.0/Java/bestsolution/com.google.guava-15.0.0.jar" />
+        <element id="file-copy" path="$USER_HOME$/OneDrive - Otto-Friedrich-Universität Bamberg/MA_2.0/Java/bestsolution/org.eclipse.fx.core-3.0.0.jar" />
+        <element id="file-copy" path="$USER_HOME$/OneDrive - Otto-Friedrich-Universität Bamberg/MA_2.0/Java/bestsolution/org.apache.commons.lang-2.6.0.jar" />
+        <element id="file-copy" path="$USER_HOME$/OneDrive - Otto-Friedrich-Universität Bamberg/MA_2.0/Java/bestsolution/org.eclipse.fx.ui.panes-3.0.0.jar" />
+        <element id="file-copy" path="$USER_HOME$/OneDrive - Otto-Friedrich-Universität Bamberg/MA_2.0/Java/bestsolution/org.eclipse.fx.ui.controls-3.0.0.jar" />
       </element>
-      <element id="file-copy" path="$PROJECT_DIR$/resources/prolog/irrelevanceTheory.pl" />
+      <element id="directory" name="PrologFiles">
+        <element id="file-copy" path="$PROJECT_DIR$/resources/prolog/irrelevanceTheory.pl" />
+      </element>
     </root>
   </artifact>
 </component>

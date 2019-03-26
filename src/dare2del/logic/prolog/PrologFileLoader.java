@@ -10,29 +10,28 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class PrologFileLoader {
 
-//    private final String CLAUSE_FILE = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + "/../PrologFiles/clauses.pl";
-//    private final String RULE_FILE = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + "/../PrologFiles/irrelevanceTheory.pl";
+    private final Logger myLogger;
 
     private final String PROLOGFILES_DIRECTORY = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + "../PrologFiles";
 
-    public PrologFileLoader() {
+    public PrologFileLoader(Logger myLogger) {
+        this.myLogger = myLogger;
+
         List<String> prologFilesToLoad = new ArrayList<>();
         prologFilesToLoad = addAllPrologFiles(prologFilesToLoad);
-
-//        prologFilesToLoad.add(CLAUSE_FILE);
-//        prologFilesToLoad.add(RULE_FILE);
 
         JPL.init();
 
         for (String eachPrologFile : prologFilesToLoad) {
+            myLogger.info("[PrologFileLoader] Load file " + eachPrologFile + ".");
             Query consultQuery = new Query("consult", new Term[]{
                     new Atom(eachPrologFile)});
             if (!consultQuery.hasSolution()) {
-                // TODO: Exception Handling
-                System.out.println("!!! EXCEPTION: No file " + eachPrologFile + " found !!!");
+                myLogger.warning("[PrologFileLoader] Warning in Constructor: No file " + eachPrologFile + " found.");
             }
             consultQuery.close();
         }
@@ -47,6 +46,8 @@ public class PrologFileLoader {
                 prologFilesToLoad.add(eachFile.getPath());
             }
         }
+
+        myLogger.info("[PrologFileLoader] addAllPrologFiles() found " + prologFilesToLoad.size() + " prolog files to load.");
 
         return prologFilesToLoad;
     }

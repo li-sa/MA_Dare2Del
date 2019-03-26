@@ -1,5 +1,7 @@
-package dare2del.logic;
+package dare2del.logic.IO;
 
+import dare2del.logic.DetailedFile;
+import dare2del.logic.QueryKind;
 import org.jpl7.*;
 
 import java.util.*;

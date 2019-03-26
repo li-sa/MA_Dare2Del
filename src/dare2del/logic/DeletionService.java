@@ -16,7 +16,7 @@ public class DeletionService {
 
     public DeletionService(DeletionModel deletionModel) {
         this.deletionModel = deletionModel;
-        PrologFileLoader prologFileLoader = new PrologFileLoader();
+        PrologFileLoader prologFileLoader = new PrologFileLoader(deletionModel.myLogger);
     }
 
     public List<DetailedFile> getCandidates(QueryKind queryKind) {
@@ -35,6 +35,8 @@ public class DeletionService {
                 candidateFilesToDelete.add(detailedFileAccordingToPath);
             }
         }
+
+        deletionModel.myLogger.info("[DeletionService] getCandidates() found " + candidateFilesToDelete.size() + " candidate files to delete.");
 
         return candidateFilesToDelete;
     }
@@ -61,7 +63,6 @@ public class DeletionService {
 
                 Matcher matcher = Pattern.compile("[\\w]+\\((([\\w\\s.':\\-\\\\]+)+(,)*)+\\)").matcher(solution_rawValue_withNeg);
                 while (matcher.find()) {
-
                     value_temp.add(matcher.group());
                 }
             }
@@ -101,8 +102,12 @@ public class DeletionService {
 
 
         } catch (PrologException prolog_exception) {
-            System.out.println("No valid Query! \n");
+            deletionModel.myLogger.warning("[DeletionService] Exception in getCandidatesWithReasoning_Grouped(): "
+                    + prolog_exception.getMessage());
         }
+
+        deletionModel.myLogger.info("[DeletionService] getCandidatesWithReasoning_Grouped() found "
+                + tracesMap.size() + " candidate files with grouped reasons.");
 
         return tracesMap;
     }
@@ -128,7 +133,6 @@ public class DeletionService {
                 List<String> value_temp = new ArrayList<>();
                 Matcher matcher = Pattern.compile("[\\w]+\\((([\\w\\s.':\\-\\\\]+)+(,)*)+\\)").matcher(solution_rawValue_withNeg);
                 while (matcher.find()) {
-
                     value_temp.add(matcher.group());
                 }
 
@@ -159,8 +163,12 @@ public class DeletionService {
             }
 
         } catch (PrologException prolog_exception) {
-            System.out.println("No valid Query! \n");
+            deletionModel.myLogger.warning("[DeletionService] Exception in getCandidatesWithReasoning(): "
+                    + prolog_exception.getMessage());
         }
+
+        deletionModel.myLogger.info("[DeletionService] getCandidatesWithReasoning() found "
+                + tracesMap.size() + " candidate files with reasons.");
 
         return tracesMap;
     }
@@ -185,6 +193,8 @@ public class DeletionService {
             }
 
         } catch (PrologException prolog_exception) {
+            deletionModel.myLogger.warning("[DeletionService] Exception in queryProlog(): "
+                    + prolog_exception.getMessage());
             System.out.println("No valid Query! \n");
         }
 

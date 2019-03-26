@@ -29,8 +29,6 @@ public class DeletionReasonPane extends VBox implements Observer {
     private final WebView browser;
     private final WebEngine webEngine;
 
-    private String reason_default = "<span style='font-family:sans-serif;'>[REASON]</span>";
-
     public DeletionReasonPane(DeletionModel deletionModel) {
         this.deletionModel = deletionModel;
         this.deletionModel.addObserver(this);
@@ -45,6 +43,8 @@ public class DeletionReasonPane extends VBox implements Observer {
     }
 
     private void showDel() {
+        deletionModel.myLogger.info("[DeletionReasonPane] showDel().");
+
         URL url = getClass().getResource("/deletion_dummy.html");
 
         DetailedFile currentSelected = deletionModel.getCurrentSelectedDeletionCandidate();
@@ -59,6 +59,8 @@ public class DeletionReasonPane extends VBox implements Observer {
     }
 
     private void showNearMiss() {
+        deletionModel.myLogger.info("[DeletionReasonPane] showNearMiss().");
+
         URL url = getClass().getResource("/nearmiss_dummy.html");
 
         DetailedFile currentSelected = deletionModel.getCurrentSelectedNearMissCandidate();
@@ -136,14 +138,16 @@ public class DeletionReasonPane extends VBox implements Observer {
             }
 
         } catch (IOException e) {
-            //TODO: Exception Handling!
-            System.out.println("ERROR in DeletionReasonPane, fillReasonHTML(). " + e.getMessage());
+            deletionModel.myLogger.warning("[DeletionReasonPane] Exception in fillReasonHTML(): " + e.getMessage());
+            throw new IllegalArgumentException();
         }
 
         return doc;
     }
 
     public void update(Observable observable, Object object) {
+        deletionModel.myLogger.info("[DeletionReasonPane] update().");
+
         if (object instanceof DetailedFile) {
             if (deletionModel.getCurrentSelectedDeletionCandidate() != null) {
                 showDel();

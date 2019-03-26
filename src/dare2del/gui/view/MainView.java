@@ -54,6 +54,8 @@ public class MainView implements Observer {
     }
 
     public void initView() {
+        deletionModel.myLogger.info("[MainView] initView().");
+
         Path rootPath = deletionModel.getRootPath();
 
         ObservableList<DirItem> rootDirs = FXCollections.observableArrayList();

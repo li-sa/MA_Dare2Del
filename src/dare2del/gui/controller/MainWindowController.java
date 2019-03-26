@@ -63,13 +63,15 @@ public class MainWindowController {
         if (selectedDirectory != null) {
             rootName = selectedDirectory.getAbsolutePath();
         }
+
+        deletionModel.myLogger.info("[MainWindowController] Selected root path: " + rootName + ".");
         return rootName;
     }
 
     private void initProlog() {
-        FileCrawler fileCrawler = new FileCrawler(rootPath);
+        FileCrawler fileCrawler = new FileCrawler(rootPath, deletionModel.myLogger);
         List<DetailedFile> fileList = fileCrawler.getFileList();
-        PrologFileWriter prologFileWriter = new PrologFileWriter(fileList);
+        PrologFileWriter prologFileWriter = new PrologFileWriter(fileList, deletionModel.myLogger);
 
         this.deletionModel.setFileList(fileList);
     }
@@ -79,11 +81,12 @@ public class MainWindowController {
             rootPath = Paths.get(pathName);
             deletionModel.setRootPath(rootPath);
         } catch (Exception e) {
-            System.out.println("INFO. Root folder ist no valid path (" + pathName + ").");
+            deletionModel.myLogger.warning("Root folder ist no valid path (" + pathName + ").");
             throw new IllegalArgumentException();
         }
 
         if (!rootPath.toFile().isDirectory()) {
+            deletionModel.myLogger.warning("Root folder ist no valid directory (" + pathName + ").");
             throw new IllegalArgumentException();
         }
     }
@@ -104,7 +107,6 @@ public class MainWindowController {
 
     private void setEventHandler_Exit(MenuItem exitItem) {
         exitItem.setOnAction(new EventHandler<ActionEvent>() {
-
             @Override
             public void handle(ActionEvent event) {
                 System.exit(0);
@@ -130,6 +132,7 @@ public class MainWindowController {
                     Path selectedItem_path = Paths.get(v.getSelectedItems().get(0).getUri().replace("file:/", ""));
                     selectedItem_file = selectedItem_path.toFile();
                 } catch (Exception e) {
+                    deletionModel.myLogger.warning("[MainWindowController] Exception in createListenerForDirectoryView(): " + e.getMessage());
                     throw new IllegalArgumentException(e);
                 }
 
