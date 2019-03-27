@@ -71,12 +71,33 @@ older_than_one_year(F) :-
     subtract(C, T, R),
     R > 31536000.
 
+empty(F) :-
+    file(F),
+    size_file(F, S),
+    S = 0.
+
+named_with_obsolete_prefix_or_suffix(F) :-
+    filename(F, FN),
+    string_lower(FN, FNL),
+    sub_string(FNL, B, L, A, 'old').
+
+named_with_obsolete_prefix_or_suffix(F) :-
+    filename(F, FN),
+    string_lower(FN, FNL),
+    sub_string(FNL, B, L, A, 'temp').
+
+irrelevant(F) :-
+    named_with_obsolete_prefix_or_suffix(F).
+
+irrelevant(F) :-
+    empty(F).
+
 irrelevant(F) :-
     older_than_one_year(F).
 
 irrelevant(F) :-
     in_same_directory(F, Y),
-    same_media_type(F, Y, EY),
+    same_media_type(F, Y, E),
     greater_or_equal(F, Y),
     later_or_equal_created(F, Y),
     later_or_equal_changed(F, Y),
@@ -84,7 +105,7 @@ irrelevant(F) :-
 
 relevant(F) :-
     in_same_directory(F, X),
-    same_media_type(F, X, EX),
+    same_media_type(F, X, E),
     greater_or_equal(F, X),
     later_or_equal_created(F, X),
     later_or_equal_changed(F, X),
@@ -141,9 +162,6 @@ relevant(F) :-
     \+ in_same_directory(F, X),
     \+ irrelevant(F),
     F \= X.
-
-neg(C) :-
-    C, !, fail.
 
 set_of_clause(C, Set) :-
     setof(Body, (clause(C, Body), call(Body)), Set).
