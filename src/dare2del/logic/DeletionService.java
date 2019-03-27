@@ -36,7 +36,8 @@ public class DeletionService {
             }
         }
 
-        deletionModel.myLogger.info("[DeletionService] getCandidates() found " + candidateFilesToDelete.size() + " candidate files to delete.");
+        deletionModel.myLogger.info("[DeletionService] getCandidates() found " + candidateFilesToDelete.size()
+                + " " + queryKind + " candidate files.");
 
         return candidateFilesToDelete;
     }
@@ -107,7 +108,7 @@ public class DeletionService {
         }
 
         deletionModel.myLogger.info("[DeletionService] getCandidatesWithReasoning_Grouped() found "
-                + tracesMap.size() + " candidate files with grouped reasons.");
+                + tracesMap.size() + " " + queryKind + " candidate files with grouped reasons.");
 
         return tracesMap;
     }
@@ -168,7 +169,7 @@ public class DeletionService {
         }
 
         deletionModel.myLogger.info("[DeletionService] getCandidatesWithReasoning() found "
-                + tracesMap.size() + " candidate files with reasons.");
+                + tracesMap.size() + " " + queryKind + " candidate files with reasons.");
 
         return tracesMap;
     }

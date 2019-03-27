@@ -20,10 +20,10 @@ class IOPrologQueries {
 
     private void init() {
         List<String> prologFilesToLoad = new ArrayList<>();
-//        String CLAUSE_FILE = getClass().getResource("/prolog/clauses.pl").getPath();
+//        String CLAUSE_FILE = getClass().getResource("/prologFiles/clauses.pl").getPath();
         String CLAUSE_FILE = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + "/../clauses.pl";
         prologFilesToLoad.add(CLAUSE_FILE);
-//        String RULE_FILE = getClass().getResource("/prolog/irrelevanceTheory.pl").getPath();
+//        String RULE_FILE = getClass().getResource("/prologFiles/irrelevanceTheory.pl").getPath();
         String RULE_FILE = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + "/../irrelevanceTheory.pl";
         prologFilesToLoad.add(RULE_FILE);
 
@@ -76,7 +76,7 @@ class IOPrologQueries {
     private void readConsoleInput_firstApproach() {
         while (readingInput) {
             Scanner scanner = new Scanner(System.in);
-            System.out.println("\n -> Enter a prolog query:");
+            System.out.println("\n -> Enter a prologFiles query:");
             String input = scanner.nextLine();
 
             if ("exit".equals(input.toLowerCase())) {
