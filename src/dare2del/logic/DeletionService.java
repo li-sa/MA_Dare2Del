@@ -62,7 +62,7 @@ public class DeletionService {
                 String solution_rawValue = solution_setOfClause.get("Set").toString().replaceAll("\'", "");
                 String solution_rawValue_withNeg = solution_rawValue.replaceAll("\\\\\\+\\(", "NOT_");
 
-                Matcher matcher = Pattern.compile("[\\w]+\\((([\\w\\s.':\\-\\\\]+)+(,)*)+\\)").matcher(solution_rawValue_withNeg);
+                Matcher matcher = Pattern.compile("[\\w]+\\((([A-Za-z0-9_äÄöÖüÜß.':\\-\\\\\\s]+)+(,)*)+\\)").matcher(solution_rawValue_withNeg);
                 while (matcher.find()) {
                     value_temp.add(matcher.group());
                 }
@@ -132,7 +132,7 @@ public class DeletionService {
                 String solution_rawValue_withNeg = solution_rawValue.replaceAll("\\\\\\+\\(", "not_");
 
                 List<String> value_temp = new ArrayList<>();
-                Matcher matcher = Pattern.compile("[\\w]+\\((([\\w\\s.':\\-\\\\]+)+(,)*)+\\)").matcher(solution_rawValue_withNeg);
+                Matcher matcher = Pattern.compile("[\\w]+\\((([A-Za-z0-9_äÄöÖüÜß.':\\-\\\\\\s]+)+(,)*)+\\)").matcher(solution_rawValue_withNeg);
                 while (matcher.find()) {
                     value_temp.add(matcher.group());
                 }

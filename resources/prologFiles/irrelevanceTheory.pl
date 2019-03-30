@@ -76,21 +76,21 @@ empty(F) :-
     size_file(F, S),
     S = 0.
 
-named_with_obsolete_prefix_or_suffix(F) :-
+named_with_obsolete_identifier(F) :-
     filename(F, FN),
     string_lower(FN, FNL),
     sub_string(FNL, B, L, A, 'old').
 
-named_with_obsolete_prefix_or_suffix(F) :-
+named_with_obsolete_identifier(F) :-
     filename(F, FN),
     string_lower(FN, FNL),
     sub_string(FNL, B, L, A, 'temp').
 
 irrelevant(F) :-
-    named_with_obsolete_prefix_or_suffix(F).
+    empty(F).
 
 irrelevant(F) :-
-    empty(F).
+    named_with_obsolete_identifier(F).
 
 irrelevant(F) :-
     older_than_one_year(F).
@@ -101,7 +101,8 @@ irrelevant(F) :-
     greater_or_equal(F, Y),
     later_or_equal_created(F, Y),
     later_or_equal_changed(F, Y),
-    very_similar(F, Y).
+    very_similar(F, Y),
+    F \= Y.
 
 relevant(F) :-
     in_same_directory(F, X),

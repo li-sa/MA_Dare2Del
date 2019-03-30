@@ -35,9 +35,9 @@ public class MainWindowController {
 
         this.deletionModel = new DeletionModel();
 
-//        String chosenRootPath = showDirectoryFileChooser(primaryStage);
-        validatePath(default_rootPath); // just for testing! -> parameter might be chosenRootPath
-        // Preparation: Crawl files within rootPath and write metadata to prolog file clauses.pl
+        String chosenRootPath = showDirectoryFileChooser(primaryStage);
+        validatePath(chosenRootPath); // just for testing! -> parameter might be chosenRootPath
+        // Preparation: Crawl files within rootPath and write metadata to prologFiles file clauses.pl
         initProlog();
 
         this.deletionModel.initDeletionModel();

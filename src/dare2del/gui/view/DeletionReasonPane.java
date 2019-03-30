@@ -14,7 +14,10 @@ import org.jsoup.select.Elements;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Observable;
@@ -45,12 +48,13 @@ public class DeletionReasonPane extends VBox implements Observer {
     private void showDel() {
         deletionModel.myLogger.info("[DeletionReasonPane] showDel().");
 
-        URL url = getClass().getResource("/deletion_dummy.html");
+//        String pathString = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + "/../../deletion_dummy.html";
+        String pathString = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + "deletion_dummy.html";
 
         DetailedFile currentSelected = deletionModel.getCurrentSelectedDeletionCandidate();
         HashMap<DetailedFile, HashMap<DetailedFile, List<String>>> allCandidates = deletionModel.getDeletionPairs_grouped();
 
-        Document reasonDoc = fillReasonHTML(url, currentSelected, allCandidates, QueryKind.IRRELEVANT);
+        Document reasonDoc = fillReasonHTML(pathString, currentSelected, allCandidates, QueryKind.IRRELEVANT);
 
         if (reasonDoc != null) {
             String textInDoc = reasonDoc.toString();
@@ -61,12 +65,13 @@ public class DeletionReasonPane extends VBox implements Observer {
     private void showNearMiss() {
         deletionModel.myLogger.info("[DeletionReasonPane] showNearMiss().");
 
-        URL url = getClass().getResource("/nearmiss_dummy.html");
+//        String pathString = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + "/../../nearmiss_dummy.html";
+        String pathString = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + "nearmiss_dummy.html";
 
         DetailedFile currentSelected = deletionModel.getCurrentSelectedNearMissCandidate();
         HashMap<DetailedFile, HashMap<DetailedFile, List<String>>> allCandidates = deletionModel.getNearMissPairs_grouped();
 
-        Document reasonDoc = fillReasonHTML(url, currentSelected, allCandidates, QueryKind.RELEVANT);
+        Document reasonDoc = fillReasonHTML(pathString, currentSelected, allCandidates, QueryKind.RELEVANT);
 
         if (reasonDoc != null) {
             String textInDoc = reasonDoc.toString();
@@ -74,7 +79,9 @@ public class DeletionReasonPane extends VBox implements Observer {
         }
     }
 
-    private Document fillReasonHTML(URL url, DetailedFile currentSelected, HashMap<DetailedFile, HashMap<DetailedFile, List<String>>> allCandidates, QueryKind queryKind) {
+    private Document fillReasonHTML(String pathString, DetailedFile currentSelected, HashMap<DetailedFile, HashMap<DetailedFile, List<String>>> allCandidates, QueryKind queryKind) {
+        deletionModel.myLogger.info("[DeletionReasonPane] fillReasonHTML(), path to dummy.html: " + pathString);
+
         Document doc = null;
 
         if (currentSelected == null) {
@@ -84,7 +91,7 @@ public class DeletionReasonPane extends VBox implements Observer {
         HashMap<DetailedFile, List<String>> reasonForCurrentDeletionCandidate = allCandidates.get(currentSelected);
 
         try {
-            File dummyFile = new File(url.getPath());
+            File dummyFile = new File(pathString);
             doc = Jsoup.parse(dummyFile, "UTF-8");
             doc.outputSettings().prettyPrint(false);
 

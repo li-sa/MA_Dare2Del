@@ -1,5 +1,7 @@
 package dare2del.logic;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -11,14 +13,18 @@ public class DetailedFile {
 
     private final File file;
 
+    private String name_escaped;
+    private String path_escaped;
+    private String inDirectory_escaped;
+
     private String name;
+    private Path path;
     private long creation_time;
     private long access_time;
     private long change_time;
     private File in_directory;
     private String media_type;
     private long size;
-    private Path path;
 
     private String name_lowerCase_withoutExtension;
 
@@ -37,13 +43,17 @@ public class DetailedFile {
         }
 
         this.name = file.getName();
+        this.path = file.toPath();
         this.creation_time = getSecondsSinceEpoch(fileAttributes.creationTime());
         this.access_time = getSecondsSinceEpoch(fileAttributes.lastAccessTime());
         this.change_time = getSecondsSinceEpoch(fileAttributes.lastModifiedTime());
         this.in_directory = file.getParentFile();
         this.media_type = getFileExtension();
         this.size = fileAttributes.size();
-        this.path = file.toPath();
+
+        this.name_escaped = StringEscapeUtils.escapeJava(this.name);
+        this.path_escaped = StringEscapeUtils.escapeJava(this.path.toString().replace("\\", "\\\\"));
+        this.inDirectory_escaped = StringEscapeUtils.escapeJava(this.in_directory.toString().replace("\\", "\\\\"));
     }
 
     private String getFileExtension() {
@@ -99,6 +109,18 @@ public class DetailedFile {
 
     public Path getPath() {
         return path;
+    }
+
+    public String getNameEscaped() {
+        return name_escaped;
+    }
+
+    public String getPathEscaped() {
+        return path_escaped;
+    }
+
+    public String getInDirectoryEscaped() {
+        return inDirectory_escaped;
     }
 
     public String getName_lowerCase_withoutExtension() {
