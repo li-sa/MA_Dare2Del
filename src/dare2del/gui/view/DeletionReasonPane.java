@@ -41,8 +41,6 @@ public class DeletionReasonPane extends VBox implements Observer {
         this.getChildren().add(browser);
 
         deletionModel.webEngine = this.webEngine;
-
-        showDel();
     }
 
     private void showDel() {
