@@ -1,7 +1,7 @@
 package dare2del.logic;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringEscapeUtils;
-
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -48,26 +48,12 @@ public class DetailedFile {
         this.access_time = getSecondsSinceEpoch(fileAttributes.lastAccessTime());
         this.change_time = getSecondsSinceEpoch(fileAttributes.lastModifiedTime());
         this.in_directory = file.getParentFile();
-        this.media_type = getFileExtension();
+        this.media_type = FilenameUtils.getExtension(this.file.getName());
         this.size = fileAttributes.size();
 
         this.name_escaped = StringEscapeUtils.escapeJava(this.name);
         this.path_escaped = StringEscapeUtils.escapeJava(this.path.toString().replace("\\", "\\\\"));
         this.inDirectory_escaped = StringEscapeUtils.escapeJava(this.in_directory.toString().replace("\\", "\\\\"));
-    }
-
-    private String getFileExtension() {
-        String fileExtension = null;
-
-        String extensionSeparator = ".";
-        String fileName = this.file.getName();
-
-        if (fileName.lastIndexOf(extensionSeparator) != -1 && fileName.lastIndexOf(extensionSeparator) != 0) {
-            fileExtension = fileName.substring(fileName.lastIndexOf(extensionSeparator) + 1);
-            name_lowerCase_withoutExtension = fileName.substring(0, fileName.length() - fileExtension.length() - 1).toLowerCase();
-        }
-
-        return fileExtension;
     }
 
     private long getSecondsSinceEpoch(FileTime fileTime){
@@ -121,9 +107,5 @@ public class DetailedFile {
 
     public String getInDirectoryEscaped() {
         return inDirectory_escaped;
-    }
-
-    public String getName_lowerCase_withoutExtension() {
-        return name_lowerCase_withoutExtension;
     }
 }

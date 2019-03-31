@@ -1,5 +1,6 @@
 package dare2del.logic.prolog;
 
+import org.apache.commons.io.FilenameUtils;
 import org.jpl7.Atom;
 import org.jpl7.JPL;
 import org.jpl7.Query;
@@ -43,7 +44,7 @@ public class PrologFileLoader {
         File prologDir = prologDirPath.toFile();
 
         for (File eachFile : prologDir.listFiles()) {
-            if (eachFile.isFile() && eachFile.getName().endsWith(".pl")) {
+            if (eachFile.isFile() && FilenameUtils.getExtension(eachFile.toString()).equals("pl")) {
                 prologFilesToLoad.add(eachFile.getPath());
             }
         }
