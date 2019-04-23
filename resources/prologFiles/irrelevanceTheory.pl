@@ -77,12 +77,12 @@ empty(F) :-
     S = 0.
 
 named_with_obsolete_identifier(F) :-
-    filename(F, FN),
+    path(FN, F),
     string_lower(FN, FNL),
     sub_string(FNL, B, L, A, 'old').
 
 named_with_obsolete_identifier(F) :-
-    filename(F, FN),
+    path(FN, F),
     string_lower(FN, FNL),
     sub_string(FNL, B, L, A, 'temp').
 
@@ -166,3 +166,61 @@ relevant(F) :-
 
 set_of_clause(C, Set) :-
     setof(Body, (clause(C, Body), call(Body)), Set).
+
+clause_body_list(Clause, Body) :-
+    clause(Clause, Elements),
+    clause_body_list_aux(Elements, Body).
+
+clause_body_list_aux(Elements, [BodyPart|BodyRest]) :-
+    Elements =.. [_, E | T],
+    (   T = []
+    ->  BodyPart = E,
+
+        BodyRest = []
+    ;   [ClauseRest] = T,
+        true(BodyPart) = E,
+        clause_body_list_aux(ClauseRest, BodyRest)
+    ).
+
+replace_substring(String, To_Replace, Replace_With, Result) :-
+    (    append([Front, To_Replace, Back], String)
+    ->   append([Front, Replace_With, Back], R),
+         replace_substring(Back, To_Replace, Replace_with, Result)
+    ;    Result = String
+    ).
+
+body_list(true)  --> [].
+body_list((A,B)) -->
+        body_list(A),
+        body_list(B).
+body_list(G) -->
+        { G \= true },
+        { G \= (_,_) },
+        [G].
+
+clause_body_list(G, Result) :-
+    clause(G, Body),
+    phrase(body_list(Body), Result),
+    length(Result, Size),
+    Size > 1.
+
+relevant_test(C, Set) :-
+    clause_body_list(C, Body),
+    length(Body, BodyLength),
+    Max is BodyLength - 2,
+    foreach(between(0, Max, X), iterate_body(Body, X, Z)).
+
+iterate_body(Body, Counter, EachBody) :-
+    nth0(Counter, Body, Elem, Rest),
+    length(Rest, RestLength),
+    term_to_atom(Elem, Elem_atom),
+    string_concat(\+, Elem_atom, Elem_neg),
+    nth0(RestLength, Body_neg, Elem_neg, Rest),
+    write("Body_neg-"),
+    write(Body_neg),
+    atomic_list_concat(Body_neg, Body_neg_atoms),
+    write("Body_neg_atoms-"),
+    write(Body_neg_atoms),
+    setof(Body_neg, call(Body_neg), Set),
+    write("Set-"),
+    write(Set).
