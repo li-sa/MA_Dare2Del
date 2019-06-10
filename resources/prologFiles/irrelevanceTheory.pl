@@ -11,8 +11,8 @@ in_same_directory(F1, F2) :-
 same_media_type(P1, P2, E) :-
     path(F1, P1),
     path(F2, P2),
-    file_name_extension(N1, E, F1),
-    file_name_extension(N2, E, F2).
+    file_name_extension(_N1, E, F1),
+    file_name_extension(_N2, E, F2).
 
 greater_or_equal(P1, P2) :-
     size_file(P1, S1),
@@ -60,7 +60,7 @@ get_current_time(C) :-
     get_time(X),
     C is round(X).
 
-subtract(A, B, R) :-
+subtract_new(A, B, R) :-
     M is round(A),
     S is round(B),
     R is M - S.
@@ -68,7 +68,7 @@ subtract(A, B, R) :-
 older_than_one_year(F) :-
     change_time(F, T),
     get_current_time(C),
-    subtract(C, T, R),
+    subtract_new(C, T, R),
     R > 31536000.
 
 empty(F) :-
@@ -79,12 +79,12 @@ empty(F) :-
 named_with_obsolete_identifier(F) :-
     path(FN, F),
     string_lower(FN, FNL),
-    sub_string(FNL, B, L, A, 'old').
+    sub_string(FNL, _B, _L, _A, 'old').
 
 named_with_obsolete_identifier(F) :-
     path(FN, F),
     string_lower(FN, FNL),
-    sub_string(FNL, B, L, A, 'temp').
+    sub_string(FNL, _B, _L, _A, 'temp').
 
 irrelevant(F) :-
     empty(F).
@@ -97,16 +97,16 @@ irrelevant(F) :-
 
 irrelevant(F) :-
     in_same_directory(F, Y),
-    same_media_type(F, Y, E),
+    same_media_type(F, Y, _E),
     greater_or_equal(F, Y),
     later_or_equal_created(F, Y),
     later_or_equal_changed(F, Y),
     very_similar(F, Y),
     F \= Y.
 
-relevant(F) :-
+nearmiss(F) :-
     in_same_directory(F, X),
-    same_media_type(F, X, E),
+    same_media_type(F, X, _E),
     greater_or_equal(F, X),
     later_or_equal_created(F, X),
     later_or_equal_changed(F, X),
@@ -114,9 +114,9 @@ relevant(F) :-
     \+ irrelevant(F),
     F \= X.
 
-relevant(F) :-
+nearmiss(F) :-
     in_same_directory(F, X),
-    same_media_type(F, X, E),
+    same_media_type(F, X, _E),
     greater_or_equal(F, X),
     later_or_equal_created(F, X),
     very_similar(F, X),
@@ -124,9 +124,9 @@ relevant(F) :-
     \+ irrelevant(F),
     F \= X.
 
-relevant(F) :-
+nearmiss(F) :-
     in_same_directory(F, X),
-    same_media_type(F, X, E),
+    same_media_type(F, X, _E),
     greater_or_equal(F, X),
     very_similar(F, X),
     later_or_equal_changed(F, X),
@@ -134,9 +134,9 @@ relevant(F) :-
     \+ irrelevant(F),
     F \= X.
 
-relevant(F) :-
+nearmiss(F) :-
     in_same_directory(F, X),
-    same_media_type(F, X, E),
+    same_media_type(F, X, _E),
     very_similar(F, X),
     later_or_equal_changed(F, X),
     later_or_equal_created(F, X),
@@ -144,55 +144,44 @@ relevant(F) :-
     \+ irrelevant(F),
     F \= X.
 
-relevant(F) :-
+nearmiss(F) :-
     in_same_directory(F, X),
     very_similar(F, X),
     later_or_equal_changed(F, X),
     later_or_equal_created(F, X),
     greater_or_equal(F, X),
-    \+ same_media_type(F, X, E),
+    \+ same_media_type(F, X, _E),
     \+ irrelevant(F),
     F \= X.
 
-relevant(F) :-
+nearmiss(F) :-
     very_similar(F, X),
     later_or_equal_changed(F, X),
     later_or_equal_created(F, X),
     greater_or_equal(F, X),
-    same_media_type(F, X, E),
+    same_media_type(F, X, _E),
     \+ in_same_directory(F, X),
     \+ irrelevant(F),
     F \= X.
 
-set_of_clause(C, Set) :-
-    setof(Body, (clause(C, Body), call(Body)), Set).
+irrelevant_secondfile(Y) :-
+    in_same_directory(F, Y),
+    same_media_type(F, Y, _E),
+    greater_or_equal(F, Y),
+    later_or_equal_created(F, Y),
+    later_or_equal_changed(F, Y),
+    very_similar(F, Y),
+    F \= Y.
 
-clause_body_list(Clause, Body) :-
-    clause(Clause, Elements),
-    clause_body_list_aux(Elements, Body).
-
-clause_body_list_aux(Elements, [BodyPart|BodyRest]) :-
-    Elements =.. [_, E | T],
-    (   T = []
-    ->  BodyPart = E,
-
-        BodyRest = []
-    ;   [ClauseRest] = T,
-        true(BodyPart) = E,
-        clause_body_list_aux(ClauseRest, BodyRest)
-    ).
-
-replace_substring(String, To_Replace, Replace_With, Result) :-
-    (    append([Front, To_Replace, Back], String)
-    ->   append([Front, Replace_With, Back], R),
-         replace_substring(Back, To_Replace, Replace_with, Result)
-    ;    Result = String
-    ).
+irrelevant_files(F, Set) :-
+    setof(Body, (clause(irrelevant(F), Body), call(Body)), Set).
 
 body_list(true)  --> [].
+
 body_list((A,B)) -->
         body_list(A),
         body_list(B).
+
 body_list(G) -->
         { G \= true },
         { G \= (_,_) },
@@ -204,23 +193,38 @@ clause_body_list(G, Result) :-
     length(Result, Size),
     Size > 1.
 
-relevant_test(C, Set) :-
-    clause_body_list(C, Body),
-    length(Body, BodyLength),
-    Max is BodyLength - 2,
-    foreach(between(0, Max, X), iterate_body(Body, X, Z)).
+nearmiss_files(F, Set) :-
+    clause_body_list(irrelevant(F), Body),
+    iterate_through_bodylist(Body, Body, Set).
 
-iterate_body(Body, Counter, EachBody) :-
-    nth0(Counter, Body, Elem, Rest),
-    length(Rest, RestLength),
-    term_to_atom(Elem, Elem_atom),
-    string_concat(\+, Elem_atom, Elem_neg),
-    nth0(RestLength, Body_neg, Elem_neg, Rest),
-    write("Body_neg-"),
-    write(Body_neg),
-    atomic_list_concat(Body_neg, Body_neg_atoms),
-    write("Body_neg_atoms-"),
-    write(Body_neg_atoms),
-    setof(Body_neg, call(Body_neg), Set),
-    write("Set-"),
-    write(Set).
+iterate_through_bodylist(List, [H|T], Set) :-
+    length([H|T], LengthHT),
+    LengthHT > 1,
+    Elem_neg = (\+ H),
+    delete(List, H, LWH),
+    append(LWH, [Elem_neg], NewList),
+    find_nearmisses(NewList, Set),
+    iterate_through_bodylist(List, T, X),
+    Set = X.
+
+iterate_through_bodylist(_List, [], _Set).
+
+iterate_through_bodylist(_List, [_A], _Set).
+
+find_nearmisses(BodyList, Set) :-
+    body_list_to_callable(BodyList, Body_nearmiss),
+    setof(Body_nearmiss, call(Body_nearmiss), Set).
+
+find_nearmisses(_BodyList, _Set).
+
+body_list_to_callable(BodyList, BodyCallable) :-
+    length(BodyList, BLL),
+    BLL = 7,
+    nth0(0, BodyList, Elem1),
+    nth0(1, BodyList, Elem2),
+    nth0(2, BodyList, Elem3),
+    nth0(3, BodyList, Elem4),
+    nth0(4, BodyList, Elem5),
+    nth0(5, BodyList, Elem6),
+    nth0(6, BodyList, Elem7),
+    BodyCallable = (Elem1, Elem2, Elem3, Elem4, Elem5, Elem6, Elem7).

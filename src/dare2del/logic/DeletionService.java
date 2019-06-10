@@ -48,9 +48,12 @@ public class DeletionService {
 
         HashMap<DetailedFile, HashMap<DetailedFile, List<String>>> tracesMap = new HashMap<>();
 
+        String ruleName = queryKind.toString().toLowerCase() + "_files";
+
         try {
             Term term_ruleToQuery = new Compound(queryKind.toString().toLowerCase(), terms);
-            Term term_setOfClause = new Compound("set_of_clause", new Term[]{term_ruleToQuery, new Variable("Set")});
+            //Term term_setOfClause = new Compound("set_of_clause", new Term[]{term_ruleToQuery, new Variable("Set")});
+            Term term_setOfClause = new Compound(ruleName, new Term[]{new Variable("F"), new Variable("Set")});
             Query query_setOfClause = new Query(term_setOfClause);
 
             Map<String, Term> solution_setOfClause;
@@ -119,9 +122,12 @@ public class DeletionService {
 
         HashMap<List<String>, List<String>> tracesMap = new HashMap<>();
 
+        String ruleName = queryKind.toString().toLowerCase() + "_files";
+
         try {
             Term term_ruleToQuery = new Compound(queryKind.toString().toLowerCase(), terms);
-            Term term_setOfClause = new Compound("set_of_clause", new Term[]{term_ruleToQuery, new Variable("Set")});
+            //Term term_setOfClause = new Compound("set_of_clause", new Term[]{term_ruleToQuery, new Variable("Set")});
+            Term term_setOfClause = new Compound(ruleName, new Term[]{new Variable("F"), new Variable("Set")});
             Query query_setOfClause = new Query(term_setOfClause);
 
             Map<String, Term> solution_setOfClause;
