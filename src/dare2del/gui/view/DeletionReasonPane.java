@@ -76,10 +76,10 @@ public class DeletionReasonPane extends VBox implements Observer {
     private Document fillReasonHTML(String pathString, DetailedFile currentSelected, HashMap<DetailedFile, HashMap<DetailedFile, List<String>>> allCandidates, QueryKind queryKind) {
         deletionModel.myLogger.info("[DeletionReasonPane] fillReasonHTML(), path to dummy.html: " + pathString);
 
-        Document doc = null;
+        Document doc;
 
         if (currentSelected == null) {
-            return doc;
+            return null;
         }
 
         HashMap<DetailedFile, List<String>> reasonForCurrentDeletionCandidate = allCandidates.get(currentSelected);
@@ -103,14 +103,7 @@ public class DeletionReasonPane extends VBox implements Observer {
 
                 List<String> reasons_olderThanOneYear = reasonForCurrentDeletionCandidate.get(currentSelected);
                 for (String reason : reasons_olderThanOneYear) {
-                    Element elem_reason = ul_itself.appendElement("li");
-                    elem_reason.attr("id", reason);
-
-                    Element elem_spanFileA = elem_reason.appendElement("span");
-                    elem_spanFileA.attr("class", "fileA");
-                    elem_spanFileA.text(currentSelected.getName());
-
-                    elem_reason.appendText(" is " + reason.replace("_", " "));
+                    appendReasonElement(currentSelected, ul_itself, reason, "fileA");
                 }
             } else {
                 Element ul_itself = doc.getElementsByClass("itself").first();
@@ -124,14 +117,7 @@ public class DeletionReasonPane extends VBox implements Observer {
 
                     List<String> reasonList = reasonForCurrentDeletionCandidate.get(reason_detailedFile);
                     for (String reason : reasonList) {
-                        Element elem_reason = ul_another.appendElement("li");
-                        elem_reason.attr("id", reason);
-
-                        Element elem_spanFileB = elem_reason.appendElement("span");
-                        elem_spanFileB.attr("class", "fileB");
-                        elem_spanFileB.text(reason_detailedFile.getName());
-
-                        elem_reason.appendText(" is " + reason.replace("_", " "));
+                        appendReasonElement(reason_detailedFile, ul_another, reason, "fileB");
                     }
 
                     doc.getElementsByTag("body").first().appendChild(ul_another);
@@ -144,6 +130,17 @@ public class DeletionReasonPane extends VBox implements Observer {
         }
 
         return doc;
+    }
+
+    private void appendReasonElement(DetailedFile reason_detailedFile, Element ul_another, String reason, String fileB) {
+        Element elem_reason = ul_another.appendElement("li");
+        elem_reason.attr("id", reason);
+
+        Element elem_spanFileB = elem_reason.appendElement("span");
+        elem_spanFileB.attr("class", fileB);
+        elem_spanFileB.text(reason_detailedFile.getName());
+
+        elem_reason.appendText(" is " + reason.replace("_", " "));
     }
 
     public void update(Observable observable, Object object) {

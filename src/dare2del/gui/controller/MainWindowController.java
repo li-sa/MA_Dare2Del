@@ -5,8 +5,6 @@ import dare2del.gui.view.MainView;
 import dare2del.logic.DetailedFile;
 import dare2del.logic.FileCrawler;
 import dare2del.logic.PrologFileWriter;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.MenuItem;
 import javafx.stage.DirectoryChooser;
@@ -92,26 +90,18 @@ public class MainWindowController {
     }
 
     private void setEventHandler_OpenFile(MenuItem openFileItem) {
-        openFileItem.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                deletionModel.resetFileList();
-                validatePath(showDirectoryFileChooser(primaryStage));
-                initProlog();
-                deletionModel.initDeletionModel();
-                mainView.initView();
-                setAllListeners();
-            }
+        openFileItem.setOnAction(event -> {
+            deletionModel.resetFileList();
+            validatePath(showDirectoryFileChooser(primaryStage));
+            initProlog();
+            deletionModel.initDeletionModel();
+            mainView.initView();
+            setAllListeners();
         });
     }
 
     private void setEventHandler_Exit(MenuItem exitItem) {
-        exitItem.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                System.exit(0);
-            }
-        });
+        exitItem.setOnAction(event -> System.exit(0));
     }
 
     private void createListenerForTreeView(DirectoryTreeView tv, DirectoryView v) {

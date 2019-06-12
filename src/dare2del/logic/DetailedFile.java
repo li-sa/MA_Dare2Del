@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
 import java.time.Instant;
+import java.util.Objects;
 
 public class DetailedFile {
 
@@ -44,7 +45,7 @@ public class DetailedFile {
 
         this.name = file.getName();
         this.path = file.toPath();
-        this.creation_time = getSecondsSinceEpoch(fileAttributes.creationTime());
+        this.creation_time = getSecondsSinceEpoch(Objects.requireNonNull(fileAttributes).creationTime());
         this.access_time = getSecondsSinceEpoch(fileAttributes.lastAccessTime());
         this.change_time = getSecondsSinceEpoch(fileAttributes.lastModifiedTime());
         this.in_directory = file.getParentFile();

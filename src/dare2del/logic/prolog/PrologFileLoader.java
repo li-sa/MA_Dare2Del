@@ -24,7 +24,7 @@ public class PrologFileLoader {
         this.myLogger = myLogger;
 
         List<String> prologFilesToLoad = new ArrayList<>();
-        prologFilesToLoad = addAllPrologFiles(prologFilesToLoad);
+        addAllPrologFiles(prologFilesToLoad);
 
         JPL.init();
 

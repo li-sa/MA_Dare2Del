@@ -12,10 +12,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Observable;
+import java.util.*;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
@@ -33,8 +30,6 @@ public class DeletionModel extends Observable {
 
     private ObservableList<DetailedFile> deletionCandidates;
     private ObservableList<DetailedFile> nearMissCandidates;
-    private HashMap<List<String>, List<String>> deletionPairs_reasoned;
-    private HashMap<List<String>, List<String>> nearMissPairs_reasoned;
 
     private HashMap<DetailedFile, HashMap<DetailedFile, List<String>>> deletionPairs_grouped;
     private HashMap<DetailedFile, HashMap<DetailedFile, List<String>>> nearMissPairs_grouped;
@@ -51,8 +46,6 @@ public class DeletionModel extends Observable {
 
         this.deletionCandidates = FXCollections.observableList(deletionService.getCandidates(QueryKind.IRRELEVANT));
         this.nearMissCandidates = FXCollections.observableList(deletionService.getCandidates(QueryKind.NEARMISS));
-        this.deletionPairs_reasoned = deletionService.getCandidatesWithReasoning(QueryKind.IRRELEVANT);
-        this.nearMissPairs_reasoned = deletionService.getCandidatesWithReasoning(QueryKind.NEARMISS);
 
         this.deletionPairs_grouped = deletionService.getCandidatesWithReasoning_Grouped(QueryKind.IRRELEVANT);
         this.nearMissPairs_grouped = deletionService.getCandidatesWithReasoning_Grouped(QueryKind.NEARMISS);
@@ -71,7 +64,7 @@ public class DeletionModel extends Observable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        fh.setFormatter(new SimpleFormatter());
+        Objects.requireNonNull(fh).setFormatter(new SimpleFormatter());
         myLogger.addHandler(fh);
     }
 
@@ -109,14 +102,6 @@ public class DeletionModel extends Observable {
 
     public ObservableList<DetailedFile> getNearMissCandidates() {
         return nearMissCandidates;
-    }
-
-    public HashMap<List<String>, List<String>> getDeletionPairs_reasoned() {
-        return deletionPairs_reasoned;
-    }
-
-    public HashMap<List<String>, List<String>> getNearMissPairs_reasoned() {
-        return nearMissPairs_reasoned;
     }
 
     public Path getRootPath() {

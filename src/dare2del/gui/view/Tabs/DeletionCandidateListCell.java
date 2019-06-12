@@ -4,16 +4,14 @@ import dare2del.gui.model.DeletionDecision;
 import dare2del.gui.model.DeletionModel;
 import dare2del.gui.view.Messages;
 import dare2del.logic.DetailedFile;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 
+import java.util.Objects;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -28,20 +26,17 @@ class DeletionCandidateListCell extends ListCell<DetailedFile> implements Observ
     private final Label filenameLabel;
 
     private DeletionDecision decision = DeletionDecision.DONTKNOW;
-    private final Image DELETE_DECISION_ICON = new Image(getClass().getClassLoader().getResource("icons/delete.png").toExternalForm());
-    private final Image KEEP_DECISION_ICON = new Image(getClass().getClassLoader().getResource("icons/keep.png").toExternalForm());
-    private final Image DONT_KNOW_DECISION_ICON = new Image(getClass().getClassLoader().getResource("icons/dont-know.png").toExternalForm());
+    private final Image DELETE_DECISION_ICON = new Image(Objects.requireNonNull(getClass().getClassLoader().getResource("icons/delete.png")).toExternalForm());
+    private final Image KEEP_DECISION_ICON = new Image(Objects.requireNonNull(getClass().getClassLoader().getResource("icons/keep.png")).toExternalForm());
+    private final Image DONT_KNOW_DECISION_ICON = new Image(Objects.requireNonNull(getClass().getClassLoader().getResource("icons/dont-know.png")).toExternalForm());
 
     public DeletionCandidateListCell(DeletionModel deletionModel) {
         super();
         this.deletionModel = deletionModel;
         this.deletionModel.addObserver(this);
 
-        this.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent arg0) {
+        this.setOnMouseClicked(arg0 -> {
 //                deletionReasonController.showDeletionReasonStage();
-            }
         });
 
         Button cycleDecisionButton = createCycleDecisionButton();
@@ -89,12 +84,9 @@ class DeletionCandidateListCell extends ListCell<DetailedFile> implements Observ
 
     private Button createShowReasonButton() {
         button_deletion_explain = new Button(Messages.getString("DeletionCandidateListCell.explainButton"));
-        button_deletion_explain.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                deletionModel.resetCurrentChoices();
-                deletionModel.setCurrentSelectedDeletionCandidate(detailedFile);
-            }
+        button_deletion_explain.setOnAction(event -> {
+            deletionModel.resetCurrentChoices();
+            deletionModel.setCurrentSelectedDeletionCandidate(detailedFile);
         });
 
         return button_deletion_explain;

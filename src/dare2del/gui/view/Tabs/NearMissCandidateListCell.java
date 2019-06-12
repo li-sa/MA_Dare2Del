@@ -3,12 +3,9 @@ package dare2del.gui.view.Tabs;
 import dare2del.gui.model.DeletionModel;
 import dare2del.gui.view.Messages;
 import dare2del.logic.DetailedFile;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 
 import java.util.Observable;
@@ -27,11 +24,8 @@ class NearMissCandidateListCell extends ListCell<DetailedFile> implements Observ
         this.deletionModel = deletionModel;
         this.deletionModel.addObserver(this);
 
-        this.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent arg0) {
-                // TODO
-            }
+        this.setOnMouseClicked(arg0 -> {
+            // TODO
         });
 
         Button showReasonButton = createShowReasonButton();
@@ -54,12 +48,9 @@ class NearMissCandidateListCell extends ListCell<DetailedFile> implements Observ
 
     private Button createShowReasonButton() {
         Button button_nearMiss_explain = new Button(Messages.getString("DeletionCandidateListCell.explainButton"));
-        button_nearMiss_explain.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                deletionModel.resetCurrentChoices();
-                deletionModel.setCurrentSelectedNearMissCandidate(detailedFile);
-            }
+        button_nearMiss_explain.setOnAction(event -> {
+            deletionModel.resetCurrentChoices();
+            deletionModel.setCurrentSelectedNearMissCandidate(detailedFile);
         });
         return button_nearMiss_explain;
     }

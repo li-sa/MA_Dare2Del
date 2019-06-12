@@ -64,7 +64,7 @@ public class MainView implements Observer {
         if (rootFile.isDirectory()) {
             rootDirs.add(ResourceItem.createObservedPath(rootPath));
         } else {
-            for (File dir : rootPath.toFile().listFiles(f -> f.isDirectory())) {
+            for (File dir : rootPath.toFile().listFiles(File::isDirectory)) {
                 rootDirs.add(ResourceItem.createObservedPath(dir.toPath()));
             }
         }
