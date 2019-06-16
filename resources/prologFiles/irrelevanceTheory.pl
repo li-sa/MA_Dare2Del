@@ -104,66 +104,6 @@ irrelevant(F) :-
     very_similar(F, Y),
     F \= Y.
 
-nearmiss(F) :-
-    in_same_directory(F, X),
-    same_media_type(F, X, _E),
-    greater_or_equal(F, X),
-    later_or_equal_created(F, X),
-    later_or_equal_changed(F, X),
-    \+ very_similar(F, X),
-    \+ irrelevant(F),
-    F \= X.
-
-nearmiss(F) :-
-    in_same_directory(F, X),
-    same_media_type(F, X, _E),
-    greater_or_equal(F, X),
-    later_or_equal_created(F, X),
-    very_similar(F, X),
-    \+ later_or_equal_changed(F, X),
-    \+ irrelevant(F),
-    F \= X.
-
-nearmiss(F) :-
-    in_same_directory(F, X),
-    same_media_type(F, X, _E),
-    greater_or_equal(F, X),
-    very_similar(F, X),
-    later_or_equal_changed(F, X),
-    \+ later_or_equal_created(F, X),
-    \+ irrelevant(F),
-    F \= X.
-
-nearmiss(F) :-
-    in_same_directory(F, X),
-    same_media_type(F, X, _E),
-    very_similar(F, X),
-    later_or_equal_changed(F, X),
-    later_or_equal_created(F, X),
-    \+ greater_or_equal(F, X),
-    \+ irrelevant(F),
-    F \= X.
-
-nearmiss(F) :-
-    in_same_directory(F, X),
-    very_similar(F, X),
-    later_or_equal_changed(F, X),
-    later_or_equal_created(F, X),
-    greater_or_equal(F, X),
-    \+ same_media_type(F, X, _E),
-    \+ irrelevant(F),
-    F \= X.
-
-nearmiss(F) :-
-    very_similar(F, X),
-    later_or_equal_changed(F, X),
-    later_or_equal_created(F, X),
-    greater_or_equal(F, X),
-    same_media_type(F, X, _E),
-    \+ in_same_directory(F, X),
-    \+ irrelevant(F),
-    F \= X.
-
 irrelevant_secondfile(Y) :-
     in_same_directory(F, Y),
     same_media_type(F, Y, _E),

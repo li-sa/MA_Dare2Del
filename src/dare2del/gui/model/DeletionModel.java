@@ -44,11 +44,13 @@ public class DeletionModel extends Observable {
     public void initDeletionModel() {
         DeletionService deletionService = new DeletionService(this);
 
-        this.deletionCandidates = FXCollections.observableList(deletionService.getCandidates(QueryKind.IRRELEVANT));
-        this.nearMissCandidates = FXCollections.observableList(deletionService.getCandidates(QueryKind.NEARMISS));
-
         this.deletionPairs_grouped = deletionService.getCandidatesWithReasoning_Grouped(QueryKind.IRRELEVANT);
         this.nearMissPairs_grouped = deletionService.getCandidatesWithReasoning_Grouped(QueryKind.NEARMISS);
+
+        List<DetailedFile> deletionCandidateList = new ArrayList<>(deletionPairs_grouped.keySet());
+        List<DetailedFile> nearmissCandidateList = new ArrayList<>(nearMissPairs_grouped.keySet());
+        this.deletionCandidates = FXCollections.observableList(deletionCandidateList);
+        this.nearMissCandidates = FXCollections.observableList(nearmissCandidateList);
     }
 
     private void initLogger() {

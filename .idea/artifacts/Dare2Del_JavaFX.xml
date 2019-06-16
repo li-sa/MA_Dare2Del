@@ -43,9 +43,10 @@
         <element id="file-copy" path="$PROJECT_DIR$/resources/htmlFiles/deletion_dummy.html" />
       </element>
       <element id="directory" name="DirectoryExample">
-        <element id="file-copy" path="$PROJECT_DIR$/resources/DirectoryExample/DasDok.txt" />
-        <element id="file-copy" path="$PROJECT_DIR$/resources/DirectoryExample/DasDok2.txt" />
         <element id="file-copy" path="$PROJECT_DIR$/resources/DirectoryExample/Dokument.txt" />
+        <element id="file-copy" path="$PROJECT_DIR$/resources/DirectoryExample/dare2del.png" />
+        <element id="file-copy" path="$PROJECT_DIR$/resources/DirectoryExample/dare2del_temp.png" />
+        <element id="file-copy" path="$PROJECT_DIR$/resources/DirectoryExample/DasDok.txt" />
       </element>
     </root>
   </artifact>

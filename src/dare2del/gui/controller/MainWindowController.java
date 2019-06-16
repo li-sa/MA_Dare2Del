@@ -21,7 +21,7 @@ import java.util.List;
 
 public class MainWindowController {
 
-    private final String EXAMPLE_DIRECTORY = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + "../DirectoryExample";
+    private final String EXAMPLE_DIRECTORY = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + "/../DirectoryExample";
     private final Path exampleDirPath = Paths.get(EXAMPLE_DIRECTORY.replaceFirst("/", ""));
 
     private final Stage primaryStage;

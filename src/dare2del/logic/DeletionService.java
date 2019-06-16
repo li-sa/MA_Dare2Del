@@ -19,29 +19,6 @@ public class DeletionService {
         PrologFileLoader prologFileLoader = new PrologFileLoader(deletionModel.myLogger);
     }
 
-    public List<DetailedFile> getCandidates(QueryKind queryKind) {
-        List<DetailedFile> candidateFilesToDelete = new ArrayList<>();
-
-        Term[] parameter = new Term[]{new Variable("X")};
-        List<String> resultPaths = queryProlog(queryKind.toString().toLowerCase(), parameter, new ArrayList<>(Arrays.asList(parameter)));
-
-        List<DetailedFile> fileList = deletionModel.getFileList();
-
-        for (String eachResult : resultPaths) {
-            Path eachResultPath = Paths.get(eachResult);
-            DetailedFile detailedFileAccordingToPath = fileList.stream()
-                    .filter(file -> eachResultPath.equals(file.getPath())).findAny().orElse(null);
-            if (detailedFileAccordingToPath != null && !candidateFilesToDelete.contains(detailedFileAccordingToPath)) {
-                candidateFilesToDelete.add(detailedFileAccordingToPath);
-            }
-        }
-
-        deletionModel.myLogger.info("[DeletionService] getCandidates() found " + candidateFilesToDelete.size()
-                + " " + queryKind + " candidate files.");
-
-        return candidateFilesToDelete;
-    }
-
     public HashMap<DetailedFile, HashMap<DetailedFile, List<String>>> getCandidatesWithReasoning_Grouped(QueryKind queryKind) {
         Term variable_term = new Variable("X");
         Term[] terms = new Term[]{variable_term};
