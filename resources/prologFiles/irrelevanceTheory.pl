@@ -219,6 +219,51 @@ find_nearmisses(_BodyList, _Set).
 
 body_list_to_callable(BodyList, BodyCallable) :-
     length(BodyList, BLL),
+    BLL = 2,
+    nth0(0, BodyList, Elem1),
+    nth0(1, BodyList, Elem2),
+    BodyCallable = (Elem1, Elem2).
+
+body_list_to_callable(BodyList, BodyCallable) :-
+    length(BodyList, BLL),
+    BLL = 3,
+    nth0(0, BodyList, Elem1),
+    nth0(1, BodyList, Elem2),
+    nth0(2, BodyList, Elem3),
+    BodyCallable = (Elem1, Elem2, Elem3).
+
+body_list_to_callable(BodyList, BodyCallable) :-
+    length(BodyList, BLL),
+    BLL = 4,
+    nth0(0, BodyList, Elem1),
+    nth0(1, BodyList, Elem2),
+    nth0(2, BodyList, Elem3),
+    nth0(3, BodyList, Elem4),
+    BodyCallable = (Elem1, Elem2, Elem3, Elem4).
+
+body_list_to_callable(BodyList, BodyCallable) :-
+    length(BodyList, BLL),
+    BLL = 5,
+    nth0(0, BodyList, Elem1),
+    nth0(1, BodyList, Elem2),
+    nth0(2, BodyList, Elem3),
+    nth0(3, BodyList, Elem4),
+    nth0(4, BodyList, Elem5),
+    BodyCallable = (Elem1, Elem2, Elem3, Elem4, Elem5).
+
+body_list_to_callable(BodyList, BodyCallable) :-
+    length(BodyList, BLL),
+    BLL = 6,
+    nth0(0, BodyList, Elem1),
+    nth0(1, BodyList, Elem2),
+    nth0(2, BodyList, Elem3),
+    nth0(3, BodyList, Elem4),
+    nth0(4, BodyList, Elem5),
+    nth0(5, BodyList, Elem6),
+    BodyCallable = (Elem1, Elem2, Elem3, Elem4, Elem5, Elem6).
+
+body_list_to_callable(BodyList, BodyCallable) :-
+    length(BodyList, BLL),
     BLL = 7,
     nth0(0, BodyList, Elem1),
     nth0(1, BodyList, Elem2),
@@ -228,3 +273,45 @@ body_list_to_callable(BodyList, BodyCallable) :-
     nth0(5, BodyList, Elem6),
     nth0(6, BodyList, Elem7),
     BodyCallable = (Elem1, Elem2, Elem3, Elem4, Elem5, Elem6, Elem7).
+
+body_list_to_callable(BodyList, BodyCallable) :-
+    length(BodyList, BLL),
+    BLL = 8,
+    nth0(0, BodyList, Elem1),
+    nth0(1, BodyList, Elem2),
+    nth0(2, BodyList, Elem3),
+    nth0(3, BodyList, Elem4),
+    nth0(4, BodyList, Elem5),
+    nth0(5, BodyList, Elem6),
+    nth0(6, BodyList, Elem7),
+    nth0(7, BodyList, Elem8),
+    BodyCallable = (Elem1, Elem2, Elem3, Elem4, Elem5, Elem6, Elem7, Elem8).
+
+body_list_to_callable(BodyList, BodyCallable) :-
+    length(BodyList, BLL),
+    BLL = 9,
+    nth0(0, BodyList, Elem1),
+    nth0(1, BodyList, Elem2),
+    nth0(2, BodyList, Elem3),
+    nth0(3, BodyList, Elem4),
+    nth0(4, BodyList, Elem5),
+    nth0(5, BodyList, Elem6),
+    nth0(6, BodyList, Elem7),
+    nth0(7, BodyList, Elem8),
+    nth0(8, BodyList, Elem9),
+    BodyCallable = (Elem1, Elem2, Elem3, Elem4, Elem5, Elem6, Elem7, Elem8, Elem9).
+
+body_list_to_callable(BodyList, BodyCallable) :-
+    length(BodyList, BLL),
+    BLL = 10,
+    nth0(0, BodyList, Elem1),
+    nth0(1, BodyList, Elem2),
+    nth0(2, BodyList, Elem3),
+    nth0(3, BodyList, Elem4),
+    nth0(4, BodyList, Elem5),
+    nth0(5, BodyList, Elem6),
+    nth0(6, BodyList, Elem7),
+    nth0(7, BodyList, Elem8),
+    nth0(8, BodyList, Elem9),
+    nth0(9, BodyList, Elem10),
+    BodyCallable = (Elem1, Elem2, Elem3, Elem4, Elem5, Elem6, Elem7, Elem8, Elem9, Elem10).

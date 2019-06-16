@@ -11,13 +11,11 @@ import org.apache.commons.lang.StringEscapeUtils;
 public class PrologFileWriter {
 
     private final Logger myLogger;
-    private FileWriter fileWriter;
 
-    //    private List<DetailedFile> folderList;
+    private List<DetailedFile> folderList;
     private final List<DetailedFile> fileList;
 
-//    private final String clauseFile_pathString = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + "/../../prologFiles/clauses.pl";
-    private final String clauseFile_pathString = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + "prologFiles/clauses.pl";
+    private final String clauseFile_pathString = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + "/../prologFiles/clauses.pl";
 
     private Map<String, List<String>> prologStatements;
 
@@ -62,7 +60,7 @@ public class PrologFileWriter {
 
     private void writeClausesToPrologFile() {
         try {
-            fileWriter = new FileWriter(clauseFile_pathString);
+            FileWriter fileWriter = new FileWriter(clauseFile_pathString);
 
             for (List<String> mapEntry : prologStatements.values()) {
                 for (String listItem : mapEntry) {

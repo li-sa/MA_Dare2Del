@@ -17,8 +17,7 @@ public class PrologFileLoader {
 
     private final Logger myLogger;
 
-//    private final String PROLOGFILES_DIRECTORY = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + "/../../prologFiles";
-    private final String PROLOGFILES_DIRECTORY = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + "prologFiles";
+    private final String PROLOGFILES_DIRECTORY = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + "/../prologFiles";
 
     public PrologFileLoader(Logger myLogger) {
         this.myLogger = myLogger;
@@ -39,7 +38,7 @@ public class PrologFileLoader {
         }
     }
 
-    private List<String> addAllPrologFiles(List<String> prologFilesToLoad) {
+    private void addAllPrologFiles(List<String> prologFilesToLoad) {
         Path prologDirPath = Paths.get(PROLOGFILES_DIRECTORY.replaceFirst("/", ""));
         File prologDir = prologDirPath.toFile();
 
@@ -51,6 +50,5 @@ public class PrologFileLoader {
 
         myLogger.info("[PrologFileLoader] addAllPrologFiles() found " + prologFilesToLoad.size() + " prolog files to load.");
 
-        return prologFilesToLoad;
     }
 }

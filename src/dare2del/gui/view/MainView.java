@@ -25,22 +25,11 @@ public class MainView implements Observer {
     //Main components
     private DirectoryTreeView tv;
     private DirectoryView v;
-    private TabPane tabPane;
+    private TabPane candidateTabs;
 
-    //TabPane components
-    private DeletionReasonPane reasonPane;
     private DeletionListPane delList;
-    SplitPane splitPane_deletion;
     private NearMissListPane nearMissList;
-    SplitPane splitPane_nearMiss;
-    private Tab deletionTab;
-    private Tab nearMissTab;
 
-    //Menu
-    private MenuBar menuBar;
-    private Menu fileMenu;
-    private Menu editMenu;
-    private Menu helpMenu;
     private MenuItem openFileItem;
     private MenuItem exitItem;
 
@@ -77,9 +66,10 @@ public class MainView implements Observer {
         v.setIconSize(IconSize.MEDIUM);
         v.setDir(tv.getRootDirectories().get(0));
 
-        tabPane = createTabs();
-        reasonPane = new DeletionReasonPane(this.deletionModel);
-        SplitPane thirdColumn = new SplitPane(tabPane, reasonPane);
+        candidateTabs = createCandidateTabs();
+        //TabPane components
+        DeletionReasonPane reasonPane = new DeletionReasonPane(this.deletionModel);
+        SplitPane thirdColumn = new SplitPane(candidateTabs, reasonPane);
         thirdColumn.setOrientation(Orientation.VERTICAL);
         thirdColumn.setDividerPositions(0.5);
 
@@ -95,30 +85,31 @@ public class MainView implements Observer {
         primaryStage.show();
     }
 
-    private TabPane createTabs() {
-        tabPane = new TabPane();
+    private TabPane createCandidateTabs() {
+        candidateTabs = new TabPane();
 
         delList = new DeletionListPane(deletionModel);
-        deletionTab = new Tab();
-        deletionTab.setText("Deletion Tab");
+        Tab deletionTab = new Tab();
+        deletionTab.setText("Deletion Candidates");
         deletionTab.setContent(delList);
 
         nearMissList = new NearMissListPane(deletionModel);
-        nearMissTab = new Tab();
-        nearMissTab.setText("Near Misses Tab");
+        Tab nearMissTab = new Tab();
+        nearMissTab.setText("Global Near Misses");
         nearMissTab.setContent(nearMissList);
 
-        tabPane.getTabs().addAll(deletionTab, nearMissTab);
-        tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
-        return tabPane;
+        candidateTabs.getTabs().addAll(deletionTab, nearMissTab);
+        candidateTabs.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
+        return candidateTabs;
     }
 
     private MenuBar createMenuBar() {
-        menuBar = new MenuBar();
+        //Menu
+        MenuBar menuBar = new MenuBar();
 
-        fileMenu = new Menu("File");
-        editMenu = new Menu("Edit");
-        helpMenu = new Menu("Help");
+        Menu fileMenu = new Menu("File");
+        Menu editMenu = new Menu("Edit");
+        Menu helpMenu = new Menu("Help");
 
         openFileItem = new MenuItem("Open Directory");
 
@@ -149,6 +140,10 @@ public class MainView implements Observer {
 
     public DirectoryView getDirectoryView() {
         return v;
+    }
+
+    public TabPane getCandidateTabs() {
+        return candidateTabs;
     }
 
     public DeletionListPane getDelList() {

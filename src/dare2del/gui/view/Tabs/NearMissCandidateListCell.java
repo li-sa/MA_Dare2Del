@@ -47,7 +47,7 @@ class NearMissCandidateListCell extends ListCell<DetailedFile> implements Observ
     }
 
     private Button createShowReasonButton() {
-        Button button_nearMiss_explain = new Button(Messages.getString("DeletionCandidateListCell.explainButton"));
+        Button button_nearMiss_explain = new Button(Messages.getString("DeletionCandidateListCell.explainButtonSimple"));
         button_nearMiss_explain.setOnAction(event -> {
             deletionModel.resetCurrentChoices();
             deletionModel.setCurrentSelectedNearMissCandidate(detailedFile);

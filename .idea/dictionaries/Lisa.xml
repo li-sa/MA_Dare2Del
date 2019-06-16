@@ -2,12 +2,16 @@
   <dictionary name="Lisa">
     <words>
       <w>beispiele</w>
+      <w>bodylist</w>
       <w>dontknow</w>
       <w>filemanager</w>
       <w>hashmap</w>
       <w>isub</w>
       <w>nearmiss</w>
+      <w>nearmisses</w>
       <w>prolog</w>
+      <w>prologfiles</w>
+      <w>secondfile</w>
       <w>setof</w>
       <w>splitted</w>
       <w>studium</w>

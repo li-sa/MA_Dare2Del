@@ -1,0 +1,140 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <style>
+        body {
+            font-family: sans-serif;
+            line-height: 1.25em;
+            font-size: 10.5pt;
+            padding: 0.25em;
+        }
+
+        ul {
+            padding-left: 2em;
+        }
+
+        li {
+            margin-bottom: 1em;
+        }
+
+        .fileA {
+            font-family: monospaced;
+            padding: 0 0.5em;
+            background-color: lightgray;
+            border-radius: 5px;
+        }
+
+        .fileB {
+            font-family: monospaced;
+            padding: 0 0.5em;
+            background-color: LightGreen;
+            border-radius: 5px;
+        }
+
+        /* Style the normal content. */
+        .deletionCandidateContent {
+            padding: 16px 18px;
+            overflow: hidden;
+            background-color: #eee;
+            border-radius: 10px;
+        }
+
+
+        /* Style the button that is used to open and close the collapsible content */
+        .collapsible {
+            margin: 15px 0px 0px 0px;
+            background-color: #eee;
+            color: #444;
+            cursor: pointer;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            border-radius: 10px;
+            text-align: left;
+            outline: none;
+            font-size: 15px;
+        }
+
+        /* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+        .active {
+            background-color: #ccc;
+        }
+
+        .collapsible:hover {
+            box-shadow: 0 6px 8px 0 rgba(0,0,0,0.24), 0 9px 20px 0 rgba(0,0,0,0.19);
+        }
+
+        /* Style the collapsible content. Note: hidden by default */
+        .content {
+            margin: 10px 0px 0px 0px;
+            padding: 10px 10px 10px 10px;
+            display: none;
+            background-color: #eee;
+            border-radius: 10px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.2s ease-out;
+        }
+
+        .collapsible:after {
+            content: "\2193"; /* Unicode character for "plus" sign (+) */
+            font-size: 25px;
+            color: #0026ff;
+            float: right;
+            margin-left: 5px;
+        }
+
+        .active:after {
+            content: "\2191"; /* Unicode character for "minus" sign (-) */
+            font-size: 25px;
+            color: #0026ff;
+            float: right;
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+
+
+<button class="collapsible">Reasons for deletion</button>
+<div id="irrelevant" class="content">
+    <span class="irrelevant">File <span class="fileA"></span> may be deleted because </span>
+    <ul class="another_irrelevant"></ul>
+    <ul class="itself_irrelevant"></ul>
+</div>
+
+<button class="collapsible">Near missed deletion candidates for this file</button>
+<div id="nearmiss" class="content">
+    <a id="eachNM">
+        <span class="nearmiss">File <span class="fileA"></span> is a near miss because </span>
+        <ul class="another_nearmiss"></ul>
+        <ul class="itself_nearmiss"></ul>
+    </a>
+</div>
+
+<script>
+    var coll = document.getElementsByClassName("collapsible");
+    var i;
+
+    for (i = 0; i < coll.length; i++) {
+        coll[i].addEventListener("click", function () {
+            this.classList.toggle("active");
+            var content = this.nextElementSibling;
+            if (content.style.display === "block") {
+                content.style.display = "none";
+            } else {
+                content.style.display = "block";
+            }
+            if (content.style.maxHeight) {
+                content.style.maxHeight = null;
+            } else {
+                content.style.maxHeight = content.scrollHeight + "px";
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

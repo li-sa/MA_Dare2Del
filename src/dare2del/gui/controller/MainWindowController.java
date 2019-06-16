@@ -5,6 +5,8 @@ import dare2del.gui.view.MainView;
 import dare2del.logic.DetailedFile;
 import dare2del.logic.FileCrawler;
 import dare2del.logic.PrologFileWriter;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.MenuItem;
 import javafx.stage.DirectoryChooser;
@@ -19,7 +21,8 @@ import java.util.List;
 
 public class MainWindowController {
 
-    private final String default_rootPath = "C:\\Users\\Lisa\\Desktop\\MA_Beispiele\\TestDir_2";
+    private final String EXAMPLE_DIRECTORY = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + "../DirectoryExample";
+    private final Path exampleDirPath = Paths.get(EXAMPLE_DIRECTORY.replaceFirst("/", ""));
 
     private final Stage primaryStage;
     private final DeletionModel deletionModel;
@@ -33,9 +36,7 @@ public class MainWindowController {
 
         this.deletionModel = new DeletionModel();
 
-        String chosenRootPath = showDirectoryFileChooser(primaryStage);
-        validatePath(chosenRootPath); // just for testing! -> parameter might be chosenRootPath
-        // Preparation: Crawl files within rootPath and write metadata to prologFiles file clauses.pl
+        validatePath(exampleDirPath.toString());
         initProlog();
 
         this.deletionModel.initDeletionModel();
@@ -51,10 +52,17 @@ public class MainWindowController {
         createListenerForTreeView(mainView.getDirectoryTreeView(), mainView.getDirectoryView());
         createListenerForDirectoryView(mainView.getDirectoryView());
         createListenerForDeletionCells(mainView.getDelList().getDeletionCandidatesCellList());
+
+        mainView.getCandidateTabs().getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
+                deletionModel.resetCurrentChoices();
+            }
+        });
     }
 
     private String showDirectoryFileChooser(Stage primaryStage) {
-        String rootName = default_rootPath;
+        String rootName = exampleDirPath.toString();
 
         final DirectoryChooser directoryChooser = new DirectoryChooser();
         final File selectedDirectory = directoryChooser.showDialog(primaryStage);

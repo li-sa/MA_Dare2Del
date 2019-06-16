@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
-public class DeletionReasonPane extends VBox implements Observer {
+class DeletionReasonPane extends VBox implements Observer {
 
     private final DeletionModel deletionModel;
 
@@ -40,15 +40,17 @@ public class DeletionReasonPane extends VBox implements Observer {
     }
 
     private void showDel() {
+        DetailedFile currentSelected = deletionModel.getCurrentSelectedDeletionCandidate();
+        Document reasonDoc = null;
+
         deletionModel.myLogger.info("[DeletionReasonPane] showDel().");
 
-//        String pathString = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + "/../../deletion_dummy.html";
-        String pathString = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + "deletion_dummy.html";
-
-        DetailedFile currentSelected = deletionModel.getCurrentSelectedDeletionCandidate();
+        String pathString = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + "/../htmlFiles/deletion_dummy.html";
         HashMap<DetailedFile, HashMap<DetailedFile, List<String>>> allCandidates = deletionModel.getDeletionPairs_grouped();
+        HashMap<DetailedFile, List<String>> reasonForCurrentCandidate = allCandidates.get(currentSelected);
 
-        Document reasonDoc = fillReasonHTML(pathString, currentSelected, allCandidates, QueryKind.IRRELEVANT);
+        reasonDoc = fillReasonHTML(pathString, currentSelected, reasonForCurrentCandidate, QueryKind.IRRELEVANT);
+
 
         if (reasonDoc != null) {
             String textInDoc = reasonDoc.toString();
@@ -59,13 +61,13 @@ public class DeletionReasonPane extends VBox implements Observer {
     private void showNearMiss() {
         deletionModel.myLogger.info("[DeletionReasonPane] showNearMiss().");
 
-//        String pathString = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + "/../../nearmiss_dummy.html";
-        String pathString = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + "nearmiss_dummy.html";
+        String pathString = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + "/../htmlFiles/nearmiss_dummy.html";
 
         DetailedFile currentSelected = deletionModel.getCurrentSelectedNearMissCandidate();
         HashMap<DetailedFile, HashMap<DetailedFile, List<String>>> allCandidates = deletionModel.getNearMissPairs_grouped();
+        HashMap<DetailedFile, List<String>> reasonForCurrentCandidate = allCandidates.get(currentSelected);
 
-        Document reasonDoc = fillReasonHTML(pathString, currentSelected, allCandidates, QueryKind.NEARMISS);
+        Document reasonDoc = fillReasonHTML(pathString, currentSelected, reasonForCurrentCandidate, QueryKind.NEARMISS);
 
         if (reasonDoc != null) {
             String textInDoc = reasonDoc.toString();
@@ -73,8 +75,60 @@ public class DeletionReasonPane extends VBox implements Observer {
         }
     }
 
-    private Document fillReasonHTML(String pathString, DetailedFile currentSelected, HashMap<DetailedFile, HashMap<DetailedFile, List<String>>> allCandidates, QueryKind queryKind) {
+    /*private Document fillReasonHTML_correspondingNMs(HashMap<DetailedFile, HashMap<DetailedFile, List<String>>> correspondingNMs) {
+        String pathString = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + "/../htmlFiles/nearmiss_dummy.html";
+        QueryKind queryKind = QueryKind.NEARMISS;
+        Document doc;
+
+        deletionModel.myLogger.info("[DeletionReasonPane] fillReasonHTML_correspondingNMs(), path to dummy.html: " + pathString);
+
+        if (correspondingNMs.isEmpty()) {
+            return null;
+        }
+
+        try {
+            File dummyFile = new File(pathString);
+            doc = Jsoup.parse(dummyFile, "UTF-8");
+            doc.outputSettings().prettyPrint(false);
+
+            for (DetailedFile eachNM : correspondingNMs.keySet()) {
+                Element element_each = doc.getElementById("each").clone();
+                element_each.attr("id", "");
+
+                Elements elements_FileA = element_each.getElementsByClass("fileA");
+                for (Element eachFileA : elements_FileA) {
+                    eachFileA.attr("class", "fileB");
+                    eachFileA.text(eachNM.getName());
+                }
+
+                HashMap<DetailedFile, List<String>> reasonForCurrentCandidate = correspondingNMs.get(eachNM);
+
+                for (DetailedFile reason_detailedFile : reasonForCurrentCandidate.keySet()) {
+                    Element ul_another = doc.getElementsByClass("another").first().clone();
+
+                    List<String> reasonList = reasonForCurrentCandidate.get(reason_detailedFile);
+                    for (String reason : reasonList) {
+                        appendReasonElement(reason_detailedFile, ul_another, reason, "fileA");
+                    }
+
+                    element_each.appendChild(ul_another);
+                }
+
+                doc.getElementsByTag("body").first().appendChild(element_each);
+            }
+        } catch (IOException e) {
+            deletionModel.myLogger.warning("[DeletionReasonPane] Exception in fillReasonHTML(): " + e.getMessage());
+            throw new IllegalArgumentException();
+        }
+
+        doc.getElementById("each").remove();
+        return doc;
+    }*/
+
+    private Document fillReasonHTML(String pathString, DetailedFile currentSelected, HashMap<DetailedFile, List<String>> reasonForCurrentCandidate, QueryKind queryKind) {
         deletionModel.myLogger.info("[DeletionReasonPane] fillReasonHTML(), path to dummy.html: " + pathString);
+
+        String queryKindString = queryKind.toString().toLowerCase();
 
         Document doc;
 
@@ -82,15 +136,12 @@ public class DeletionReasonPane extends VBox implements Observer {
             return null;
         }
 
-        HashMap<DetailedFile, List<String>> reasonForCurrentDeletionCandidate = allCandidates.get(currentSelected);
-
         try {
             File dummyFile = new File(pathString);
             doc = Jsoup.parse(dummyFile, "UTF-8");
             doc.outputSettings().prettyPrint(false);
 
-            Element element_relevance = doc.getElementById(queryKind.toString().toLowerCase());
-            element_relevance.attr("class", "");
+            Element element_relevance = doc.getElementById(queryKindString);
 
             Elements elements_FileA = doc.getElementsByClass("fileA");
             for (Element eachFileA : elements_FileA) {
@@ -98,30 +149,35 @@ public class DeletionReasonPane extends VBox implements Observer {
             }
 
             //reasons according to file itself
-            if (reasonForCurrentDeletionCandidate.containsKey(currentSelected)) {
-                Element ul_itself = doc.getElementsByClass("itself").first();
+            if (reasonForCurrentCandidate.containsKey(currentSelected)) {
+                Element ul_itself = doc.getElementsByClass("itself_" + queryKindString).first();
 
-                List<String> reasons_olderThanOneYear = reasonForCurrentDeletionCandidate.get(currentSelected);
+                List<String> reasons_olderThanOneYear = reasonForCurrentCandidate.get(currentSelected);
                 for (String reason : reasons_olderThanOneYear) {
                     appendReasonElement(currentSelected, ul_itself, reason, "fileA");
                 }
             } else {
-                Element ul_itself = doc.getElementsByClass("itself").first();
+                Element ul_itself = doc.getElementsByClass("itself_" + queryKindString).first();
                 ul_itself.remove();
             }
 
             //reasons according to other files
-            for (DetailedFile reason_detailedFile : reasonForCurrentDeletionCandidate.keySet()) {
+            for (DetailedFile reason_detailedFile : reasonForCurrentCandidate.keySet()) {
                 if (reason_detailedFile != currentSelected) {
-                    Element ul_another = doc.getElementsByClass("another").first().clone();
+                    Element ul_another = element_relevance.getElementsByClass("another_" + queryKindString).first().clone();
 
-                    List<String> reasonList = reasonForCurrentDeletionCandidate.get(reason_detailedFile);
+                    List<String> reasonList = reasonForCurrentCandidate.get(reason_detailedFile);
                     for (String reason : reasonList) {
                         appendReasonElement(reason_detailedFile, ul_another, reason, "fileB");
                     }
 
-                    doc.getElementsByTag("body").first().appendChild(ul_another);
+                    doc.getElementById(queryKindString).appendChild(ul_another);
                 }
+            }
+
+            //reasoning by near miss in case of deletion candidate
+            if (queryKind == QueryKind.IRRELEVANT) {
+                doc = fillReasonHTML_NMsForDeletion(doc, currentSelected);
             }
 
         } catch (IOException e) {
@@ -131,6 +187,51 @@ public class DeletionReasonPane extends VBox implements Observer {
 
         return doc;
     }
+
+    public Document fillReasonHTML_NMsForDeletion(Document doc, DetailedFile currentSelected) {
+        HashMap<DetailedFile, HashMap<DetailedFile, List<String>>> correspondingNMs = findNearMissForSpecificDeletionCandidate(currentSelected);
+
+        deletionModel.myLogger.info("[DeletionReasonPane] fillReasonHTML_NMsForDeletion().");
+
+        Element element_nearmiss = doc.getElementById("nearmiss");
+
+        if (correspondingNMs.isEmpty()) {
+            element_nearmiss.children().remove();
+            element_nearmiss.appendText("[No near miss for this file.]");
+            return doc;
+        }
+
+        for (DetailedFile eachNM : correspondingNMs.keySet()) {
+            Element element_each = element_nearmiss.getElementById("eachNM").clone();
+            element_each.attr("id", "");
+
+            Elements elements_FileA = element_each.getElementsByClass("fileA");
+            for (Element eachFileA : elements_FileA) {
+                eachFileA.attr("class", "fileB");
+                eachFileA.text(eachNM.getName());
+            }
+
+            HashMap<DetailedFile, List<String>> reasonForCurrentCandidate = correspondingNMs.get(eachNM);
+
+            for (DetailedFile reason_detailedFile : reasonForCurrentCandidate.keySet()) {
+                Element ul_another = element_nearmiss.getElementsByClass("another_nearmiss").first().clone();
+
+                List<String> reasonList = reasonForCurrentCandidate.get(reason_detailedFile);
+                for (String reason : reasonList) {
+                    appendReasonElement(reason_detailedFile, ul_another, reason, "fileA");
+                }
+
+                element_each.appendChild(ul_another);
+            }
+
+            element_nearmiss.appendChild(element_each);
+        }
+
+
+        doc.getElementById("eachNM").remove();
+        return doc;
+    }
+
 
     private void appendReasonElement(DetailedFile reason_detailedFile, Element ul_another, String reason, String fileB) {
         Element elem_reason = ul_another.appendElement("li");
@@ -143,6 +244,51 @@ public class DeletionReasonPane extends VBox implements Observer {
         elem_reason.appendText(" is " + reason.replace("_", " "));
     }
 
+    private HashMap<DetailedFile, HashMap<DetailedFile, List<String>>> findNearMissForSpecificDeletionCandidate(DetailedFile currentSelectedDeletionCandidate) {
+        HashMap<DetailedFile, HashMap<DetailedFile, List<String>>> allNearMissCandidates = deletionModel.getNearMissPairs_grouped();
+        HashMap<DetailedFile, HashMap<DetailedFile, List<String>>> correspondingNearMissCandidates = new HashMap<DetailedFile, HashMap<DetailedFile, List<String>>>();
+
+        for (DetailedFile eachNM : allNearMissCandidates.keySet()) {
+            HashMap<DetailedFile, List<String>> nm_candidate = allNearMissCandidates.get(eachNM);
+
+            for (DetailedFile each : nm_candidate.keySet()) {
+                if (each == currentSelectedDeletionCandidate) {
+                    HashMap<DetailedFile, List<String>> correspondingNM = new HashMap<DetailedFile, List<String>>();
+                    correspondingNM.put(currentSelectedDeletionCandidate, nm_candidate.get(each));
+                    correspondingNearMissCandidates.put(eachNM, correspondingNM);
+                }
+            }
+        }
+
+        return correspondingNearMissCandidates;
+    }
+
+    private void clearReasonPane() {
+        deletionModel.myLogger.info("[DeletionReasonPane] clearReasonPane().");
+        String pathString = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + "/../htmlFiles/nearmiss_dummy.html";
+
+        Document doc;
+        try {
+            File dummyFile = new File(pathString);
+            doc = Jsoup.parse(dummyFile, "UTF-8");
+            doc.outputSettings().prettyPrint(false);
+
+            Elements allChildren = doc.getElementsByTag("body");
+            for (Element each : allChildren) {
+                each.remove();
+            }
+
+        } catch (IOException e) {
+            deletionModel.myLogger.warning("[DeletionReasonPane] Exception in clearReasonPane(): " + e.getMessage());
+            throw new IllegalArgumentException();
+        }
+
+        if (doc != null) {
+            String textInDoc = doc.toString();
+            webEngine.loadContent(textInDoc);
+        }
+    }
+
     public void update(Observable observable, Object object) {
         deletionModel.myLogger.info("[DeletionReasonPane] update().");
 
@@ -152,6 +298,8 @@ public class DeletionReasonPane extends VBox implements Observer {
             } else if (deletionModel.getCurrentSelectedNearMissCandidate() != null) {
                 showNearMiss();
             }
+        } else if (object == null) {
+            clearReasonPane();
         }
     }
 }

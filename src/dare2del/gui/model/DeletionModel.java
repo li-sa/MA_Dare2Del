@@ -51,7 +51,7 @@ public class DeletionModel extends Observable {
         this.nearMissPairs_grouped = deletionService.getCandidatesWithReasoning_Grouped(QueryKind.NEARMISS);
     }
 
-    public void initLogger() {
+    private void initLogger() {
         File logDir = new File("./logs/");
         if( !(logDir.exists()) )
             logDir.mkdir();
@@ -131,5 +131,8 @@ public class DeletionModel extends Observable {
     public void resetCurrentChoices() {
         this.currentSelectedDeletionCandidate = null;
         this.currentSelectedNearMissCandidate = null;
+
+        this.setChanged();
+        notifyObservers(currentSelectedDeletionCandidate);
     }
 }

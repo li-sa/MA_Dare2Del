@@ -20,7 +20,6 @@ class DeletionCandidateListCell extends ListCell<DetailedFile> implements Observ
     private final DeletionModel deletionModel;
 
     private DetailedFile detailedFile;
-    private Button button_deletion_explain;
 
     private final BorderPane borderPane;
     private final Label filenameLabel;
@@ -83,7 +82,7 @@ class DeletionCandidateListCell extends ListCell<DetailedFile> implements Observ
     }
 
     private Button createShowReasonButton() {
-        button_deletion_explain = new Button(Messages.getString("DeletionCandidateListCell.explainButton"));
+        Button button_deletion_explain = new Button(Messages.getString("DeletionCandidateListCell.explainButtonSimple"));
         button_deletion_explain.setOnAction(event -> {
             deletionModel.resetCurrentChoices();
             deletionModel.setCurrentSelectedDeletionCandidate(detailedFile);
