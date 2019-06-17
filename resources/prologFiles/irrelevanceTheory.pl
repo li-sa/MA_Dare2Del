@@ -47,7 +47,9 @@ file_content_similarity(F1, F2, D) :-
     open(F2, read, Stream2),
     read_string(Stream1, _, S1),
     read_string(Stream2, _, S2),
-    isub(S1, S2, true, D).
+    isub(S1, S2, true, D),
+    close(Stream1),
+    close(Stream2).
 
 very_similar(F1, F2) :-
     F1 \= F2,
