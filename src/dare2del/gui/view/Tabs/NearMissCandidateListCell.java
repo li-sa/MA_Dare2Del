@@ -1,13 +1,15 @@
 package dare2del.gui.view.Tabs;
 
 import dare2del.gui.model.DeletionModel;
-import dare2del.gui.view.Messages;
 import dare2del.logic.DetailedFile;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 
+import java.util.Objects;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -18,6 +20,8 @@ class NearMissCandidateListCell extends ListCell<DetailedFile> implements Observ
 
     private final BorderPane borderPane;
     private final Label filenameLabel;
+
+    private final Image QUESTION_MARK_ICON = new Image(Objects.requireNonNull(getClass().getClassLoader().getResource("icons/question-mark.png")).toExternalForm());
 
     public NearMissCandidateListCell(DeletionModel deletionModel) {
         super();
@@ -47,7 +51,8 @@ class NearMissCandidateListCell extends ListCell<DetailedFile> implements Observ
     }
 
     private Button createShowReasonButton() {
-        Button button_nearMiss_explain = new Button(Messages.getString("DeletionCandidateListCell.explainButtonSimple"));
+        Button button_nearMiss_explain = new Button();
+        button_nearMiss_explain.setGraphic(new ImageView(QUESTION_MARK_ICON));
         button_nearMiss_explain.setOnAction(event -> {
             deletionModel.resetCurrentChoices();
             deletionModel.setCurrentSelectedNearMissCandidate(detailedFile);

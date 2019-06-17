@@ -22,16 +22,18 @@ public class MainView implements Observer {
     private final DeletionModel deletionModel;
     private final Stage primaryStage;
 
-    //Main components
     private DirectoryTreeView tv;
     private DirectoryView v;
     private TabPane candidateTabs;
+    private Button deleteButton;
 
     private DeletionListPane delList;
     private NearMissListPane nearMissList;
 
     private MenuItem openFileItem;
     private MenuItem exitItem;
+
+
 
     public MainView(DeletionModel deletionModel, Stage primaryStage) {
         this.deletionModel = deletionModel;
@@ -67,11 +69,16 @@ public class MainView implements Observer {
         v.setDir(tv.getRootDirectories().get(0));
 
         candidateTabs = createCandidateTabs();
-        //TabPane components
+        deleteButton = new Button(Messages.getString("DeletionButton.Label"));
+        deleteButton.setOnAction(event -> {
+            deletionModel.confirmDeletion();
+        });
         DeletionReasonPane reasonPane = new DeletionReasonPane(this.deletionModel);
-        SplitPane thirdColumn = new SplitPane(candidateTabs, reasonPane);
+        SplitPane thirdColumn = new SplitPane();
         thirdColumn.setOrientation(Orientation.VERTICAL);
-        thirdColumn.setDividerPositions(0.5);
+        thirdColumn.setDividerPositions(0.45, 0.9);
+        deleteButton.prefWidthProperty().bind(thirdColumn.widthProperty());
+        thirdColumn.getItems().addAll(candidateTabs, reasonPane, deleteButton);
 
         SplitPane hPane = new SplitPane(tv, v, thirdColumn);
         hPane.setDividerPositions(0.2, 0.6);
@@ -112,6 +119,7 @@ public class MainView implements Observer {
         Menu helpMenu = new Menu("Help");
 
         openFileItem = new MenuItem("Open Directory");
+        openFileItem.setAccelerator(KeyCombination.keyCombination("Ctrl+O"));
 
         exitItem = new MenuItem("Exit");
         exitItem.setAccelerator(KeyCombination.keyCombination("Ctrl+X"));
@@ -153,5 +161,4 @@ public class MainView implements Observer {
     public NearMissListPane getNearMissList() {
         return nearMissList;
     }
-
 }

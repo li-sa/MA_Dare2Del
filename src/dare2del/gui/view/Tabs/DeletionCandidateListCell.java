@@ -2,7 +2,6 @@ package dare2del.gui.view.Tabs;
 
 import dare2del.gui.model.DeletionDecision;
 import dare2del.gui.model.DeletionModel;
-import dare2del.gui.view.Messages;
 import dare2del.logic.DetailedFile;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -24,10 +23,11 @@ class DeletionCandidateListCell extends ListCell<DetailedFile> implements Observ
     private final BorderPane borderPane;
     private final Label filenameLabel;
 
-    private DeletionDecision decision = DeletionDecision.DONTKNOW;
+    private DeletionDecision decision = DeletionDecision.KEEP;
     private final Image DELETE_DECISION_ICON = new Image(Objects.requireNonNull(getClass().getClassLoader().getResource("icons/delete.png")).toExternalForm());
     private final Image KEEP_DECISION_ICON = new Image(Objects.requireNonNull(getClass().getClassLoader().getResource("icons/keep.png")).toExternalForm());
-    private final Image DONT_KNOW_DECISION_ICON = new Image(Objects.requireNonNull(getClass().getClassLoader().getResource("icons/dont-know.png")).toExternalForm());
+
+    private final Image QUESTION_MARK_ICON = new Image(Objects.requireNonNull(getClass().getClassLoader().getResource("icons/question-mark.png")).toExternalForm());
 
     public DeletionCandidateListCell(DeletionModel deletionModel) {
         super();
@@ -43,7 +43,7 @@ class DeletionCandidateListCell extends ListCell<DetailedFile> implements Observ
 
         filenameLabel = new Label();
         filenameLabel.setPadding(new Insets(0, 10, 0, 10));
-        filenameLabel.setTextOverrun(OverrunStyle.CENTER_WORD_ELLIPSIS); // not obvious enough?
+        filenameLabel.setTextOverrun(OverrunStyle.CENTER_WORD_ELLIPSIS);
 
         borderPane = new BorderPane();
         borderPane.setLeft(cycleDecisionButton);
@@ -60,21 +60,18 @@ class DeletionCandidateListCell extends ListCell<DetailedFile> implements Observ
 
     private Button createCycleDecisionButton() {
         Button button = new Button();
-        button.setGraphic(new ImageView(DONT_KNOW_DECISION_ICON));
+        button.setGraphic(new ImageView(KEEP_DECISION_ICON));
         button.setOnMouseClicked(event -> {
-            // This just cycles through the icons right now, the decision is not stored in any way.
             switch (decision) {
-                case DONTKNOW:
-                    decision = DeletionDecision.DELETE;
-                    button.setGraphic(new ImageView(DELETE_DECISION_ICON));
-                    break;
                 case DELETE:
+                    deletionModel.updateFilesForDeletion(detailedFile, false);
                     decision = DeletionDecision.KEEP;
                     button.setGraphic(new ImageView(KEEP_DECISION_ICON));
                     break;
                 case KEEP:
-                    decision = DeletionDecision.DONTKNOW;
-                    button.setGraphic(new ImageView(DONT_KNOW_DECISION_ICON));
+                    deletionModel.updateFilesForDeletion(detailedFile, true);
+                    decision = DeletionDecision.DELETE;
+                    button.setGraphic(new ImageView(DELETE_DECISION_ICON));
                     break;
             }
         });
@@ -82,7 +79,8 @@ class DeletionCandidateListCell extends ListCell<DetailedFile> implements Observ
     }
 
     private Button createShowReasonButton() {
-        Button button_deletion_explain = new Button(Messages.getString("DeletionCandidateListCell.explainButtonSimple"));
+        Button button_deletion_explain = new Button();
+        button_deletion_explain.setGraphic(new ImageView(QUESTION_MARK_ICON));
         button_deletion_explain.setOnAction(event -> {
             deletionModel.resetCurrentChoices();
             deletionModel.setCurrentSelectedDeletionCandidate(detailedFile);

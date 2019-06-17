@@ -12,8 +12,6 @@ import java.util.Objects;
 
 public class DetailedFile {
 
-    private final File file;
-
     private String name_escaped;
     private String path_escaped;
     private String inDirectory_escaped;
@@ -27,14 +25,11 @@ public class DetailedFile {
     private String media_type;
     private long size;
 
-    private String name_lowerCase_withoutExtension;
-
     public DetailedFile(File file) {
-        this.file = file;
-        setMetadata();
+        setMetadata(file);
     }
 
-    private void setMetadata() {
+    private void setMetadata(File file) {
         BasicFileAttributes fileAttributes = null;
 
         try {
@@ -49,7 +44,7 @@ public class DetailedFile {
         this.access_time = getSecondsSinceEpoch(fileAttributes.lastAccessTime());
         this.change_time = getSecondsSinceEpoch(fileAttributes.lastModifiedTime());
         this.in_directory = file.getParentFile();
-        this.media_type = FilenameUtils.getExtension(this.file.getName());
+        this.media_type = FilenameUtils.getExtension(file.getName());
         this.size = fileAttributes.size();
 
         this.name_escaped = StringEscapeUtils.escapeJava(this.name);
@@ -60,10 +55,6 @@ public class DetailedFile {
     private long getSecondsSinceEpoch(FileTime fileTime){
         Instant instant = fileTime.toInstant();
         return instant.getEpochSecond();
-    }
-
-    public File getFile() {
-        return file;
     }
 
     public long getCreation_time() {

@@ -75,56 +75,6 @@ class DeletionReasonPane extends VBox implements Observer {
         }
     }
 
-    /*private Document fillReasonHTML_correspondingNMs(HashMap<DetailedFile, HashMap<DetailedFile, List<String>>> correspondingNMs) {
-        String pathString = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + "/../htmlFiles/nearmiss_dummy.html";
-        QueryKind queryKind = QueryKind.NEARMISS;
-        Document doc;
-
-        deletionModel.myLogger.info("[DeletionReasonPane] fillReasonHTML_correspondingNMs(), path to dummy.html: " + pathString);
-
-        if (correspondingNMs.isEmpty()) {
-            return null;
-        }
-
-        try {
-            File dummyFile = new File(pathString);
-            doc = Jsoup.parse(dummyFile, "UTF-8");
-            doc.outputSettings().prettyPrint(false);
-
-            for (DetailedFile eachNM : correspondingNMs.keySet()) {
-                Element element_each = doc.getElementById("each").clone();
-                element_each.attr("id", "");
-
-                Elements elements_FileA = element_each.getElementsByClass("fileA");
-                for (Element eachFileA : elements_FileA) {
-                    eachFileA.attr("class", "fileB");
-                    eachFileA.text(eachNM.getName());
-                }
-
-                HashMap<DetailedFile, List<String>> reasonForCurrentCandidate = correspondingNMs.get(eachNM);
-
-                for (DetailedFile reason_detailedFile : reasonForCurrentCandidate.keySet()) {
-                    Element ul_another = doc.getElementsByClass("another").first().clone();
-
-                    List<String> reasonList = reasonForCurrentCandidate.get(reason_detailedFile);
-                    for (String reason : reasonList) {
-                        appendReasonElement(reason_detailedFile, ul_another, reason, "fileA");
-                    }
-
-                    element_each.appendChild(ul_another);
-                }
-
-                doc.getElementsByTag("body").first().appendChild(element_each);
-            }
-        } catch (IOException e) {
-            deletionModel.myLogger.warning("[DeletionReasonPane] Exception in fillReasonHTML(): " + e.getMessage());
-            throw new IllegalArgumentException();
-        }
-
-        doc.getElementById("each").remove();
-        return doc;
-    }*/
-
     private Document fillReasonHTML(String pathString, DetailedFile currentSelected, HashMap<DetailedFile, List<String>> reasonForCurrentCandidate, QueryKind queryKind) {
         deletionModel.myLogger.info("[DeletionReasonPane] fillReasonHTML(), path to dummy.html: " + pathString);
 

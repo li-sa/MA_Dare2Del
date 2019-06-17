@@ -5,6 +5,8 @@ import dare2del.logic.DetailedFile;
 import dare2del.logic.QueryKind;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.web.WebEngine;
 
 import java.io.File;
@@ -20,6 +22,7 @@ import java.util.logging.SimpleFormatter;
 public class DeletionModel extends Observable {
 
     public final Logger myLogger;
+    private DeletionService deletionService;
 
     private Path rootPath;
     public WebEngine webEngine;
@@ -27,6 +30,7 @@ public class DeletionModel extends Observable {
     private List<DetailedFile> fileList;
     private DetailedFile currentSelectedDeletionCandidate;
     private DetailedFile currentSelectedNearMissCandidate;
+    private List<DetailedFile> filesSelectedForDeletion;
 
     private ObservableList<DetailedFile> deletionCandidates;
     private ObservableList<DetailedFile> nearMissCandidates;
@@ -42,7 +46,7 @@ public class DeletionModel extends Observable {
     }
 
     public void initDeletionModel() {
-        DeletionService deletionService = new DeletionService(this);
+        deletionService = new DeletionService(this);
 
         this.deletionPairs_grouped = deletionService.getCandidatesWithReasoning_Grouped(QueryKind.IRRELEVANT);
         this.nearMissPairs_grouped = deletionService.getCandidatesWithReasoning_Grouped(QueryKind.NEARMISS);
@@ -51,10 +55,32 @@ public class DeletionModel extends Observable {
         List<DetailedFile> nearmissCandidateList = new ArrayList<>(nearMissPairs_grouped.keySet());
         this.deletionCandidates = FXCollections.observableList(deletionCandidateList);
         this.nearMissCandidates = FXCollections.observableList(nearmissCandidateList);
+
+        this.filesSelectedForDeletion = new ArrayList<>();
+    }
+
+    public void resetCurrentChoices() {
+        this.currentSelectedDeletionCandidate = null;
+        this.currentSelectedNearMissCandidate = null;
+
+        this.setChanged();
+        notifyObservers(currentSelectedDeletionCandidate);
+    }
+
+    public void confirmDeletion() {
+        myLogger.info("[DeletionModel] deleteAllSelectedFiles().");
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure to delete all selected files?", ButtonType.YES, ButtonType.NO, ButtonType.CANCEL);
+        alert.showAndWait();
+
+        if (alert.getResult() == ButtonType.YES) {
+            deletionService.deleteSelectedFiles();
+        }
     }
 
     private void initLogger() {
         File logDir = new File("./logs/");
+
         if( !(logDir.exists()) )
             logDir.mkdir();
 
@@ -69,6 +95,16 @@ public class DeletionModel extends Observable {
         Objects.requireNonNull(fh).setFormatter(new SimpleFormatter());
         myLogger.addHandler(fh);
     }
+
+    public void updateFilesForDeletion(DetailedFile detailedFile, boolean toDelete) {
+        if (toDelete && !filesSelectedForDeletion.contains(detailedFile)) {
+            filesSelectedForDeletion.add(detailedFile);
+        } else if (!toDelete && filesSelectedForDeletion.contains(detailedFile)) {
+            filesSelectedForDeletion.remove(detailedFile);
+        }
+    }
+
+    public List<DetailedFile> getFilesSelectedForDeletion() { return filesSelectedForDeletion; }
 
     public void setCurrentSelectedDeletionCandidate(DetailedFile detailedFile) {
         this.currentSelectedDeletionCandidate = detailedFile;
@@ -128,13 +164,5 @@ public class DeletionModel extends Observable {
 
     public HashMap<DetailedFile, HashMap<DetailedFile, List<String>>> getNearMissPairs_grouped() {
         return nearMissPairs_grouped;
-    }
-
-    public void resetCurrentChoices() {
-        this.currentSelectedDeletionCandidate = null;
-        this.currentSelectedNearMissCandidate = null;
-
-        this.setChanged();
-        notifyObservers(currentSelectedDeletionCandidate);
     }
 }

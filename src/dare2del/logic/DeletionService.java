@@ -4,9 +4,12 @@ import dare2del.gui.model.DeletionModel;
 import dare2del.logic.prolog.PrologFileLoader;
 import org.jpl7.*;
 
-import java.nio.file.Path;
+import java.io.File;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,7 +32,6 @@ public class DeletionService {
 
         try {
             Term term_ruleToQuery = new Compound(queryKind.toString().toLowerCase(), terms);
-            //Term term_setOfClause = new Compound("set_of_clause", new Term[]{term_ruleToQuery, new Variable("Set")});
             Term term_setOfClause = new Compound(ruleName, new Term[]{new Variable("F"), new Variable("Set")});
             Query query_setOfClause = new Query(term_setOfClause);
 
@@ -93,31 +95,21 @@ public class DeletionService {
         return tracesMap;
     }
 
-    private List<String> queryProlog(String ruleToQuery, Term[] terms, List<Term> variables) {
-        List<String> results = new ArrayList<>();
+    public void deleteSelectedFiles() {
+        List<DetailedFile> filesToDelete = deletionModel.getFilesSelectedForDeletion();
 
-        Term term = new Compound(ruleToQuery, terms);
+        deletionModel.myLogger.info("[DeletionService] deleteSelectedFiles(): " + filesToDelete.size() + " files to delete.");
 
-        try {
-            Query query = new Query(term);
+        for (DetailedFile detailedFile : filesToDelete) {
+            File file = new File(detailedFile.getPath().toString());
 
-            Map<String, Term> solution;
-            while (query.hasMoreSolutions() && variables.size() > 0) {
-                solution = query.nextSolution();
-                for (Term variable : variables) {
-                    Term solutionTerm = solution.get(variable.toString());
+            boolean successfullDeleted = file.delete();
 
-                    String filePathName = String.valueOf(solutionTerm).substring(1, solutionTerm.toString().length() - 1);
-                    results.add(filePathName);
-                }
+            if (successfullDeleted) {
+                deletionModel.myLogger.info("[DeletionService] deleteSelectedFiles(): " + detailedFile.getName() + " deleted.");
+            } else {
+                deletionModel.myLogger.info("[DeletionService] deleteSelectedFiles(): " + detailedFile.getName() + " NOT deleted.");
             }
-
-        } catch (PrologException prolog_exception) {
-            deletionModel.myLogger.warning("[DeletionService] Exception in queryProlog(): "
-                    + prolog_exception.getMessage());
-            System.out.println("No valid Query! \n");
         }
-
-        return results;
     }
 }

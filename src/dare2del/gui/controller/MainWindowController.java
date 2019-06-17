@@ -34,12 +34,12 @@ public class MainWindowController {
     public MainWindowController(Stage primaryStage) {
         this.primaryStage = primaryStage;
 
-        this.deletionModel = new DeletionModel();
+        deletionModel = new DeletionModel();
 
         validatePath(exampleDirPath.toString());
         initProlog();
 
-        this.deletionModel.initDeletionModel();
+        deletionModel.initDeletionModel();
 
         //Create MainView
         mainView = new MainView(deletionModel, primaryStage);
@@ -133,12 +133,6 @@ public class MainWindowController {
                     deletionModel.myLogger.warning("[MainWindowController] Exception in createListenerForDirectoryView(): " + e.getMessage());
                     throw new IllegalArgumentException(e);
                 }
-
-//                if (selectedItem_file != null && selectedItem_file.isDirectory()) {
-//                    ObservableList<DirItem> dirs_temp = FXCollections.observableArrayList();
-//                    dirs_temp.add(ResourceItem.createObservedPath(selectedItem_file.toPath()));
-//                    tv.setRootDirectories(dirs_temp);
-//                }
             }
         });
     }
