@@ -15,6 +15,7 @@ import org.eclipse.fx.ui.controls.filesystem.*;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -31,14 +32,12 @@ public class MainView implements Observer {
     private NearMissListPane nearMissList;
 
     private MenuItem openFileItem;
+    private MenuItem reloadItem;
     private MenuItem exitItem;
-
-
 
     public MainView(DeletionModel deletionModel, Stage primaryStage) {
         this.deletionModel = deletionModel;
         this.deletionModel.addObserver(this);
-
         this.primaryStage = primaryStage;
 
         initView();
@@ -53,10 +52,10 @@ public class MainView implements Observer {
 
         File rootFile = rootPath.toFile();
         if (rootFile.isDirectory()) {
-            rootDirs.add(ResourceItem.createObservedPath(rootPath));
+            rootDirs.add(ResourceItem.createPath(rootPath)); //createObservedPath(rootPath)
         } else {
             for (File dir : rootPath.toFile().listFiles(File::isDirectory)) {
-                rootDirs.add(ResourceItem.createObservedPath(dir.toPath()));
+                rootDirs.add(ResourceItem.createPath(dir.toPath())); //createObservedPath(rootPath)
             }
         }
 
@@ -68,17 +67,7 @@ public class MainView implements Observer {
         v.setIconSize(IconSize.MEDIUM);
         v.setDir(tv.getRootDirectories().get(0));
 
-        candidateTabs = createCandidateTabs();
-        deleteButton = new Button(Messages.getString("DeletionButton.Label"));
-        deleteButton.setOnAction(event -> {
-            deletionModel.confirmDeletion();
-        });
-        DeletionReasonPane reasonPane = new DeletionReasonPane(this.deletionModel);
-        SplitPane thirdColumn = new SplitPane();
-        thirdColumn.setOrientation(Orientation.VERTICAL);
-        thirdColumn.setDividerPositions(0.45, 0.9);
-        deleteButton.prefWidthProperty().bind(thirdColumn.widthProperty());
-        thirdColumn.getItems().addAll(candidateTabs, reasonPane, deleteButton);
+        SplitPane thirdColumn = createThirdColumn();
 
         SplitPane hPane = new SplitPane(tv, v, thirdColumn);
         hPane.setDividerPositions(0.2, 0.6);
@@ -90,6 +79,19 @@ public class MainView implements Observer {
         primaryStage.setScene(s);
         primaryStage.setTitle("Dare2Del");
         primaryStage.show();
+    }
+
+    public SplitPane createThirdColumn() {
+        candidateTabs = createCandidateTabs();
+        deleteButton = new Button(Messages.getString("DeletionButton.Label"));
+        deleteButton.setDisable(true);
+        DeletionReasonPane reasonPane = new DeletionReasonPane(this.deletionModel);
+        SplitPane thirdColumn = new SplitPane();
+        thirdColumn.setOrientation(Orientation.VERTICAL);
+        thirdColumn.setDividerPositions(0.45, 0.9);
+        deleteButton.prefWidthProperty().bind(thirdColumn.widthProperty());
+        thirdColumn.getItems().addAll(candidateTabs, reasonPane, deleteButton);
+        return thirdColumn;
     }
 
     private TabPane createCandidateTabs() {
@@ -121,10 +123,12 @@ public class MainView implements Observer {
         openFileItem = new MenuItem("Open Directory");
         openFileItem.setAccelerator(KeyCombination.keyCombination("Ctrl+O"));
 
+        reloadItem = new MenuItem("Reload current directory");
+
         exitItem = new MenuItem("Exit");
         exitItem.setAccelerator(KeyCombination.keyCombination("Ctrl+X"));
 
-        fileMenu.getItems().addAll(openFileItem, exitItem);
+        fileMenu.getItems().addAll(openFileItem, reloadItem, exitItem);
 
         menuBar.getMenus().addAll(fileMenu, editMenu, helpMenu);
 
@@ -132,10 +136,21 @@ public class MainView implements Observer {
     }
 
     public void update(Observable observable, Object object) {
+        if (object instanceof List) {
+            if(deletionModel.getFilesSelectedForDeletion().isEmpty()) {
+                deleteButton.setDisable(true);
+            } else {
+                deleteButton.setDisable(false);
+            }
+        }
     }
 
     public MenuItem getOpenFileItem() {
         return openFileItem;
+    }
+
+    public MenuItem getReloadItem() {
+        return reloadItem;
     }
 
     public MenuItem getExitItem() {
@@ -152,6 +167,10 @@ public class MainView implements Observer {
 
     public TabPane getCandidateTabs() {
         return candidateTabs;
+    }
+
+    public Button getDeleteButton() {
+        return deleteButton;
     }
 
     public DeletionListPane getDelList() {

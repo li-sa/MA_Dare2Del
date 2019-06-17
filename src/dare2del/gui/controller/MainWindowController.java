@@ -3,10 +3,9 @@ package dare2del.gui.controller;
 import dare2del.gui.model.DeletionModel;
 import dare2del.gui.view.MainView;
 import dare2del.logic.DetailedFile;
-import dare2del.logic.FileCrawler;
-import dare2del.logic.PrologFileWriter;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.MenuItem;
 import javafx.stage.DirectoryChooser;
@@ -37,8 +36,7 @@ public class MainWindowController {
         deletionModel = new DeletionModel();
 
         validatePath(exampleDirPath.toString());
-        initProlog();
-
+        deletionModel.initProlog(this.rootPath);
         deletionModel.initDeletionModel();
 
         //Create MainView
@@ -48,10 +46,12 @@ public class MainWindowController {
 
     private void setAllListeners() {
         setEventHandler_OpenFile(mainView.getOpenFileItem());
+        setEventHandler_ReloadFile(mainView.getReloadItem());
         setEventHandler_Exit(mainView.getExitItem());
         createListenerForTreeView(mainView.getDirectoryTreeView(), mainView.getDirectoryView());
-        createListenerForDirectoryView(mainView.getDirectoryView());
+        createListenerForDirectoryView(mainView.getDirectoryTreeView(), mainView.getDirectoryView());
         createListenerForDeletionCells(mainView.getDelList().getDeletionCandidatesCellList());
+        createListenerForDeletionButton(mainView.getDeleteButton());
 
         mainView.getCandidateTabs().getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
             @Override
@@ -74,14 +74,6 @@ public class MainWindowController {
         return rootName;
     }
 
-    private void initProlog() {
-        FileCrawler fileCrawler = new FileCrawler(rootPath, deletionModel.myLogger);
-        List<DetailedFile> fileList = fileCrawler.getFileList();
-        PrologFileWriter prologFileWriter = new PrologFileWriter(fileList, deletionModel.myLogger);
-
-        this.deletionModel.setFileList(fileList);
-    }
-
     private void validatePath(String pathName) {
         try {
             rootPath = Paths.get(pathName);
@@ -101,7 +93,17 @@ public class MainWindowController {
         openFileItem.setOnAction(event -> {
             deletionModel.resetFileList();
             validatePath(showDirectoryFileChooser(primaryStage));
-            initProlog();
+            deletionModel.initProlog(rootPath);
+            deletionModel.initDeletionModel();
+            mainView.initView();
+            setAllListeners();
+        });
+    }
+
+    private void setEventHandler_ReloadFile(MenuItem reloadFileItem) {
+        reloadFileItem.setOnAction(event -> {
+            deletionModel.resetFileList();
+            deletionModel.initProlog(rootPath);
             deletionModel.initDeletionModel();
             mainView.initView();
             setAllListeners();
@@ -122,13 +124,21 @@ public class MainWindowController {
         });
     }
 
-    private void createListenerForDirectoryView(DirectoryView v) {
+    private void createListenerForDirectoryView(DirectoryTreeView tv, DirectoryView v) {
         v.getSelectedItems().addListener((javafx.beans.Observable o) -> {
             if (!v.getSelectedItems().isEmpty()) {
                 File selectedItem_file = null;
                 try {
                     Path selectedItem_path = Paths.get(v.getSelectedItems().get(0).getUri().replace("file:/", ""));
                     selectedItem_file = selectedItem_path.toFile();
+
+                    if (selectedItem_file.isDirectory()) {
+                        /*for (ResourceItem item : tv.rootDirectoriesProperty().get(0).getChildren()) {
+                            if (item.getNativeResourceObject().toString().equals(selectedItem_path.toString())) {
+                                v.setDir(ResourceItem.createPath(selectedItem_path));
+                            }
+                        }*/
+                    }
                 } catch (Exception e) {
                     deletionModel.myLogger.warning("[MainWindowController] Exception in createListenerForDirectoryView(): " + e.getMessage());
                     throw new IllegalArgumentException(e);
@@ -139,5 +149,19 @@ public class MainWindowController {
 
     private void createListenerForDeletionCells(List<ListCell<DetailedFile>> deletionCandidatesCellList) {
         this.mainView.getDelList().getDeletionCandidates();
+    }
+
+    private void createListenerForDeletionButton(Button deleteButton) {
+        deleteButton.setOnAction(event -> {
+            boolean successfulDeletion = deletionModel.confirmDeletion();
+
+            if (successfulDeletion) {
+                deletionModel.resetFileList();
+                deletionModel.initProlog(rootPath);
+                deletionModel.initDeletionModel();
+                mainView.initView();
+                setAllListeners();
+            }
+        });
     }
 }

@@ -1,8 +1,6 @@
 package dare2del.gui.model;
 
-import dare2del.logic.DeletionService;
-import dare2del.logic.DetailedFile;
-import dare2del.logic.QueryKind;
+import dare2del.logic.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
@@ -67,14 +65,16 @@ public class DeletionModel extends Observable {
         notifyObservers(currentSelectedDeletionCandidate);
     }
 
-    public void confirmDeletion() {
+    public boolean confirmDeletion() {
         myLogger.info("[DeletionModel] deleteAllSelectedFiles().");
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure to delete all selected files?", ButtonType.YES, ButtonType.NO, ButtonType.CANCEL);
         alert.showAndWait();
 
         if (alert.getResult() == ButtonType.YES) {
-            deletionService.deleteSelectedFiles();
+            return deletionService.deleteSelectedFiles();
+        } else {
+            return false;
         }
     }
 
@@ -102,6 +102,9 @@ public class DeletionModel extends Observable {
         } else if (!toDelete && filesSelectedForDeletion.contains(detailedFile)) {
             filesSelectedForDeletion.remove(detailedFile);
         }
+
+        this.setChanged();
+        this.notifyObservers(filesSelectedForDeletion);
     }
 
     public List<DetailedFile> getFilesSelectedForDeletion() { return filesSelectedForDeletion; }
@@ -164,5 +167,13 @@ public class DeletionModel extends Observable {
 
     public HashMap<DetailedFile, HashMap<DetailedFile, List<String>>> getNearMissPairs_grouped() {
         return nearMissPairs_grouped;
+    }
+
+    public void initProlog(Path rootPath) {
+        FileCrawler fileCrawler = new FileCrawler(rootPath, myLogger);
+        List<DetailedFile> fileList = fileCrawler.getFileList();
+        PrologFileWriter prologFileWriter = new PrologFileWriter(fileList, myLogger);
+
+        setFileList(fileList);
     }
 }

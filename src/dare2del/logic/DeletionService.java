@@ -31,7 +31,6 @@ public class DeletionService {
         String ruleName = queryKind.toString().toLowerCase() + "_files";
 
         try {
-            Term term_ruleToQuery = new Compound(queryKind.toString().toLowerCase(), terms);
             Term term_setOfClause = new Compound(ruleName, new Term[]{new Variable("F"), new Variable("Set")});
             Query query_setOfClause = new Query(term_setOfClause);
 
@@ -49,6 +48,8 @@ public class DeletionService {
                     value_temp.add(matcher.group());
                 }
             }
+
+            query_setOfClause.close();
 
             for (String each : value_temp) {
                 HashMap<DetailedFile, List<String>> temp_hashmap = new HashMap<>();
@@ -95,7 +96,7 @@ public class DeletionService {
         return tracesMap;
     }
 
-    public void deleteSelectedFiles() {
+    public boolean deleteSelectedFiles() {
         List<DetailedFile> filesToDelete = deletionModel.getFilesSelectedForDeletion();
 
         deletionModel.myLogger.info("[DeletionService] deleteSelectedFiles(): " + filesToDelete.size() + " files to delete.");
@@ -106,10 +107,14 @@ public class DeletionService {
             boolean successfullDeleted = file.delete();
 
             if (successfullDeleted) {
-                deletionModel.myLogger.info("[DeletionService] deleteSelectedFiles(): " + detailedFile.getName() + " deleted.");
+                deletionModel.myLogger.info("[DeletionService] deleteSelectedFiles(): " + detailedFile.getName() + " deleted successfully.");
+                return true;
             } else {
                 deletionModel.myLogger.info("[DeletionService] deleteSelectedFiles(): " + detailedFile.getName() + " NOT deleted.");
+                return false;
             }
         }
+
+        return false;
     }
 }
