@@ -1,8 +1,3 @@
-not_in_same_directory(F1, F2) :-
-    in_directory(F1, D1),
-    in_directory(F2, D2),
-    D1 \= D2.
-
 in_same_directory(F1, F2) :-
     in_directory(F1, D1),
     in_directory(F2, D2),
@@ -39,7 +34,6 @@ file_name_similarity(P1, P2, D) :-
     path(F2, P2),
     file_name_extension(N1, E1, F1),
     file_name_extension(N2, E2, F2),
-    E1 = E2,
     isub(N1, N2, true, D).
 
 file_content_similarity(F1, F2, D) :-
@@ -54,7 +48,7 @@ file_content_similarity(F1, F2, D) :-
 very_similar(F1, F2) :-
     F1 \= F2,
     file_name_similarity(F1, F2, D1),
-    D1 > 0.8,
+    D1 > 0.75,
     file_content_similarity(F1, F2, D2),
     D2 > 0.7.
 
@@ -106,17 +100,12 @@ irrelevant(F) :-
     very_similar(F, Y),
     F \= Y.
 
-irrelevant_secondfile(Y) :-
-    in_same_directory(F, Y),
-    same_media_type(F, Y, _E),
-    greater_or_equal(F, Y),
-    later_or_equal_created(F, Y),
-    later_or_equal_changed(F, Y),
-    very_similar(F, Y),
-    F \= Y.
-
 irrelevant_files(F, Set) :-
     setof(Body, (clause(irrelevant(F), Body), call(Body)), Set).
+
+nearmiss_files(F, Set) :-
+    clause_body_list(irrelevant(F), Body),
+    iterate_through_bodylist(F, Body, Body, Set).
 
 body_list(true)  --> [].
 
@@ -135,23 +124,20 @@ clause_body_list(G, Result) :-
     length(Result, Size),
     Size > 1.
 
-nearmiss_files(F, Set) :-
-    clause_body_list(irrelevant(F), Body),
-    iterate_through_bodylist(Body, Body, Set).
-
-iterate_through_bodylist(List, [H|T], Set) :-
+iterate_through_bodylist(F, List, [H|T], Set) :-
     length([H|T], LengthHT),
     LengthHT > 1,
     Elem_neg = (\+ H),
+    Elem_notIrrelevant = (\+ irrelevant(F)),
     delete(List, H, LWH),
-    append(LWH, [Elem_neg], NewList),
+    append(LWH, [Elem_neg, Elem_notIrrelevant], NewList),
     find_nearmisses(NewList, Set),
-    iterate_through_bodylist(List, T, X),
+    iterate_through_bodylist(F, List, T, X),
     Set = X.
 
-iterate_through_bodylist(_List, [], _Set).
+iterate_through_bodylist(F, _List, [], _Set).
 
-iterate_through_bodylist(_List, [_A], _Set).
+iterate_through_bodylist(F, _List, [_A], _Set).
 
 find_nearmisses(BodyList, Set) :-
     body_list_to_callable(BodyList, Body_nearmiss),
