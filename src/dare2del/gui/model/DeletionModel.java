@@ -21,6 +21,7 @@ public class DeletionModel extends Observable {
 
     public final Logger myLogger;
     private DeletionService deletionService;
+    private PrologFileWriter prologFileWriter;
 
     private Path rootPath;
     public WebEngine webEngine;
@@ -39,6 +40,8 @@ public class DeletionModel extends Observable {
     public DeletionModel() {
         myLogger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
         initLogger();
+
+        prologFileWriter = new PrologFileWriter(myLogger);
 
         this.fileList = new ArrayList<>();
     }
@@ -172,8 +175,7 @@ public class DeletionModel extends Observable {
     public void initProlog(Path rootPath) {
         FileCrawler fileCrawler = new FileCrawler(rootPath, myLogger);
         List<DetailedFile> fileList = fileCrawler.getFileList();
-        PrologFileWriter prologFileWriter = new PrologFileWriter(fileList, myLogger);
-
+        prologFileWriter.write(fileList);
         setFileList(fileList);
     }
 }

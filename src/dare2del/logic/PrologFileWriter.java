@@ -11,28 +11,23 @@ import org.apache.commons.lang.StringEscapeUtils;
 public class PrologFileWriter {
 
     private final Logger myLogger;
-
-    private List<DetailedFile> folderList;
-    private final List<DetailedFile> fileList;
-
     private final String clauseFile_pathString = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + "/../prologFiles/clauses.pl";
 
-    private Map<String, List<String>> prologStatements;
-
-    public PrologFileWriter(List<DetailedFile> fileList, Logger myLogger) {
+    public PrologFileWriter(Logger myLogger) {
         this.myLogger = myLogger;
+    }
 
+    public void write(List<DetailedFile> fileList) {
         myLogger.info("[PrologFileWriter] Start writing prolog file " + clauseFile_pathString + ".");
 
-        this.fileList = fileList;
-        collectPrologStatements();
-        writeClausesToPrologFile();
+        Map<String, List<String>> prologStatements = collectPrologStatements(fileList);
+        writeClausesToPrologFile(prologStatements);
 
         myLogger.info("[PrologFileWriter] Finished writing prolog file.");
     }
 
-    private void collectPrologStatements() {
-        prologStatements = new HashMap<>();
+    private Map<String, List<String>> collectPrologStatements(List<DetailedFile> fileList) {
+        Map<String, List<String>> prologStatements = new HashMap<>();
 
         List<String> list_file = new ArrayList<>();
         List<String> list_creation_time = new ArrayList<>();
@@ -56,11 +51,13 @@ public class PrologFileWriter {
         prologStatements.put("change_time", list_change_time);
         prologStatements.put("in_directory", list_in_directory);
         prologStatements.put("path", list_path);
+
+        return prologStatements;
     }
 
-    private void writeClausesToPrologFile() {
+    private void writeClausesToPrologFile(Map<String, List<String>> prologStatements) {
         try {
-            FileWriter fileWriter = new FileWriter(clauseFile_pathString);
+            FileWriter fileWriter = new FileWriter(clauseFile_pathString, false);
 
             for (List<String> mapEntry : prologStatements.values()) {
                 for (String listItem : mapEntry) {

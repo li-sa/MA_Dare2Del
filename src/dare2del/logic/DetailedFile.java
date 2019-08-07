@@ -12,10 +12,6 @@ import java.util.Objects;
 
 public class DetailedFile {
 
-    private String name_escaped;
-    private String path_escaped;
-    private String inDirectory_escaped;
-
     private String name;
     private Path path;
     private long creation_time;
@@ -24,6 +20,10 @@ public class DetailedFile {
     private File in_directory;
     private String media_type;
     private long size;
+
+    private String name_escaped;
+    private String path_escaped;
+    private String inDirectory_escaped;
 
     public DetailedFile(File file) {
         setMetadata(file);
