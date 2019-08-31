@@ -72,19 +72,17 @@ public class DeletionService {
 
                 //Add reason to specific inner hashmap
                 if (!temp_hashmap.containsKey(deletionCounterpart)) {
-                    List temp_list = new ArrayList();
+                    List<String> temp_list = new ArrayList();
                     temp_list.add(components[0]);
                     temp_hashmap.put(deletionCounterpart, temp_list);
                 } else {
-                    List temp_list = temp_hashmap.get(deletionCounterpart);
+                    List<String> temp_list = temp_hashmap.get(deletionCounterpart);
                     temp_list.add(components[0]);
                     temp_hashmap.put(deletionCounterpart, temp_list);
                 }
 
                 tracesMap.put(deletionCandidate, temp_hashmap);
             }
-
-
         } catch (PrologException prolog_exception) {
             deletionModel.myLogger.warning("[DeletionService] Exception in getCandidatesWithReasoning_Grouped(): "
                     + prolog_exception.getMessage());
@@ -104,9 +102,9 @@ public class DeletionService {
         for (DetailedFile detailedFile : filesToDelete) {
             File file = new File(detailedFile.getPath().toString());
 
-            boolean successfullDeleted = file.delete();
+            boolean successfulDeleted = file.delete();
 
-            if (successfullDeleted) {
+            if (successfulDeleted) {
                 deletionModel.myLogger.info("[DeletionService] deleteSelectedFiles(): " + detailedFile.getName() + " deleted successfully.");
                 return true;
             } else {

@@ -49,6 +49,5 @@ public class PrologFileLoader {
         }
 
         myLogger.info("[PrologFileLoader] addAllPrologFiles() found " + prologFilesToLoad.size() + " prolog files to load.");
-
     }
 }

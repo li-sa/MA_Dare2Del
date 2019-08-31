@@ -23,25 +23,21 @@ class DeletionReasonPane extends VBox implements Observer {
 
     private final DeletionModel deletionModel;
 
-    private MainWindowController mainWindowController;
-
-    private final WebView browser;
     private final WebEngine webEngine;
 
     public DeletionReasonPane(DeletionModel deletionModel) {
         this.deletionModel = deletionModel;
         this.deletionModel.addObserver(this);
 
-        browser = new WebView();
+        WebView browser = new WebView();
         webEngine = browser.getEngine();
         this.getChildren().add(browser);
 
-        deletionModel.webEngine = this.webEngine;
     }
 
     private void showDel() {
         DetailedFile currentSelected = deletionModel.getCurrentSelectedDeletionCandidate();
-        Document reasonDoc = null;
+        Document reasonDoc;
 
         deletionModel.myLogger.info("[DeletionReasonPane] showDel().");
 
@@ -138,7 +134,7 @@ class DeletionReasonPane extends VBox implements Observer {
         return doc;
     }
 
-    public Document fillReasonHTML_NMsForDeletion(Document doc, DetailedFile currentSelected) {
+    private Document fillReasonHTML_NMsForDeletion(Document doc, DetailedFile currentSelected) {
         HashMap<DetailedFile, HashMap<DetailedFile, List<String>>> correspondingNMs = findNearMissForSpecificDeletionCandidate(currentSelected);
 
         deletionModel.myLogger.info("[DeletionReasonPane] fillReasonHTML_NMsForDeletion().");

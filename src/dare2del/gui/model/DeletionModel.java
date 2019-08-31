@@ -21,10 +21,9 @@ public class DeletionModel extends Observable {
 
     public final Logger myLogger;
     private DeletionService deletionService;
-    private PrologFileWriter prologFileWriter;
+    private final PrologFileWriter prologFileWriter;
 
     private Path rootPath;
-    public WebEngine webEngine;
 
     private List<DetailedFile> fileList;
     private DetailedFile currentSelectedDeletionCandidate;
@@ -84,7 +83,7 @@ public class DeletionModel extends Observable {
     private void initLogger() {
         File logDir = new File("./logs/");
 
-        if( !(logDir.exists()) )
+        if (!(logDir.exists()))
             logDir.mkdir();
 
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -102,7 +101,7 @@ public class DeletionModel extends Observable {
     public void updateFilesForDeletion(DetailedFile detailedFile, boolean toDelete) {
         if (toDelete && !filesSelectedForDeletion.contains(detailedFile)) {
             filesSelectedForDeletion.add(detailedFile);
-        } else if (!toDelete && filesSelectedForDeletion.contains(detailedFile)) {
+        } else if (!toDelete) {
             filesSelectedForDeletion.remove(detailedFile);
         }
 
@@ -110,7 +109,9 @@ public class DeletionModel extends Observable {
         this.notifyObservers(filesSelectedForDeletion);
     }
 
-    public List<DetailedFile> getFilesSelectedForDeletion() { return filesSelectedForDeletion; }
+    public List<DetailedFile> getFilesSelectedForDeletion() {
+        return filesSelectedForDeletion;
+    }
 
     public void setCurrentSelectedDeletionCandidate(DetailedFile detailedFile) {
         this.currentSelectedDeletionCandidate = detailedFile;
@@ -156,7 +157,7 @@ public class DeletionModel extends Observable {
         this.rootPath = rootPath;
     }
 
-    public void setFileList(List<DetailedFile> fileList) {
+    private void setFileList(List<DetailedFile> fileList) {
         this.fileList = fileList;
     }
 

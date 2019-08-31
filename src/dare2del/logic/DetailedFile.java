@@ -2,6 +2,7 @@ package dare2del.logic;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringEscapeUtils;
+
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -35,7 +36,7 @@ public class DetailedFile {
         try {
             fileAttributes = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
         } catch (Exception e) {
-            // TODO: Exception Handling!
+            e.printStackTrace();
         }
 
         this.name = file.getName();
@@ -52,7 +53,7 @@ public class DetailedFile {
         this.inDirectory_escaped = StringEscapeUtils.escapeJava(this.in_directory.toString().replace("\\", "\\\\"));
     }
 
-    private long getSecondsSinceEpoch(FileTime fileTime){
+    private long getSecondsSinceEpoch(FileTime fileTime) {
         Instant instant = fileTime.toInstant();
         return instant.getEpochSecond();
     }

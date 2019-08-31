@@ -28,15 +28,11 @@ class NearMissCandidateListCell extends ListCell<DetailedFile> implements Observ
         this.deletionModel = deletionModel;
         this.deletionModel.addObserver(this);
 
-        this.setOnMouseClicked(arg0 -> {
-            // TODO
-        });
-
         Button showReasonButton = createShowReasonButton();
 
         filenameLabel = new Label();
         filenameLabel.setPadding(new Insets(0, 10, 0, 10));
-        filenameLabel.setTextOverrun(OverrunStyle.CENTER_WORD_ELLIPSIS); // not obvious enough?
+        filenameLabel.setTextOverrun(OverrunStyle.CENTER_WORD_ELLIPSIS);
 
         borderPane = new BorderPane();
         borderPane.setCenter(filenameLabel);

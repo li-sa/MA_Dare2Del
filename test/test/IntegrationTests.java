@@ -17,16 +17,18 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
-public class DeletionServiceTest {
+public class IntegrationTests {
 
     private final Path testFiles_temp;
 
-    public DeletionServiceTest() {
+    public IntegrationTests() {
         String pathString = getClass().getProtectionDomain().getCodeSource().getLocation().getPath().replaceFirst("/", "");
-        testFiles_temp =  Paths.get(pathString + "Testdata/temp");
+        String pathToTempTestdata = pathString + "Testdata/temp";
+        new File(pathToTempTestdata).mkdirs();
+        testFiles_temp = Paths.get(pathToTempTestdata);
     }
 
-    //region TESTS FOR DELETION CANDIDATES
+    //region TESTS
     @Test
     public void singleFile_empty() {
         cleanTemp();
@@ -138,9 +140,12 @@ public class DeletionServiceTest {
 
             Calendar c1 = Calendar.getInstance();
             c1.set(2016, Calendar.JANUARY, 01);
-            Files.setAttribute(newfile1.toPath(), "creationTime", FileTime.fromMillis(c1.getTimeInMillis()));
-            Files.setAttribute(newfile1.toPath(), "lastAccessTime", FileTime.fromMillis(c1.getTimeInMillis()));
             Files.setAttribute(newfile1.toPath(), "lastModifiedTime", FileTime.fromMillis(c1.getTimeInMillis()));
+
+            Calendar c2 = Calendar.getInstance();
+            c2.set(2019, Calendar.JANUARY, 01);
+            Files.setAttribute(newfile1.toPath(), "creationTime", FileTime.fromMillis(c2.getTimeInMillis()));
+            Files.setAttribute(newfile1.toPath(), "lastAccessTime", FileTime.fromMillis(c2.getTimeInMillis()));
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -295,7 +300,7 @@ public class DeletionServiceTest {
             newfile2.createNewFile();
 
             FileUtils.writeStringToFile(newfile1, "Hier steht Text!", StandardCharsets.UTF_8, true);
-            FileUtils.writeStringToFile(newfile2, "abc", StandardCharsets.UTF_8, true);
+            FileUtils.writeStringToFile(newfile2, "abcdefghijklmnop", StandardCharsets.UTF_8, true);
 
             Calendar c1 = Calendar.getInstance();
             c1.set(2019, Calendar.JANUARY, 01);
@@ -317,7 +322,7 @@ public class DeletionServiceTest {
         HashMap<DetailedFile, HashMap<DetailedFile, List<String>>> nmPairs = deletionModel.getNearMissPairs_grouped();
 
         Assert.assertEquals(deletionPairs.size(), 0);
-        Assert.assertEquals(nmPairs.size(), 1);
+        Assert.assertEquals(nmPairs.size(), 2);
     }
 
     @Test

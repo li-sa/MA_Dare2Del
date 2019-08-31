@@ -1,12 +1,13 @@
 package dare2del.logic;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-import org.apache.commons.lang.StringEscapeUtils;
 
 public class PrologFileWriter {
 

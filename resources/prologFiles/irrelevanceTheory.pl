@@ -9,31 +9,31 @@ same_media_type(P1, P2, E) :-
     file_name_extension(_N1, E, F1),
     file_name_extension(_N2, E, F2).
 
-greater_or_equal(P1, P2) :-
+greater_or_equal(P2, P1) :-
     size_file(P1, S1),
     size_file(P2, S2),
-    S2 >= S1.
+    S1 >= S2.
 
-later_or_equal_created(F1, F2) :-
+later_or_equal_created(F2, F1) :-
     creation_time(F1, T1),
     creation_time(F2, T2),
-    T2 >= T1.
+    T1 >= T2.
 
-later_or_equal_changed(F1, F2) :-
+later_or_equal_changed(F2, F1) :-
     change_time(F1, T1),
     change_time(F2, T2),
-    T2 >= T1.
+    T1 >= T2.
 
-later_or_equal_accessed(F1, F2) :-
+later_or_equal_accessed(F2, F1) :-
     access_time(F1, T1),
     access_time(F2, T2),
-    T2 >= T1.
+    T1 >= T2.
 
 file_name_similarity(P1, P2, D) :-
     path(F1, P1),
     path(F2, P2),
-    file_name_extension(N1, E1, F1),
-    file_name_extension(N2, E2, F2),
+    file_name_extension(N1, _E1, F1),
+    file_name_extension(N2, _E2, F2),
     isub(N1, N2, true, D).
 
 file_content_similarity(F1, F2, D) :-

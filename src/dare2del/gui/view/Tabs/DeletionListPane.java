@@ -51,20 +51,4 @@ public class DeletionListPane extends VBox implements Observer {
         this.getChildren().addAll(label_filesToDelete, deletionCandidates);
         this.selectedItem = deletionCandidates.getSelectionModel().selectedItemProperty();
     }
-
-    public ReadOnlyObjectProperty<DetailedFile> getSelectedItemProperty() {
-        return selectedItem;
-    }
-
-    public DetailedFile getSelectedItem() {
-        return selectedItem.get();
-    }
-
-    public ListView<DetailedFile> getDeletionCandidates() {
-        return deletionCandidates;
-    }
-
-    public List<ListCell<DetailedFile>> getDeletionCandidatesCellList() {
-        return deletionCandidatesCellList;
-    }
 }

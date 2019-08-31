@@ -34,10 +34,6 @@ class DeletionCandidateListCell extends ListCell<DetailedFile> implements Observ
         this.deletionModel = deletionModel;
         this.deletionModel.addObserver(this);
 
-        this.setOnMouseClicked(arg0 -> {
-//                deletionReasonController.showDeletionReasonStage();
-        });
-
         Button cycleDecisionButton = createCycleDecisionButton();
         Button showReasonButton = createShowReasonButton();
 

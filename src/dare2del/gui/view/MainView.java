@@ -34,6 +34,7 @@ public class MainView implements Observer {
     private MenuItem openFileItem;
     private MenuItem reloadItem;
     private MenuItem exitItem;
+    private MenuItem openMAItem;
 
     public MainView(DeletionModel deletionModel, Stage primaryStage) {
         this.deletionModel = deletionModel;
@@ -81,7 +82,7 @@ public class MainView implements Observer {
         primaryStage.show();
     }
 
-    public SplitPane createThirdColumn() {
+    private SplitPane createThirdColumn() {
         candidateTabs = createCandidateTabs();
         deleteButton = new Button(Messages.getString("DeletionButton.Label"));
         deleteButton.setDisable(true);
@@ -117,7 +118,6 @@ public class MainView implements Observer {
         MenuBar menuBar = new MenuBar();
 
         Menu fileMenu = new Menu("File");
-        Menu editMenu = new Menu("Edit");
         Menu helpMenu = new Menu("Help");
 
         openFileItem = new MenuItem("Open Directory");
@@ -130,14 +130,17 @@ public class MainView implements Observer {
 
         fileMenu.getItems().addAll(openFileItem, reloadItem, exitItem);
 
-        menuBar.getMenus().addAll(fileMenu, editMenu, helpMenu);
+        openMAItem = new MenuItem("Open Masterthesis");
+        helpMenu.getItems().add(openMAItem);
+
+        menuBar.getMenus().addAll(fileMenu, helpMenu);
 
         return menuBar;
     }
 
     public void update(Observable observable, Object object) {
         if (object instanceof List) {
-            if(deletionModel.getFilesSelectedForDeletion().isEmpty()) {
+            if (deletionModel.getFilesSelectedForDeletion().isEmpty()) {
                 deleteButton.setDisable(true);
             } else {
                 deleteButton.setDisable(false);
@@ -155,6 +158,10 @@ public class MainView implements Observer {
 
     public MenuItem getExitItem() {
         return exitItem;
+    }
+
+    public MenuItem getOpenMAItem() {
+        return openMAItem;
     }
 
     public DirectoryTreeView getDirectoryTreeView() {

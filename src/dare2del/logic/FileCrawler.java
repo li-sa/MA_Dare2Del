@@ -63,7 +63,6 @@ public class FileCrawler {
         }
     }
 
-
     private void printResults() {
         System.out.println("----------");
 
@@ -90,11 +89,11 @@ public class FileCrawler {
         System.out.println("----------");
     }
 
-    public List<DetailedFile> getFolderList() {
-        return folderList;
-    }
-
     public List<DetailedFile> getFileList() {
         return fileList;
+    }
+
+    public List<DetailedFile> getFolderList() {
+        return folderList;
     }
 }

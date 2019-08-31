@@ -13,13 +13,16 @@ import javafx.stage.Stage;
 import org.eclipse.fx.ui.controls.filesystem.DirectoryTreeView;
 import org.eclipse.fx.ui.controls.filesystem.DirectoryView;
 
+import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
 public class MainWindowController {
 
+    private final String MA_PDF = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + "/../DirectoryExample/LisaSchatt_Masterthesis.pdf";
     private final String EXAMPLE_DIRECTORY = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + "/../DirectoryExample";
     private final Path exampleDirPath = Paths.get(EXAMPLE_DIRECTORY.replaceFirst("/", ""));
 
@@ -48,17 +51,12 @@ public class MainWindowController {
         setEventHandler_OpenFile(mainView.getOpenFileItem());
         setEventHandler_ReloadFile(mainView.getReloadItem());
         setEventHandler_Exit(mainView.getExitItem());
+        setEventHandler_OpenMA(mainView.getOpenMAItem());
         createListenerForTreeView(mainView.getDirectoryTreeView(), mainView.getDirectoryView());
-        createListenerForDirectoryView(mainView.getDirectoryTreeView(), mainView.getDirectoryView());
-        createListenerForDeletionCells(mainView.getDelList().getDeletionCandidatesCellList());
         createListenerForDeletionButton(mainView.getDeleteButton());
 
-        mainView.getCandidateTabs().getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
-                deletionModel.resetCurrentChoices();
-            }
-        });
+        mainView.getCandidateTabs().getSelectionModel().selectedIndexProperty()
+                .addListener((ov, oldValue, newValue) -> deletionModel.resetCurrentChoices());
     }
 
     private String showDirectoryFileChooser(Stage primaryStage) {
@@ -79,12 +77,12 @@ public class MainWindowController {
             rootPath = Paths.get(pathName);
             deletionModel.setRootPath(rootPath);
         } catch (Exception e) {
-            deletionModel.myLogger.warning("Root folder ist no valid path (" + pathName + ").");
+            deletionModel.myLogger.warning("Root folder is no valid path (" + pathName + ").");
             throw new IllegalArgumentException();
         }
 
         if (!rootPath.toFile().isDirectory()) {
-            deletionModel.myLogger.warning("Root folder ist no valid directory (" + pathName + ").");
+            deletionModel.myLogger.warning("Root folder is no valid directory (" + pathName + ").");
             throw new IllegalArgumentException();
         }
     }
@@ -114,6 +112,19 @@ public class MainWindowController {
         exitItem.setOnAction(event -> System.exit(0));
     }
 
+    private void setEventHandler_OpenMA(MenuItem openMAItem) {
+        openMAItem.setOnAction(event -> {
+            try {
+                File thesisPdfFile = new File(MA_PDF);
+                if (thesisPdfFile.exists() && Desktop.isDesktopSupported()) {
+                    Desktop.getDesktop().open(thesisPdfFile);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
     private void createListenerForTreeView(DirectoryTreeView tv, DirectoryView v) {
         tv.getSelectedItems().addListener((javafx.beans.Observable o) -> {
             if (!tv.getSelectedItems().isEmpty()) {
@@ -122,33 +133,6 @@ public class MainWindowController {
                 v.setDir(null);
             }
         });
-    }
-
-    private void createListenerForDirectoryView(DirectoryTreeView tv, DirectoryView v) {
-        v.getSelectedItems().addListener((javafx.beans.Observable o) -> {
-            if (!v.getSelectedItems().isEmpty()) {
-                File selectedItem_file = null;
-                try {
-                    Path selectedItem_path = Paths.get(v.getSelectedItems().get(0).getUri().replace("file:/", ""));
-                    selectedItem_file = selectedItem_path.toFile();
-
-                    if (selectedItem_file.isDirectory()) {
-                        /*for (ResourceItem item : tv.rootDirectoriesProperty().get(0).getChildren()) {
-                            if (item.getNativeResourceObject().toString().equals(selectedItem_path.toString())) {
-                                v.setDir(ResourceItem.createPath(selectedItem_path));
-                            }
-                        }*/
-                    }
-                } catch (Exception e) {
-                    deletionModel.myLogger.warning("[MainWindowController] Exception in createListenerForDirectoryView(): " + e.getMessage());
-                    throw new IllegalArgumentException(e);
-                }
-            }
-        });
-    }
-
-    private void createListenerForDeletionCells(List<ListCell<DetailedFile>> deletionCandidatesCellList) {
-        this.mainView.getDelList().getDeletionCandidates();
     }
 
     private void createListenerForDeletionButton(Button deleteButton) {

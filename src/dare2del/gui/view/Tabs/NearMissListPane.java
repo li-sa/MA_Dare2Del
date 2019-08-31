@@ -58,6 +58,4 @@ public class NearMissListPane extends VBox implements Observer {
     public DetailedFile getSelectedItem() {
         return selectedItem.get();
     }
-
-
 }
