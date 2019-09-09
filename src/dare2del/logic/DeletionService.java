@@ -22,37 +22,37 @@ public class DeletionService {
         PrologFileLoader prologFileLoader = new PrologFileLoader(deletionModel.myLogger);
     }
 
-    public HashMap<DetailedFile, HashMap<DetailedFile, List<String>>> getCandidatesWithReasoning_Grouped(QueryKind queryKind) {
-        Term variable_term = new Variable("X");
-        Term[] terms = new Term[]{variable_term};
+    public HashMap<DetailedFile, HashMap<DetailedFile, List<String>>> getCandidatesWithReasoning(QueryKind queryKind) {
+        Term variableTerm = new Variable("X");
+        Term[] terms = new Term[]{variableTerm};
 
         HashMap<DetailedFile, HashMap<DetailedFile, List<String>>> tracesMap = new HashMap<>();
 
         String ruleName = queryKind.toString().toLowerCase() + "_files";
 
         try {
-            Term term_setOfClause = new Compound(ruleName, new Term[]{new Variable("F"), new Variable("Set")});
-            Query query_setOfClause = new Query(term_setOfClause);
+            Term termSetOfClause = new Compound(ruleName, new Term[]{new Variable("F"), new Variable("Set")});
+            Query querySetOfClause = new Query(termSetOfClause);
 
-            Map<String, Term> solution_setOfClause;
-            List<String> value_temp = new ArrayList<>();
+            Map<String, Term> solutionSetOfClause;
+            List<String> valueTemp = new ArrayList<>();
 
-            while (query_setOfClause.hasMoreSolutions()) {
-                solution_setOfClause = query_setOfClause.nextSolution();
+            while (querySetOfClause.hasMoreSolutions()) {
+                solutionSetOfClause = querySetOfClause.nextSolution();
 
-                String solution_rawValue = solution_setOfClause.get("Set").toString().replaceAll("\'", "");
-                String solution_rawValue_withNeg = solution_rawValue.replaceAll("\\\\\\+\\(", "NOT_");
+                String solutionRawValue = solutionSetOfClause.get("Set").toString().replaceAll("\'", "");
+                String solutionRawValueWithNeg = solutionRawValue.replaceAll("\\\\\\+\\(", "NOT_");
 
-                Matcher matcher = Pattern.compile("[\\w]+\\((([A-Za-z0-9_äÄöÖüÜß.':\\-\\\\\\s]+)+(,)*)+\\)").matcher(solution_rawValue_withNeg);
+                Matcher matcher = Pattern.compile("[\\w]+\\((([A-Za-z0-9_äÄöÖüÜß.':\\-\\\\\\s]+)+(,)*)+\\)").matcher(solutionRawValueWithNeg);
                 while (matcher.find()) {
-                    value_temp.add(matcher.group());
+                    valueTemp.add(matcher.group());
                 }
             }
 
-            query_setOfClause.close();
+            querySetOfClause.close();
 
-            for (String each : value_temp) {
-                HashMap<DetailedFile, List<String>> temp_hashmap = new HashMap<>();
+            for (String each : valueTemp) {
+                HashMap<DetailedFile, List<String>> hashmapTemp = new HashMap<>();
 
                 String[] components = each.split("\\(|, |\\)");
                 int componentsCounter = components.length;
@@ -67,28 +67,28 @@ public class DeletionService {
 
                 //Is deletion candidate already in traceMap? Then take the inner hashmap.
                 if (tracesMap.containsKey(deletionCandidate)) {
-                    temp_hashmap = tracesMap.get(deletionCandidate);
+                    hashmapTemp = tracesMap.get(deletionCandidate);
                 }
 
                 //Add reason to specific inner hashmap
-                if (!temp_hashmap.containsKey(deletionCounterpart)) {
+                if (!hashmapTemp.containsKey(deletionCounterpart)) {
                     List<String> temp_list = new ArrayList();
                     temp_list.add(components[0]);
-                    temp_hashmap.put(deletionCounterpart, temp_list);
+                    hashmapTemp.put(deletionCounterpart, temp_list);
                 } else {
-                    List<String> temp_list = temp_hashmap.get(deletionCounterpart);
+                    List<String> temp_list = hashmapTemp.get(deletionCounterpart);
                     temp_list.add(components[0]);
-                    temp_hashmap.put(deletionCounterpart, temp_list);
+                    hashmapTemp.put(deletionCounterpart, temp_list);
                 }
 
-                tracesMap.put(deletionCandidate, temp_hashmap);
+                tracesMap.put(deletionCandidate, hashmapTemp);
             }
-        } catch (PrologException prolog_exception) {
-            deletionModel.myLogger.warning("[DeletionService] Exception in getCandidatesWithReasoning_Grouped(): "
-                    + prolog_exception.getMessage());
+        } catch (PrologException prologException) {
+            deletionModel.myLogger.warning("[DeletionService] Exception in getCandidatesWithReasoning(): "
+                    + prologException.getMessage());
         }
 
-        deletionModel.myLogger.info("[DeletionService] getCandidatesWithReasoning_Grouped() found "
+        deletionModel.myLogger.info("[DeletionService] getCandidatesWithReasoning() found "
                 + tracesMap.size() + " " + queryKind + " candidate files with grouped reasons.");
 
         return tracesMap;

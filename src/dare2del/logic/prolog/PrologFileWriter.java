@@ -1,5 +1,6 @@
-package dare2del.logic;
+package dare2del.logic.prolog;
 
+import dare2del.logic.DetailedFile;
 import org.apache.commons.lang.StringEscapeUtils;
 
 import java.io.FileWriter;
@@ -39,9 +40,9 @@ public class PrologFileWriter {
 
         for (DetailedFile file : fileList) {
             list_file.add("file('" + file.getPathEscaped() + "'). \n");
-            list_creation_time.add("creation_time('" + file.getPathEscaped() + "'," + file.getCreation_time() + "). \n");
-            list_access_time.add("access_time('" + file.getPathEscaped() + "'," + file.getAccess_time() + "). \n");
-            list_change_time.add("change_time('" + file.getPathEscaped() + "'," + file.getChange_time() + "). \n");
+            list_creation_time.add("creation_time('" + file.getPathEscaped() + "'," + file.getCreationTime() + "). \n");
+            list_access_time.add("access_time('" + file.getPathEscaped() + "'," + file.getAccessTime() + "). \n");
+            list_change_time.add("change_time('" + file.getPathEscaped() + "'," + file.getChangeTime() + "). \n");
             list_in_directory.add("in_directory('" + file.getPathEscaped() + "','" + file.getInDirectoryEscaped() + "'). \n");
             list_path.add("path('" + StringEscapeUtils.escapeJava(file.getNameEscaped()) + "','" + file.getPathEscaped() + "'). \n");
         }

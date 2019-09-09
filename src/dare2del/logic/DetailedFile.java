@@ -15,16 +15,16 @@ public class DetailedFile {
 
     private String name;
     private Path path;
-    private long creation_time;
-    private long access_time;
-    private long change_time;
-    private File in_directory;
-    private String media_type;
+    private long creationTime;
+    private long accessTime;
+    private long changeTime;
+    private File inDirectory;
+    private String mediaType;
     private long size;
 
-    private String name_escaped;
-    private String path_escaped;
-    private String inDirectory_escaped;
+    private String nameEscaped;
+    private String pathEscaped;
+    private String inDirectoryEscaped;
 
     public DetailedFile(File file) {
         setMetadata(file);
@@ -41,16 +41,16 @@ public class DetailedFile {
 
         this.name = file.getName();
         this.path = file.toPath();
-        this.creation_time = getSecondsSinceEpoch(Objects.requireNonNull(fileAttributes).creationTime());
-        this.access_time = getSecondsSinceEpoch(fileAttributes.lastAccessTime());
-        this.change_time = getSecondsSinceEpoch(fileAttributes.lastModifiedTime());
-        this.in_directory = file.getParentFile();
-        this.media_type = FilenameUtils.getExtension(file.getName());
+        this.creationTime = getSecondsSinceEpoch(Objects.requireNonNull(fileAttributes).creationTime());
+        this.accessTime = getSecondsSinceEpoch(fileAttributes.lastAccessTime());
+        this.changeTime = getSecondsSinceEpoch(fileAttributes.lastModifiedTime());
+        this.inDirectory = file.getParentFile();
+        this.mediaType = FilenameUtils.getExtension(file.getName());
         this.size = fileAttributes.size();
 
-        this.name_escaped = StringEscapeUtils.escapeJava(this.name);
-        this.path_escaped = StringEscapeUtils.escapeJava(this.path.toString().replace("\\", "\\\\"));
-        this.inDirectory_escaped = StringEscapeUtils.escapeJava(this.in_directory.toString().replace("\\", "\\\\"));
+        this.nameEscaped = StringEscapeUtils.escapeJava(this.name);
+        this.pathEscaped = StringEscapeUtils.escapeJava(this.path.toString().replace("\\", "\\\\"));
+        this.inDirectoryEscaped = StringEscapeUtils.escapeJava(this.inDirectory.toString().replace("\\", "\\\\"));
     }
 
     private long getSecondsSinceEpoch(FileTime fileTime) {
@@ -58,24 +58,24 @@ public class DetailedFile {
         return instant.getEpochSecond();
     }
 
-    public long getCreation_time() {
-        return creation_time;
+    public long getCreationTime() {
+        return creationTime;
     }
 
-    public long getAccess_time() {
-        return access_time;
+    public long getAccessTime() {
+        return accessTime;
     }
 
-    public long getChange_time() {
-        return change_time;
+    public long getChangeTime() {
+        return changeTime;
     }
 
-    public File getIn_directory() {
-        return in_directory;
+    public File getInDirectory() {
+        return inDirectory;
     }
 
-    public String getMedia_type() {
-        return media_type;
+    public String getMediaType() {
+        return mediaType;
     }
 
     public String getName() {
@@ -91,14 +91,14 @@ public class DetailedFile {
     }
 
     public String getNameEscaped() {
-        return name_escaped;
+        return nameEscaped;
     }
 
     public String getPathEscaped() {
-        return path_escaped;
+        return pathEscaped;
     }
 
     public String getInDirectoryEscaped() {
-        return inDirectory_escaped;
+        return inDirectoryEscaped;
     }
 }

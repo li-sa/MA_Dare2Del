@@ -1,11 +1,11 @@
 package dare2del.gui.model;
 
 import dare2del.logic.*;
+import dare2del.logic.prolog.PrologFileWriter;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-import javafx.scene.web.WebEngine;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,8 +48,8 @@ public class DeletionModel extends Observable {
     public void initDeletionModel() {
         deletionService = new DeletionService(this);
 
-        this.deletionPairs_grouped = deletionService.getCandidatesWithReasoning_Grouped(QueryKind.IRRELEVANT);
-        this.nearMissPairs_grouped = deletionService.getCandidatesWithReasoning_Grouped(QueryKind.NEARMISS);
+        this.deletionPairs_grouped = deletionService.getCandidatesWithReasoning(QueryKind.IRRELEVANT);
+        this.nearMissPairs_grouped = deletionService.getCandidatesWithReasoning(QueryKind.NEARMISS);
 
         List<DetailedFile> deletionCandidateList = new ArrayList<>(deletionPairs_grouped.keySet());
         List<DetailedFile> nearmissCandidateList = new ArrayList<>(nearMissPairs_grouped.keySet());

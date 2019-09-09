@@ -69,9 +69,9 @@ public class FileCrawler {
         System.out.println("FOLDERS:");
         for (int i = 0; i < folderList.size(); i++) {
             DetailedFile cF = this.folderList.get(i);
-            System.out.println(i + ") " + cF.getName() + " [created: " + cF.getCreation_time() + "; last accessed: " +
-                    cF.getAccess_time() + "; last modified: " + cF.getChange_time() + "; parent file: " +
-                    cF.getIn_directory() + "; file extension: " + cF.getMedia_type() + "; size: " + cF.getSize() +
+            System.out.println(i + ") " + cF.getName() + " [created: " + cF.getCreationTime() + "; last accessed: " +
+                    cF.getAccessTime() + "; last modified: " + cF.getChangeTime() + "; parent file: " +
+                    cF.getInDirectory() + "; file extension: " + cF.getMediaType() + "; size: " + cF.getSize() +
                     "; path: " + cF.getPath() + "]");
         }
 
@@ -80,9 +80,9 @@ public class FileCrawler {
         System.out.println("FILES:");
         for (int i = 0; i < fileList.size(); i++) {
             DetailedFile cF = this.fileList.get(i);
-            System.out.println(i + ") " + cF.getName() + " [created: " + cF.getCreation_time() + "; last accessed: " +
-                    cF.getAccess_time() + "; last modified: " + cF.getChange_time() + "; parent file: " +
-                    cF.getIn_directory() + "; file extension: " + cF.getMedia_type() + "; size: " + cF.getSize() +
+            System.out.println(i + ") " + cF.getName() + " [created: " + cF.getCreationTime() + "; last accessed: " +
+                    cF.getAccessTime() + "; last modified: " + cF.getChangeTime() + "; parent file: " +
+                    cF.getInDirectory() + "; file extension: " + cF.getMediaType() + "; size: " + cF.getSize() +
                     "; path: " + cF.getPath() + "]");
         }
 
