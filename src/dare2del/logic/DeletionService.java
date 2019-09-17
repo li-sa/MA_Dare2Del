@@ -99,20 +99,19 @@ public class DeletionService {
 
         deletionModel.myLogger.info("[DeletionService] deleteSelectedFiles(): " + filesToDelete.size() + " files to delete.");
 
+        boolean atLeastOneSuccessfulDeletion = false;
         for (DetailedFile detailedFile : filesToDelete) {
             File file = new File(detailedFile.getPath().toString());
+            boolean isDeleted = file.delete();
 
-            boolean successfulDeleted = file.delete();
-
-            if (successfulDeleted) {
+            if (isDeleted) {
                 deletionModel.myLogger.info("[DeletionService] deleteSelectedFiles(): " + detailedFile.getName() + " deleted successfully.");
-                return true;
+                atLeastOneSuccessfulDeletion = true;
             } else {
                 deletionModel.myLogger.info("[DeletionService] deleteSelectedFiles(): " + detailedFile.getName() + " NOT deleted.");
-                return false;
             }
         }
 
-        return false;
+        return atLeastOneSuccessfulDeletion;
     }
 }
