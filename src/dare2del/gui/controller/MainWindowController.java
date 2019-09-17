@@ -22,7 +22,7 @@ import java.util.List;
 
 public class MainWindowController {
 
-    private final String MA_PDF = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + "/../DirectoryExample/LisaSchatt_Masterthesis.pdf";
+    private final String MA_PDF = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + "/../LisaSchatt_Masterthesis.pdf";
     private final String EXAMPLE_DIRECTORY = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + "/../DirectoryExample";
     private final Path exampleDirPath = Paths.get(EXAMPLE_DIRECTORY.replaceFirst("/", ""));
 
