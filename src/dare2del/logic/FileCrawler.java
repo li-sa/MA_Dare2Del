@@ -1,29 +1,35 @@
+package dare2del.logic;
+
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
-class FileCrawler {
+public class FileCrawler {
+
+    private final Logger myLogger;
 
     private Path rootPath;
     private final List<DetailedFile> folderList;
     private final List<DetailedFile> fileList;
 
-    public FileCrawler(String pathName) {
-        System.out.println(">> File Crawler <<");
-        System.out.println("INFO. Crawling started on: " + pathName);
+    public FileCrawler(Path rootPath, Logger myLogger) {
+        this.myLogger = myLogger;
+        this.rootPath = rootPath;
+
+        myLogger.info("[FileCrawler] Start crawling on " + rootPath + ".");
 
         folderList = new ArrayList<>();
         fileList = new ArrayList<>();
 
-        File rootFile = init(pathName);
-
+        File rootFile = rootPath.toFile();
         crawl(rootFile);
 
         printResults();
 
-        System.out.println("INFO. Finished crawling. Found " + folderList.size() + " folders and " + fileList.size() + " files. \n");
+        myLogger.info("[FileCrawler] Finished crawling. Found " + folderList.size() + " folders and " + fileList.size() + " files.");
     }
 
     private void crawl(File file) {
@@ -45,16 +51,17 @@ class FileCrawler {
         try {
             rootPath = Paths.get(pathName);
         } catch (Exception e) {
-            System.out.println("INFO. Root folder ist no valid path (" + pathName + ").");
+            myLogger.warning("[FileCrawler] Exception in init(): " + e.getMessage());
+            throw new IllegalArgumentException();
         }
 
         if (rootPath.toFile().isDirectory()) {
             return rootPath.toFile();
         } else {
+            myLogger.warning("[FileCrawler] Exception in init(): " + pathName + " is no valid directory.");
             throw new IllegalArgumentException();
         }
     }
-
 
     private void printResults() {
         System.out.println("----------");
@@ -62,9 +69,9 @@ class FileCrawler {
         System.out.println("FOLDERS:");
         for (int i = 0; i < folderList.size(); i++) {
             DetailedFile cF = this.folderList.get(i);
-            System.out.println(i + ") " + cF.getName() + " [created: " + cF.getCreation_time() + "; last accessed: " +
-                    cF.getAccess_time() + "; last modified: " + cF.getChange_time() + "; parent file: " +
-                    cF.getIn_directory() + "; file extension: " + cF.getMedia_type() + "; size: " + cF.getSize() +
+            System.out.println(i + ") " + cF.getName() + " [created: " + cF.getCreationTime() + "; last accessed: " +
+                    cF.getAccessTime() + "; last modified: " + cF.getChangeTime() + "; parent file: " +
+                    cF.getInDirectory() + "; file extension: " + cF.getMediaType() + "; size: " + cF.getSize() +
                     "; path: " + cF.getPath() + "]");
         }
 
@@ -73,20 +80,20 @@ class FileCrawler {
         System.out.println("FILES:");
         for (int i = 0; i < fileList.size(); i++) {
             DetailedFile cF = this.fileList.get(i);
-            System.out.println(i + ") " + cF.getName() + " [created: " + cF.getCreation_time() + "; last accessed: " +
-                    cF.getAccess_time() + "; last modified: " + cF.getChange_time() + "; parent file: " +
-                    cF.getIn_directory() + "; file extension: " + cF.getMedia_type() + "; size: " + cF.getSize() +
+            System.out.println(i + ") " + cF.getName() + " [created: " + cF.getCreationTime() + "; last accessed: " +
+                    cF.getAccessTime() + "; last modified: " + cF.getChangeTime() + "; parent file: " +
+                    cF.getInDirectory() + "; file extension: " + cF.getMediaType() + "; size: " + cF.getSize() +
                     "; path: " + cF.getPath() + "]");
         }
 
         System.out.println("----------");
     }
 
-    public List<DetailedFile> getFolderList() {
-        return folderList;
-    }
-
     public List<DetailedFile> getFileList() {
         return fileList;
+    }
+
+    public List<DetailedFile> getFolderList() {
+        return folderList;
     }
 }

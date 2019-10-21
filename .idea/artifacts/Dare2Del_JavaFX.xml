@@ -1,0 +1,52 @@
+<component name="ArtifactManager">
+  <artifact type="javafx" name="Dare2Del_JavaFX">
+    <output-path>$PROJECT_DIR$/out/artifacts/Dare2Del_JavaFX</output-path>
+    <properties id="javafx-properties">
+      <options>
+        <option name="appClass" value="dare2del.Main" />
+        <option name="description" value="" />
+        <option name="htmlPlaceholderId" value="" />
+        <option name="title" value="Dare2Del" />
+        <option name="vendor" value="Lisa Schatt" />
+        <option name="version" value="1.0" />
+      </options>
+    </properties>
+    <root id="root">
+      <element id="archive" name="Dare2Del_JavaFX.jar">
+        <element id="module-output" name="Dare2Del_JavaFX" />
+        <element id="library" level="project" name="jpl" />
+        <element id="library" level="project" name="Maven: at.bestsolution.efxclipse.eclipse:com.google.guava:15.0.0" />
+        <element id="library" level="project" name="Maven: at.bestsolution.efxclipse.eclipse:org.apache.commons.lang:2.6.0" />
+        <element id="library" level="project" name="Maven: at.bestsolution.efxclipse.eclipse:javax.inject:1.0.0" />
+        <element id="library" level="project" name="Maven: at.bestsolution.efxclipse.rt:org.eclipse.fx.core:3.0.0" />
+        <element id="library" level="project" name="Maven: at.bestsolution.efxclipse.rt:org.eclipse.fx.ui.controls:3.0.0" />
+        <element id="library" level="project" name="Maven: at.bestsolution.efxclipse.rt:org.eclipse.fx.ui.panes:3.0.0" />
+        <element id="library" level="project" name="Maven: com.google.code.findbugs:jsr305:2.0.1" />
+        <element id="library" level="application" name="jpl" />
+        <element id="file-copy" path="$USER_HOME$/OneDrive - Otto-Friedrich-Universität Bamberg/MA_2.0/Java/commons-io-2.6.jar" />
+        <element id="file-copy" path="$USER_HOME$/OneDrive - Otto-Friedrich-Universität Bamberg/MA_2.0/Java/bestsolution/com.google.guava-15.0.0.jar" />
+        <element id="file-copy" path="$USER_HOME$/OneDrive - Otto-Friedrich-Universität Bamberg/MA_2.0/Java/bestsolution/javax.inject-1.0.0.jar" />
+        <element id="file-copy" path="$USER_HOME$/OneDrive - Otto-Friedrich-Universität Bamberg/MA_2.0/Java/jsoup-1.11.3.jar" />
+        <element id="file-copy" path="$USER_HOME$/OneDrive - Otto-Friedrich-Universität Bamberg/MA_2.0/Java/bestsolution/jsr305-2.0.1.jar" />
+        <element id="file-copy" path="$USER_HOME$/OneDrive - Otto-Friedrich-Universität Bamberg/MA_2.0/Java/bestsolution/org.apache.commons.lang-2.6.0.jar" />
+        <element id="file-copy" path="$USER_HOME$/OneDrive - Otto-Friedrich-Universität Bamberg/MA_2.0/Java/bestsolution/org.eclipse.fx.core-3.0.0.jar" />
+        <element id="file-copy" path="$USER_HOME$/OneDrive - Otto-Friedrich-Universität Bamberg/MA_2.0/Java/bestsolution/org.eclipse.fx.ui.controls-3.0.0.jar" />
+        <element id="file-copy" path="$USER_HOME$/OneDrive - Otto-Friedrich-Universität Bamberg/MA_2.0/Java/bestsolution/org.eclipse.fx.ui.panes-3.0.0.jar" />
+      </element>
+      <element id="directory" name="prologFiles">
+        <element id="file-copy" path="$PROJECT_DIR$/resources/prologFiles/clauses.pl" />
+        <element id="file-copy" path="$PROJECT_DIR$/resources/prologFiles/irrelevanceTheory.pl" />
+      </element>
+      <element id="directory" name="htmlFiles">
+        <element id="file-copy" path="$PROJECT_DIR$/resources/htmlFiles/nearmiss_dummy.html" />
+        <element id="file-copy" path="$PROJECT_DIR$/resources/htmlFiles/deletion_dummy.html" />
+      </element>
+      <element id="directory" name="DirectoryExample">
+        <element id="file-copy" path="$PROJECT_DIR$/resources/DirectoryExample/Dokument.txt" />
+        <element id="file-copy" path="$PROJECT_DIR$/resources/DirectoryExample/dare2del.png" />
+        <element id="file-copy" path="$PROJECT_DIR$/resources/DirectoryExample/dare2del_temp.png" />
+        <element id="file-copy" path="$PROJECT_DIR$/resources/DirectoryExample/DasDok.txt" />
+      </element>
+    </root>
+  </artifact>
+</component>

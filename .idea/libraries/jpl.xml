@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="jpl">
+    <CLASSES>
+      <root url="jar://C:/Program Files/swipl/lib/jpl.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <NATIVE>
+      <root url="file://C:/Program Files/swipl/bin" />
+    </NATIVE>
+    <SOURCES />
+  </library>
+</component>
